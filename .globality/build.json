@@ -1,0 +1,10 @@
+{
+  "params": {
+    "name": "microcosm-sagemaker",
+    "pypi": {
+      "enabled": true,
+    }
+  },
+  "type": "python-library",
+  "version": "1.0.0"
+}
