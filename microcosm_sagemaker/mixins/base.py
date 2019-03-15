@@ -59,6 +59,12 @@ class BundleBase(metaclass=ABCMeta):
         except ModuleNotFoundError:
             pass
 
+        try:
+            from tf.random import set_random_seed
+            set_random_seed(constant)
+        except ModuleNotFoundError:
+            pass
+
     def _save_environment(self, artifact_dir):
         configuration_path = Path(artifact_dir) / "configuration.json"
         with open(configuration_path, "w") as configuration_file:

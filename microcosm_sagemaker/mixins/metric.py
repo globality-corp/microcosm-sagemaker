@@ -1,7 +1,6 @@
 from abc import ABCMeta
 from collections import namedtuple
 from tabulate import tabulate
-import sys
 
 import numpy as np
 import pandas as pd
@@ -42,7 +41,7 @@ class MetricMixin(metaclass=ABCMeta):
         # Get the best metric
         best_metric = self.get_best_metric(key, mode, best_fn)
 
-        sys.stdout.write(f"Best Epoch ({key}, {mode}) = {best_metric.epoch}")
+        print(f"Best Epoch ({key}, {mode}) = {best_metric.epoch}") # noqa: N123
 
         epoch_metrics = [
             metric
@@ -67,4 +66,4 @@ class MetricMixin(metaclass=ABCMeta):
 
         df = pd.DataFrame(grid, index=rows, columns=cols)
 
-        sys.stdout.write(tabulate(df, headers="keys"))
+        print(tabulate(df, headers="keys")) # noqa: N123
