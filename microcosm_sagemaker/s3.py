@@ -28,20 +28,6 @@ class S3Object:
         else:
             return True
 
-    @property
-    def tags(self) -> Dict[str, str]:
-        s3 = client("s3")
-
-        response = s3.get_object_tagging(
-            Bucket=self.bucket,
-            Key=self.key,
-        )
-
-        return {
-            tag["Key"]: tag["Value"]
-            for tag in response["TagSet"]
-        }
-
     @classmethod
     def from_url(cls, url):
         parsed = urlparse(url)
