@@ -2,8 +2,9 @@
 Loaders to inject SM parameters as microcosm configurations.
 
 """
-from json import load
+from json import load, loads
 from boto3 import client
+from microcosm.config.model import Configuration
 from microcosm_sagemaker.constants import SagemakerPath
 from microcosm_sagemaker.s3 import S3Object
 from microcosm.loaders.keys import expand_config
@@ -54,11 +55,11 @@ def load_conventions(metadata):
     2. Uses a special `base_configuration` key to read the given configuration from S3
 
     """
-    configuration = load_sagemaker_hyperparameters(metadata)
+    configuration = load_from_hyperparameters(metadata)
     base_configuration_url = configuration.get("base_configuration")
 
     if base_configuration_url:
-        remote_configuration = load_static_s3(base_configuration_url)(metadata)
+        remote_configuration = load_from_s3(base_configuration_url)(metadata)
 
         # Locally specified hyperparameters should take precedence over the
         # base configuration
