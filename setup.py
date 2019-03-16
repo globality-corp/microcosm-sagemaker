@@ -17,9 +17,9 @@ setup(
     python_requires=">=3.6",
     keywords="microcosm",
     install_requires=[
-        "microcosm>=2.0.0",
-        "click>=7.0",
         "boto3>=1.9.90",
+        "click>=7.0",
+        "microcosm>=2.0.0",
     ],
     setup_requires=[
         "nose>=1.3.6",
@@ -28,9 +28,9 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "put-sagemaker-config = microcosm_sagemaker.commands.config:put_sagemaker_config",
-            "list-sagemaker-configs = microcosm_sagemaker.commands.config:list_sagemaker_configs",
-            "get-sagemaker-config = microcosm_sagemaker.commands.config:get_sagemaker_config",
+            "train = microcosm_sagemaker.commands.train:train_cli",
+            "evaluate = microcosm_sagemaker.commands.evaluate:evaluate_cli",
+            "runserver = microcosm_sagemaker.commands.runserver:runserver_cli",
         ],
         "microcosm.factories": [
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",

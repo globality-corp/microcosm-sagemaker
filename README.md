@@ -64,7 +64,7 @@ After creating a new model, there are a few steps to integrate with microcosm-sa
 
     ```
     setup(
-      name="My ML Project",
+      name="my_model",
       entry_points={
         "microcosm_sagemaker.hooks": [
           "train = my_model.train.app:create_app",
