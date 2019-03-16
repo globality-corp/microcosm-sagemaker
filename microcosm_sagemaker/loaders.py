@@ -56,7 +56,7 @@ def load_conventions(metadata):
 
     """
     configuration = load_from_hyperparameters(metadata)
-    base_configuration_url = configuration.get("base_configuration")
+    base_configuration_url = configuration.pop("base_configuration", None)
 
     if base_configuration_url:
         remote_configuration = load_from_s3(base_configuration_url)(metadata)
