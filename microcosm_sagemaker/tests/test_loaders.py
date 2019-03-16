@@ -7,7 +7,6 @@ from unittest.mock import patch
 from hamcrest import assert_that, equal_to, is_
 from microcosm.metadata import Metadata
 
-from microcosm_sagemaker.constants import SagemakerPath
 from microcosm_sagemaker.loaders import load_conventions, load_from_hyperparameters, load_from_s3
 
 
@@ -61,7 +60,7 @@ class TestLoaders(TestCase):
             with patch(
                 "microcosm_sagemaker.constants.SagemakerPath.HYPERPARAMETERS",
                 tmp.name
-            ) as path:
+            ):
                 dump(value, tmp)
                 tmp.seek(0)
                 yield

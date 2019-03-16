@@ -4,11 +4,13 @@ Main training CLI
 """
 from json import load
 from os import chdir
-from os.path import dirname, abspath, join
 
 import click
 
 from microcosm_sagemaker.app_hooks import AppHooks
+from microcosm_sagemaker.commands.evaluate import evaluate
+from microcosm_sagemaker.constants import SagemakerPath
+from microcosm_sagemaker.exceptions import handle_sagemaker_exception
 
 
 @click.command()

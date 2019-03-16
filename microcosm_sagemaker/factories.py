@@ -1,7 +1,9 @@
 """
-Factories
+Consumer factories.
 
 """
+
+
 def configure_active_bundle(graph):
     if not hasattr(graph.config, "active_bundle"):
         return None

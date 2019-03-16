@@ -3,11 +3,14 @@ Loaders to inject SM parameters as microcosm configurations.
 
 """
 from json import load, loads
+from os.path import join
+
 from boto3 import client
 from microcosm.config.model import Configuration
+from microcosm.loaders.keys import expand_config
+
 from microcosm_sagemaker.constants import SagemakerPath
 from microcosm_sagemaker.s3 import S3Object
-from microcosm.loaders.keys import expand_config
 
 
 def load_from_hyperparameters(metadata):

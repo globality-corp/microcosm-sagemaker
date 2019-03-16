@@ -1,8 +1,7 @@
 """
-Factories for SageMaker path conventions.
+SageMaker-specific exception handling.
 
 """
-from pathlib import Path
 from sys import stderr, exit
 from traceback import format_exc
 

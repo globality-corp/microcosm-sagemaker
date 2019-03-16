@@ -4,7 +4,7 @@ Main evaluation CLI
 """
 from os import chdir
 
-from click import command, option
+from click import Path, command, option
 
 from microcosm_sagemaker.app_hooks import AppHooks
 
@@ -24,13 +24,13 @@ def evaluate(input_path, artifact_path):
 @command()
 @option(
     "--input_path",
-    type=click.Path(),
+    type=Path(),
     required=True,
     help="Path of the folder that houses the datasets",
 )
 @option(
     "--artifact_path",
-    type=click.Path(),
+    type=Path(),
     required=True,
     help="Path for reading artifacts, used for local testing",
 )

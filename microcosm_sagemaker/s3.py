@@ -3,7 +3,6 @@ from urllib.parse import urlparse
 
 from boto3 import client
 from botocore.exceptions import ClientError
-from typing import Dict
 
 
 @dataclass

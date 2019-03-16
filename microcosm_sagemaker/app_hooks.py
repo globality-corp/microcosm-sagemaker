@@ -2,16 +2,16 @@ from pkg_resources import DistributionNotFound, iter_entry_points
 
 
 class AppHooks:
-    @staticmethod
-    def create_train_graph(*args, **kwargs):
-        for name, factory in self._get_factories():
+    @classmethod
+    def create_train_graph(cls, *args, **kwargs):
+        for name, factory in cls._get_factories():
             if name == "train_graph":
                 return factory(*args, **kwargs)
         return None
 
-    @staticmethod
-    def create_serve_graph(*args, **kwargs):
-        for name, factory in self._get_factories():
+    @classmethod
+    def create_serve_graph(cls, *args, **kwargs):
+        for name, factory in cls._get_factories():
             if name == "serve_graph":
                 return factory(*args, **kwargs)
         return None
