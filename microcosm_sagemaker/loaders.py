@@ -51,7 +51,7 @@ def load_from_s3(url):
     return _load
 
 
-def load_conventions(metadata):
+def load_train_conventions(metadata):
     """
     Opinionated loader that:
     1. Reads all of the hyperparameters passed through by SageMaker

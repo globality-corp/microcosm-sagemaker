@@ -9,13 +9,13 @@ After creating a new model, there are a few steps to integrate with microcosm-sa
     The training graph holds the dependencies that are required at train time.  These typically include the bundles you have defined or any related helper functions.
 
     ```
-    from microcosm_sagemaker.loaders import load_conventions
+    from microcosm_sagemaker.loaders import load_train_conventions
 
     def create_app(debug=False, testing=False, extra_config={}):
       config_loader = load_each(
           load_from_dict(extra_config),
           load_from_environ,
-          load_sagemaker_conventions,
+          load_train_conventions,
       )
 
       graph = create_object_graph(

@@ -7,7 +7,7 @@ from unittest.mock import patch
 from hamcrest import assert_that, equal_to, is_
 from microcosm.metadata import Metadata
 
-from microcosm_sagemaker.loaders import load_conventions, load_from_hyperparameters, load_from_s3
+from microcosm_sagemaker.loaders import load_train_conventions, load_from_hyperparameters, load_from_s3
 
 
 class TestLoaders(TestCase):
@@ -34,7 +34,7 @@ class TestLoaders(TestCase):
 
         assert_that(config, is_(equal_to(remote_configuration)))
 
-    def test_load_conventions(self):
+    def test_load_train_conventions(self):
         metadata = Metadata("foo")
         hyperparameters = {
             "base_configuration": "s3://foo/config.json",
@@ -46,7 +46,7 @@ class TestLoaders(TestCase):
 
         with self.patch_s3_value(remote_configuration):
             with self.patch_hyperparameter_value(hyperparameters):
-                config = load_conventions(metadata)
+                config = load_train_conventions(metadata)
 
         assert_that(config, is_(equal_to({
             "bar2": "baz2",
