@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from random import seed
-from json import dump
+from json import dump as json_dump
 from pathlib import Path
 
 STATIC_SEED = 42
@@ -68,4 +68,4 @@ class BundleBase(metaclass=ABCMeta):
     def _save_environment(self, artifact_dir):
         configuration_path = Path(artifact_dir) / "configuration.json"
         with open(configuration_path, "w") as configuration_file:
-            dump(self._environment, configuration_file)
+            json_dump(self._environment, configuration_file)

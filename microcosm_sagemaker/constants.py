@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 SAGEMAKER_PREFIX = Path("/opt/ml/")
-CONFIGURATION_TAG_KEY = "experiment_tag"
+CONFIGURATION_CACHE = "configuration.json"
 
 
 class SagemakerPath:

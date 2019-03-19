@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from json import dump
+from json import dump as json_dump
 from tempfile import NamedTemporaryFile
 from unittest import TestCase
 from unittest.mock import patch
@@ -61,7 +61,7 @@ class TestLoaders(TestCase):
                 "microcosm_sagemaker.constants.SagemakerPath.HYPERPARAMETERS",
                 tmp.name
             ):
-                dump(value, tmp)
+                json_dump(value, tmp)
                 tmp.seek(0)
                 yield
 
@@ -70,7 +70,7 @@ class TestLoaders(TestCase):
     def patch_s3_value(value):
         with NamedTemporaryFile("w+") as tmp:
             with patch("microcosm_sagemaker.loaders.client") as boto_client:
-                dump(value, tmp)
+                json_dump(value, tmp)
                 tmp.seek(0)
 
                 boto_client.return_value.get_object.return_value = {

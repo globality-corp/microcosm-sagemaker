@@ -15,10 +15,10 @@ def evaluate(input_path, artifact_path):
     chdir(input_path)
 
     # Load the saved artifact
-    graph.bundle_manager.load(artifact_path)
+    graph.active_bundle.load(artifact_path)
 
     # Evaluate
-    graph.evaluation_manager(graph.bundle_manager)
+    graph.active_evaluation(graph.active_bundle)
 
 
 @command()

@@ -2,14 +2,15 @@
 Loaders to inject SM parameters as microcosm configurations.
 
 """
-from json import load, loads
+from json import load as json_load, loads as json_loads
 from os.path import join
 
 from boto3 import client
 from microcosm.config.model import Configuration
+from microcosm.loaders.compose import merge
 from microcosm.loaders.keys import expand_config
 
-from microcosm_sagemaker.constants import SagemakerPath
+from microcosm_sagemaker.constants import CONFIGURATION_CACHE, SagemakerPath
 from microcosm_sagemaker.s3 import S3Object
 
 
@@ -26,7 +27,7 @@ def load_from_hyperparameters(metadata):
     try:
         with open(SagemakerPath.HYPERPARAMETERS) as raw_file:
             return expand_config(
-                load(raw_file),
+                json_load(raw_file),
                 separator="__",
                 skip_to=0,
             )
@@ -66,11 +67,10 @@ def load_train_conventions(metadata):
 
         # Locally specified hyperparameters should take precedence over the
         # base configuration
-        new_configuration = Configuration()
-        new_configuration.merge(remote_configuration)
-        new_configuration.merge(configuration)
-
-        configuration = new_configuration
+        configuration = merge([
+            remote_configuration,
+            configuration
+        ])
 
     return configuration
 
@@ -82,11 +82,11 @@ def load_model_artifact_config(artifact_path):
 
     """
     def _load_path(metadata):
-        path = join(artifact_path, "configuration.json")
+        path = join(artifact_path, CONFIGURATION_CACHE)
 
         try:
             with open(path) as raw_file:
-                return load(raw_file)
+                return json_load(raw_file)
         except FileNotFoundError:
             return Configuration()
 

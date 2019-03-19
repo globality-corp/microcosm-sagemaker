@@ -2,7 +2,7 @@
 Main training CLI
 
 """
-from json import load
+from json import load as json_load
 from os import chdir
 
 import click
@@ -46,7 +46,7 @@ def train_cli(configuration, input_path, artifact_path, auto_evaluate):
 
     if configuration:
         with open(configuration) as configuration_file:
-            extra_config = load(configuration_file)
+            extra_config = json_load(configuration_file)
     else:
         extra_config = {}
 
@@ -55,7 +55,7 @@ def train_cli(configuration, input_path, artifact_path, auto_evaluate):
     chdir(input_path)
 
     try:
-        model = graph.bundle_manager
+        model = graph.active_bundle
         model.fit(artifact_path)
     except Exception as e:
         handle_sagemaker_exception(e)
