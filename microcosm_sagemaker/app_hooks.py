@@ -18,7 +18,7 @@ class AppHooks:
 
     @staticmethod
     def _get_factories():
-        for entry_point in iter_entry_points(group="microcosm_sagemaker.graph_hooks"):
+        for entry_point in iter_entry_points(group="microcosm_sagemaker.app_hooks"):
             try:
                 factory = entry_point.load()
                 yield entry_point.name, factory

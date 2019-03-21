@@ -66,7 +66,7 @@ from microcosm_sagemaker.loaders import load_train_conventions
   setup(
     name="my_model",
     entry_points={
-      "microcosm_sagemaker.graph_hooks": [
+      "microcosm_sagemaker.app_hooks": [
         "train = my_model.train.app:create_app",
         "serve = my_model.serve.app:create_app",
       ],

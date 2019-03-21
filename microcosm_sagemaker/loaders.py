@@ -69,7 +69,7 @@ def load_train_conventions(metadata):
         # base configuration
         configuration = merge([
             remote_configuration,
-            configuration
+            configuration,
         ])
 
     return configuration
