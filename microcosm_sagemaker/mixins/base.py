@@ -23,6 +23,13 @@ class BundleBase(metaclass=ABCMeta):
     def __init__(self, graph):
         self._environment = graph.config
 
+    def prefit(self):
+        """
+        Function called by convention before a fit is executed
+        """
+        self._set_constant_seed()
+        self._save_environment(artifact_path)
+
     @abstractmethod
     def fit(self, artifact_path):
         """
@@ -31,8 +38,7 @@ class BundleBase(metaclass=ABCMeta):
         :param artifact_path: {str} location to place model artifacts
         :param configuration: {dict} of configuration values
         """
-        self._set_constant_seed()
-        self._save_environment(artifact_path)
+        pass
 
     @abstractmethod
     def load(self, artifact_path):
