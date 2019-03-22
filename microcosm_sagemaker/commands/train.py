@@ -4,6 +4,7 @@ Main training CLI
 """
 from json import load as json_load
 from os import chdir
+from os.path import abspath
 
 import click
 
@@ -43,6 +44,9 @@ def train_cli(configuration, input_path, artifact_path, auto_evaluate):
         artifact_path = SagemakerPath.MODEL
     if not input_path:
         input_path = SagemakerPath.INPUT
+
+    artifact_path = abspath(artifact_path)
+    input_path = abspath(input_path)
 
     if configuration:
         with open(configuration) as configuration_file:
