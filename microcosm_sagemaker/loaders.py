@@ -47,7 +47,7 @@ def load_from_s3(url):
         s3_object = S3Object.from_url(url)
 
         object = s3.get_object(Bucket=s3_object.bucket, Key=s3_object.key)
-        return Configuration(loads(object["Body"].read()))
+        return Configuration(json_loads(object["Body"].read()))
 
     return _load
 
