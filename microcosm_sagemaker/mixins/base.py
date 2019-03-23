@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
-from random import seed
 from json import dump as json_dump
 from pathlib import Path
+from random import seed
+
 
 STATIC_SEED = 42
 
@@ -23,7 +24,7 @@ class BundleBase(metaclass=ABCMeta):
     def __init__(self, graph):
         self._environment = graph.config
 
-    def prefit(self):
+    def prefit(self, artifact_path):
         """
         Function called by convention before a fit is executed
         """

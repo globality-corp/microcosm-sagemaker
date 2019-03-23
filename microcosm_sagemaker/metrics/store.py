@@ -1,10 +1,11 @@
-from enum import Enum, unique
 from json import dumps
 from logging import info
-from boto3 import client
 
+from boto3 import client
 from botocore.exceptions import ClientError
-from microcosm.api import binding, defaults
+from microcosm.api import binding
+
+from microcosm_sagemaker.metrics.models import MetricMode
 
 
 @binding("sagemaker_metrics")

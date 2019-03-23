@@ -4,7 +4,7 @@ from pkg_resources import DistributionNotFound, iter_entry_points
 class AppHooks:
     @classmethod
     def create_train_graph(cls, *args, **kwargs):
-    for name, factory in cls._get_factories():
+        for name, factory in cls._get_factories():
             if name == "train":
                 return factory(*args, **kwargs)
         return None

@@ -60,7 +60,7 @@ def train_cli(configuration, input_path, artifact_path, auto_evaluate):
 
     try:
         model = graph.active_bundle
-        model.prefit()
+        model.prefit(artifact_path)
         model.fit(artifact_path)
     except Exception as e:
         handle_sagemaker_exception(e)

@@ -7,7 +7,11 @@ from unittest.mock import patch
 from hamcrest import assert_that, equal_to, is_
 from microcosm.metadata import Metadata
 
-from microcosm_sagemaker.loaders import load_train_conventions, load_from_hyperparameters, load_from_s3
+from microcosm_sagemaker.loaders import (
+    load_from_hyperparameters,
+    load_from_s3,
+    load_train_conventions,
+)
 
 
 class TestLoaders(TestCase):

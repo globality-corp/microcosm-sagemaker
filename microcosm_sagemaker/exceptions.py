@@ -2,7 +2,7 @@
 SageMaker-specific exception handling.
 
 """
-from sys import stderr, exit
+from sys import exit, stderr
 from traceback import format_exc
 
 from microcosm_sagemaker.constants import SagemakerPath
