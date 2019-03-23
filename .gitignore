@@ -93,9 +93,4 @@ docs/_build/
 # PyBuilder
 target/
 
-/.dockerignore
-/Dockerfile.template
-/build.*/
-/entrypoint.sh
-
-.mypy_cache
+.mypy_cache/
