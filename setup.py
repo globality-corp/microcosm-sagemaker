@@ -35,7 +35,7 @@ setup(
         "microcosm.factories": [
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",
             "active_evaluation = microcosm_sagemaker.factories:configure_active_evaluation",
-            "sagemaker_metrics_store = microcosm_sagemaker.metrics.store:SMMetrics",
+            "sagemaker_metrics_store = microcosm_sagemaker.metrics.store:SageMakerMetrics",
         ],
     },
     tests_require=[

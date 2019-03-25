@@ -4,13 +4,14 @@ Main training CLI
 """
 from json import load as json_load
 from os import chdir
+from pathlib import Path
 
 import click
 
 from microcosm_sagemaker.app_hooks import AppHooks
 from microcosm_sagemaker.commands.evaluate import evaluate
 from microcosm_sagemaker.constants import SagemakerPath
-from microcosm_sagemaker.exceptions import handle_sagemaker_exception
+from microcosm_sagemaker.exceptions import raise_sagemaker_exception
 
 
 @click.command()
@@ -39,6 +40,9 @@ from microcosm_sagemaker.exceptions import handle_sagemaker_exception
     help="Whether to automatically evaluate after the training has completed",
 )
 def train_cli(configuration, input_path, artifact_path, auto_evaluate):
+    if artifact_path:
+        Path(artifact_path).mkdir()
+
     if not artifact_path:
         artifact_path = SagemakerPath.MODEL
     if not input_path:
@@ -59,7 +63,7 @@ def train_cli(configuration, input_path, artifact_path, auto_evaluate):
         model.prefit(artifact_path)
         model.fit(artifact_path)
     except Exception as e:
-        handle_sagemaker_exception(e)
+        raise_sagemaker_exception(e)
 
     if auto_evaluate:
         evaluate(input_path, artifact_path)
