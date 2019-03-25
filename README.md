@@ -34,7 +34,7 @@ After creating a new model, there are a few steps to integrate with microcosm-sa
 
    The service graph holds the dependencies that are required at service time.  These typically include Flask and the web service routes.
 
-   ```
+   ```py
    from microcosm_sagemaker.loaders import load_model_artifact_config
 
    def create_app(artifact_path, debug=False, testing=False, model_only=False, extra_config={}):
@@ -62,7 +62,7 @@ After creating a new model, there are a few steps to integrate with microcosm-sa
 
 3. Expose the graphs in `setup.py`.
 
-   ```
+   ```py
    setup(
        name="my_model",
        entry_points={
