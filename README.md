@@ -62,14 +62,14 @@ After creating a new model, there are a few steps to integrate with microcosm-sa
 
 3. Expose the graphs in `setup.py`.
 
-    ```
-    setup(
-        name="my_model",
-        entry_points={
-            "microcosm_sagemaker.app_hooks": [
-                "train = my_model.train.app:create_app",
-                "serve = my_model.serve.app:create_app",
-            ],
-        },
-    )
-    ```
+   ```
+   setup(
+       name="my_model",
+       entry_points={
+           "microcosm_sagemaker.app_hooks": [
+               "train = my_model.train.app:create_app",
+               "serve = my_model.serve.app:create_app",
+           ],
+       },
+   )
+   ```
