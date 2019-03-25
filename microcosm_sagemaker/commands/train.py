@@ -4,7 +4,6 @@ Main training CLI
 """
 from json import load as json_load
 from os import chdir
-from os.path import abspath
 
 import click
 
@@ -17,19 +16,19 @@ from microcosm_sagemaker.exceptions import handle_sagemaker_exception
 @click.command()
 @click.option(
     "--configuration",
-    type=click.Path(),
+    type=click.Path(resolve_path=True),
     required=False,
     help="Manual import of configuration file, used for local testing",
 )
 @click.option(
     "--input_path",
-    type=click.Path(),
+    type=click.Path(resolve_path=True),
     required=False,
     help="Path of the folder that houses the train/test datasets",
 )
 @click.option(
     "--artifact_path",
-    type=click.Path(),
+    type=click.Path(resolve_path=True),
     required=False,
     help="Path for outputting artifacts, used for local testing",
 )
@@ -44,9 +43,6 @@ def train_cli(configuration, input_path, artifact_path, auto_evaluate):
         artifact_path = SagemakerPath.MODEL
     if not input_path:
         input_path = SagemakerPath.INPUT
-
-    artifact_path = abspath(artifact_path)
-    input_path = abspath(input_path)
 
     if configuration:
         with open(configuration) as configuration_file:

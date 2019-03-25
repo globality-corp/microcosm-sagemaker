@@ -9,7 +9,7 @@ from microcosm_sagemaker.metrics.models import MetricMode
 
 
 @binding("sagemaker_metrics")
-class SMMetrics(object):
+class SageMakerMetrics(object):
     def __init__(self, graph):
         self.client = client("cloudwatch")
 

@@ -14,7 +14,7 @@ class MetricMode(Enum):
 @unique
 class MetricUnit(Enum):
     """
-    In-exhaustive list of common CloudWatch metric units
+    Inexhaustive list of common CloudWatch metric units
 
     """
     PERCENT = "Percent"

@@ -24,7 +24,7 @@ from microcosm_sagemaker.app_hooks import AppHooks
 )
 @option(
     "--artifact_path",
-    type=Path(),
+    type=Path(resolve_path=True),
     required=True,
     help="Path for reading artifacts, used for local testing",
 )
