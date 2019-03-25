@@ -35,41 +35,41 @@ from microcosm_sagemaker.loaders import load_train_conventions
     The service graph holds the dependencies that are required at service time.  These typically include Flask and the web service routes.
 
     ```
-  from microcosm_sagemaker.loaders import load_model_artifact_config
+from microcosm_sagemaker.loaders import load_model_artifact_config
 
-  def create_app(artifact_path, debug=False, testing=False, model_only=False, extra_config={}):
-      loader = load_each(
-          load_model_artifact_config(artifact_path),
-      )
+def create_app(artifact_path, debug=False, testing=False, model_only=False, extra_config={}):
+    loader = load_each(
+        load_model_artifact_config(artifact_path),
+    )
 
-      graph = create_object_graph(
-          name="my model",
-      )
+    graph = create_object_graph(
+        name="my model",
+    )
 
-      graph.use(
-          "active_bundle",
-          "active_evaluation",
-      )
+    graph.use(
+        "active_bundle",
+        "active_evaluation",
+    )
 
-      if not model_only:
-          graph.use(
-              "my_primary_bundle",
-              "my_primary_evaluator",
-          )
+    if not model_only:
+        graph.use(
+            "my_primary_bundle",
+            "my_primary_evaluator",
+        )
 
-      return graph.lock()
+    return graph.lock()
     ```
 
 3. Expose the graphs in `setup.py`.
 
     ```
-  setup(
-      name="my_model",
-      entry_points={
-          "microcosm_sagemaker.app_hooks": [
-              "train = my_model.train.app:create_app",
-              "serve = my_model.serve.app:create_app",
-          ],
-      },
-  )
+setup(
+    name="my_model",
+    entry_points={
+        "microcosm_sagemaker.app_hooks": [
+            "train = my_model.train.app:create_app",
+            "serve = my_model.serve.app:create_app",
+        ],
+    },
+)
     ```
