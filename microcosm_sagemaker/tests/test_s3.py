@@ -5,7 +5,7 @@ from hamcrest import assert_that, equal_to, is_
 from microcosm_sagemaker.s3 import S3Object
 
 
-class TestLoaders(TestCase):
+class TestS3Objects(TestCase):
     def test_parse_parse(self):
         object = S3Object.from_url("s3://foo/bar/config_file.json")
 
