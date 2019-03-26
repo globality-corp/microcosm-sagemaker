@@ -84,10 +84,7 @@ def load_model_artifact_config(artifact_path):
     def _load_path(metadata):
         path = join(artifact_path, CONFIGURATION_CACHE)
 
-        try:
-            with open(path) as raw_file:
-                return json_load(raw_file)
-        except FileNotFoundError:
-            return Configuration()
+        with open(path) as raw_file:
+            return json_load(raw_file)
 
     return _load_path
