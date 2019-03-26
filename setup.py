@@ -8,6 +8,8 @@ setup(
     name=project,
     version=version,
     description="Opinionated machine learning organization and configuration",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     author="Globality Engineering",
     author_email="engineering@globality.com",
     url="https://github.com/globality-corp/microcosm-sagemaker",
