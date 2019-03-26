@@ -41,7 +41,7 @@ class SageMakerMetrics(object):
                 Namespace="/aws/sagemaker/" + model_name,
                 MetricData=metric_data,
             )
-        except ClientError, NoCredentialsError, NoRegionError:
+        except (ClientError, NoCredentialsError, NoRegionError):
             info("CloudWatch publishing disabled")
             info(dumps(metric_data, indent=4))
             response = None
