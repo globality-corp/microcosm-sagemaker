@@ -11,9 +11,8 @@ After creating a new model, there are a few steps to integrate with microcosm-sa
    ```py
    from microcosm_sagemaker.loaders import load_train_conventions
 
-   def create_app(debug=False, testing=False, extra_config={}):
+   def create_app(debug=False, testing=False):
        config_loader = load_each(
-           load_from_dict(extra_config),
            load_from_environ,
            load_train_conventions,
        )
@@ -37,7 +36,7 @@ After creating a new model, there are a few steps to integrate with microcosm-sa
    ```py
    from microcosm_sagemaker.loaders import load_model_artifact_config
 
-   def create_app(artifact_path, debug=False, testing=False, model_only=False, extra_config={}):
+   def create_app(artifact_path, debug=False, testing=False, model_only=False):
        loader = load_each(
            load_model_artifact_config(artifact_path),
        )
