@@ -30,4 +30,4 @@ class S3Object:
     @classmethod
     def from_url(cls, url):
         parsed = urlparse(url)
-        return cls(bucket=parsed.netloc, key=parsed.path)
+        return cls(bucket=parsed.netloc, key=parsed.path.strip("/"))
