@@ -31,6 +31,9 @@ class BundleBase(metaclass=ABCMeta):
         :param artifact_path: {str} location to place model artifacts
         :param configuration: {dict} of configuration values
         """
+        artifact_path = Path(artifact_path)
+        artifact_path.mkdir(exist_ok=True)
+
         self._set_constant_seed()
         self._save_environment(artifact_path)
 

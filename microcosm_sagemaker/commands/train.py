@@ -40,9 +40,6 @@ from microcosm_sagemaker.exceptions import raise_sagemaker_exception
     help="Whether to automatically evaluate after the training has completed",
 )
 def train_cli(configuration, input_path, artifact_path, auto_evaluate):
-    if artifact_path:
-        Path(artifact_path).mkdir()
-
     if not artifact_path:
         artifact_path = SagemakerPath.MODEL
     if not input_path:
