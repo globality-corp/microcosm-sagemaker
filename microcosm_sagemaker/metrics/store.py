@@ -2,7 +2,7 @@ from json import dumps
 from logging import info
 
 from boto3 import client
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 from microcosm.api import binding
 
 from microcosm_sagemaker.metrics.models import MetricMode
@@ -11,7 +11,7 @@ from microcosm_sagemaker.metrics.models import MetricMode
 @binding("sagemaker_metrics")
 class SageMakerMetrics(object):
     def __init__(self, graph):
-        self.client = client("cloudwatch")
+        pass
 
     def create(self, model_name, metrics=[], hyperparameters={}, mode=MetricMode.TRAINING):
         # Metric dimensions allow us to analyze metric performance against the
@@ -36,11 +36,12 @@ class SageMakerMetrics(object):
         ]
 
         try:
-            response = self.client.put_metric_data(
+            cloudwatch = client("cloudwatch")
+            response = cloudwatch.put_metric_data(
                 Namespace="/aws/sagemaker/" + model_name,
                 MetricData=metric_data,
             )
-        except ClientError:
+        except ClientError, NoCredentialsError, NoRegionError:
             info("CloudWatch publishing disabled")
             info(dumps(metric_data, indent=4))
             response = None
