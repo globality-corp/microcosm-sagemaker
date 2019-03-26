@@ -24,20 +24,22 @@ class BundleBase(metaclass=ABCMeta):
     def __init__(self, graph):
         self._environment = graph.config
 
-    def prefit(self, artifact_path):
-        """
-        Function called by convention before a fit is executed
-        """
-        self._set_constant_seed()
-        self._save_environment(artifact_path)
-
-    @abstractmethod
     def fit(self, artifact_path):
         """
         Train a model.
 
         :param artifact_path: {str} location to place model artifacts
         :param configuration: {dict} of configuration values
+        """
+        self._set_constant_seed()
+        self._save_environment(artifact_path)
+
+        self._fit(artifact_path)
+
+    @abstractmethod
+    def _fit(self, artifact_path):
+        """
+        Client overriden logic to fit model.
         """
         pass
 
