@@ -5,34 +5,34 @@ Main training CLI
 from json import load as json_load
 from os import chdir
 
-import click
+from click import Path, command, option
 
 from microcosm_sagemaker.app_hooks import AppHooks
 from microcosm_sagemaker.commands.evaluate import evaluate
 from microcosm_sagemaker.constants import SagemakerPath
-from microcosm_sagemaker.exceptions import handle_sagemaker_exception
+from microcosm_sagemaker.exceptions import raise_sagemaker_exception
 
 
-@click.command()
-@click.option(
+@command()
+@option(
     "--configuration",
-    type=click.Path(resolve_path=True),
+    type=Path(resolve_path=True),
     required=False,
     help="Manual import of configuration file, used for local testing",
 )
-@click.option(
+@option(
     "--input_path",
-    type=click.Path(resolve_path=True),
+    type=Path(resolve_path=True),
     required=False,
     help="Path of the folder that houses the train/test datasets",
 )
-@click.option(
+@option(
     "--artifact_path",
-    type=click.Path(resolve_path=True),
+    type=Path(resolve_path=True),
     required=False,
     help="Path for outputting artifacts, used for local testing",
 )
-@click.option(
+@option(
     "--auto_evaluate",
     type=bool,
     default=True,
@@ -56,10 +56,9 @@ def train_cli(configuration, input_path, artifact_path, auto_evaluate):
 
     try:
         model = graph.active_bundle
-        model.prefit(artifact_path)
         model.fit(artifact_path)
     except Exception as e:
-        handle_sagemaker_exception(e)
+        raise_sagemaker_exception(e)
 
     if auto_evaluate:
         evaluate(input_path, artifact_path)
