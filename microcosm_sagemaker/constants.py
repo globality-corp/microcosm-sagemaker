@@ -5,8 +5,14 @@ SageMaker global constants.
 from pathlib import Path
 
 
+APP_HOOKS_GROUP = "microcosm_sagemaker.app_hooks"
+
+EVALUATE_APP_HOOK = "evaluate"
+SERVE_APP_HOOK = "serve"
+TRAIN_APP_HOOK = "train"
+
 SAGEMAKER_PREFIX = Path("/opt/ml/")
-CONFIGURATION_CACHE = "configuration.json"
+ARTIFACT_CONFIG_PATH = "configuration.json"
 
 
 class SagemakerPath:

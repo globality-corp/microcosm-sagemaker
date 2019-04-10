@@ -5,7 +5,15 @@ SageMaker-specific exception handling.
 from sys import exit, stderr
 from traceback import format_exc
 
-from microcosm_sagemaker.constants import SagemakerPath
+from microcosm_sagemaker.constants import APP_HOOKS_GROUP, SagemakerPath
+
+
+class AppHookNotFoundError(Exception):
+    def __init__(self, hook_name):
+        self().__init__(
+            f"App hook '{hook_name}' undefined.  Please define '{hook_name}' "
+            f"in {APP_HOOKS_GROUP}"
+        )
 
 
 def raise_sagemaker_exception(exception):
