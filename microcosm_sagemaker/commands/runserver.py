@@ -48,7 +48,7 @@ def run_serve(graph: ObjectGraph,
               input_artifact: InputArtifact,
               host: str,
               port: int):
-    graph.active_bundle.load(input_artifact.path)
+    graph.active_bundle.load(input_artifact)
 
     graph.flask.run(
         host=host,

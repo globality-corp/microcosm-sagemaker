@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, Optional
 
 from hamcrest import (
     assert_that,
@@ -12,7 +12,7 @@ from hamcrest.core.base_matcher import BaseMatcher
 
 def directory_comparison(gold_dir: Path,
                          actual_dir: Path,
-                         matchers: Mapping[Path, BaseMatcher]):
+                         matchers: Optional[Mapping[Path, BaseMatcher]] = None):
     """
     Recursively checks the contents of `actual_dir` against the expected
     contents in `gold_dir`.  It is also possible to leave certain files out of
@@ -20,6 +20,8 @@ def directory_comparison(gold_dir: Path,
     contents of the given file instead.
 
     """
+    matchers = matchers or dict()
+
     actual_paths = sorted([
         subpath.relative_to(actual_dir)
         for subpath in actual_dir.glob('**/*')

@@ -47,7 +47,7 @@ def run_evaluate(graph: ObjectGraph,
                  input_data: InputData,
                  input_artifact: InputArtifact):
     # Load the saved artifact
-    graph.active_bundle.load(input_artifact.path)
+    graph.active_bundle.load(input_artifact)
 
     # Evaluate
-    graph.active_evaluation(graph.active_bundle, input_data.path)
+    graph.active_evaluation(graph.active_bundle, input_data)

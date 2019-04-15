@@ -76,10 +76,10 @@ def run_train(graph: ObjectGraph,
     graph.training_initializers.init()
 
     bundle = graph.active_bundle
-    bundle.fit(input_data.path)
-    bundle.save(output_artifact.path)
+    bundle.fit(input_data)
+    bundle.save(output_artifact)
 
 
 def run_auto_evaluate(graph: ObjectGraph,
                       input_data: InputData):
-    graph.active_evaluation(graph.active_bundle, input_data.path)
+    graph.active_evaluation(graph.active_bundle, input_data)
