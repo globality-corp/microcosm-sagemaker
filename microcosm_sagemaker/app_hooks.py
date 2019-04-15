@@ -23,7 +23,7 @@ def create_evaluate_app(*args, **kwargs) -> ObjectGraph:
     return _create_app(EVALUATE_APP_HOOK, args, kwargs)
 
 
-def _create_app(name: str, args: list, kwargs: dict) -> ObjectGraph:
+def _create_app(name: str, args: tuple, kwargs: dict) -> ObjectGraph:
     try:
         entry_point = next(
             entry_point

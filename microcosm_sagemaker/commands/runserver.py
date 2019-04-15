@@ -7,6 +7,7 @@ from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.app_hooks import create_serve_app
 from microcosm_sagemaker.artifact import InputArtifact
+from microcosm_sagemaker.click import make_click_callback
 from microcosm_sagemaker.constants import SagemakerPath
 
 
@@ -24,18 +25,17 @@ from microcosm_sagemaker.constants import SagemakerPath
     default=False,
 )
 @option(
-    "--input-artifact-path",
+    "--input-artifact",
     type=Path(
         resolve_path=True,
         file_okay=False,
         exists=True,
     ),
+    callback=make_click_callback(InputArtifact),
     default=SagemakerPath.MODEL,
     help="Path from which to load artifact",
 )
-def main(host, port, debug, input_artifact_path):
-    input_artifact = InputArtifact(input_artifact_path)
-
+def main(host, port, debug, input_artifact):
     graph = create_serve_app(
         debug=debug,
         loaders=[input_artifact.load_config],
