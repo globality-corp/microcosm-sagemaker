@@ -16,4 +16,9 @@ class JSONMatcher(BaseMatcher):
 
 
 def json_matches(matcher):
+    """
+    When matching, it expects raw bytes, which it will decode, json.loads, and
+    then run through `matcher`
+
+    """
     return JSONMatcher(matcher)

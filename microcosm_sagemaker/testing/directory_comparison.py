@@ -13,6 +13,13 @@ from hamcrest.core.base_matcher import BaseMatcher
 def directory_comparison(gold_dir: Path,
                          actual_dir: Path,
                          matchers: Mapping[Path, BaseMatcher]):
+    """
+    Recursively checks the contents of `actual_dir` against the expected
+    contents in `gold_dir`.  It is also possible to leave certain files out of
+    the gold dir, and instead specify a matcher that should be used for the
+    contents of the given file instead.
+
+    """
     actual_paths = sorted([
         subpath.relative_to(actual_dir)
         for subpath in actual_dir.glob('**/*')

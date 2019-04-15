@@ -10,10 +10,22 @@ from microcosm_sagemaker.testing.directory_comparison import directory_compariso
 
 
 class TrainCliTestCase(CliTestCase):
+    """
+    Helper base class for writing tests of the train cli.
+
+    """
     def test_train(self,
                    input_data_path: Path,
                    gold_output_artifact_path: Path,
                    output_artifact_matchers: Mapping[Path, BaseMatcher]):
+        """
+        Runs the `train` command on the given `input_data_path` and then
+        recursively checks the contents of the output artifact against the
+        expected contents in `gold_output_artifact_path`.  It is also possible
+        to leave certain files out of the gold dir, and instead specify a
+        matcher that should be used for the contents of the given file instead.
+
+        """
         with tempfile.TemporaryDirectory() as output_artifact_path:
             self.run_and_check(
                 command_name="train",

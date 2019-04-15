@@ -20,6 +20,10 @@ from microcosm_sagemaker.artifact import InputArtifact
 
 
 class InvocationsRouteTestCase:
+    """
+    Helper base class for writing tests of the invocations route.
+
+    """
     def setup(self, input_artifact_path: Path):
         self.input_artifact = InputArtifact(input_artifact_path)
 
@@ -33,6 +37,11 @@ class InvocationsRouteTestCase:
     def test_search(self,
                     request_json: dict,
                     response_items_matcher: BaseMatcher):
+        """
+        Invokes the invocations endpoint with `request_json`, and checks the
+        `items` entry of the response against `response_items_matcher`.
+
+        """
         self.graph.active_bundle.load(self.input_artifact.path)
 
         uri = "/invocations"
