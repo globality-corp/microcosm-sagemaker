@@ -38,12 +38,11 @@ setup(
         "microcosm.factories": [
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",
             "active_evaluation = microcosm_sagemaker.factories:configure_active_evaluation",
-            "artifact = microcosm_sagemaker.artifact:Artifact",
             "frameworks = microcosm_sagemaker.frameworks:FrameworkRegistry",
             "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
             "random = microcosm_sagemaker.random:Random",
             "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
-            "sagemaker_metrics_store = microcosm_sagemaker.metrics.store:SageMakerMetrics",
+            "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
         ],
     },
     tests_require=[

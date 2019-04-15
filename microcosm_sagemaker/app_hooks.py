@@ -8,7 +8,7 @@ from microcosm_sagemaker.constants import (
     SERVE_APP_HOOK,
     TRAIN_APP_HOOK,
 )
-from microcosm_sagemaker.exceptions import AppHookNotFoundException
+from microcosm_sagemaker.exceptions import AppHookNotFoundError
 
 
 def create_train_app(*args, **kwargs) -> ObjectGraph:
@@ -31,7 +31,7 @@ def _create_app(name: str, args: list, kwargs: dict) -> ObjectGraph:
             if entry_point.name == name
         )
     except StopIteration:
-        raise AppHookNotFoundException(name)
+        raise AppHookNotFoundError(name)
 
     factory = entry_point.load()
 

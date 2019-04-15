@@ -1,0 +1,51 @@
+"""
+Example CRUD routes tests.
+
+Tests are sunny day cases under the assumption that framework conventions
+handle most error conditions.
+
+"""
+from pathlib import Path
+
+from hamcrest import (
+    assert_that,
+    equal_to,
+    has_entries,
+    is_,
+)
+from hamcrest.core.base_matcher import BaseMatcher
+
+from microcosm_sagemaker.app_hooks import create_serve_app
+from microcosm_sagemaker.artifact import InputArtifact
+
+
+class InvocationsRouteTestCase:
+    def setup(self, input_artifact_path: Path):
+        self.input_artifact = InputArtifact(input_artifact_path)
+
+        self.graph = create_serve_app(
+            testing=True,
+            loaders=[self.input_artifact.load_config],
+        )
+
+        self.client = self.graph.flask.test_client()
+
+    def test_search(self,
+                    request_json: dict,
+                    response_items_matcher: BaseMatcher):
+        self.graph.active_bundle.load(self.input_artifact.path)
+
+        uri = "/invocations"
+
+        response = self.client.post(
+            uri,
+            json=request_json,
+        )
+
+        assert_that(response.status_code, is_(equal_to(200)))
+        assert_that(
+            response.json,
+            has_entries(
+                items=response_items_matcher,
+            ),
+        )

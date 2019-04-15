@@ -24,7 +24,7 @@ from microcosm_sagemaker.constants import SagemakerPath
     default=False,
 )
 @option(
-    "--artifact-path",
+    "--input-artifact-path",
     type=Path(
         resolve_path=True,
         file_okay=False,
@@ -33,13 +33,14 @@ from microcosm_sagemaker.constants import SagemakerPath
     default=SagemakerPath.MODEL,
     help="Path from which to load artifact",
 )
-def main(host, port, debug, artifact_path):
-    input_artifact = InputArtifact(artifact_path)
+def main(host, port, debug, input_artifact_path):
+    input_artifact = InputArtifact(input_artifact_path)
 
     graph = create_serve_app(
         debug=debug,
         loaders=[input_artifact.load_config],
     )
+
     run_serve(graph, input_artifact)
 
 

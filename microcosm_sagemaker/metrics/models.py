@@ -22,7 +22,7 @@ class MetricUnit(Enum):
     NONE = "None"
 
 
-class Metric(object):
+class Metric:
     """
     Record of a metric value at one point in time.
 
