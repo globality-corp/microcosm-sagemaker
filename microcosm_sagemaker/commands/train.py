@@ -73,8 +73,7 @@ def run_train(graph: ObjectGraph,
     output_artifact.init()
     output_artifact.save_config(graph.config)
 
-    graph.random.init()
-    graph.frameworks.init()
+    graph.training_initializers.init()
 
     bundle = graph.active_bundle
     bundle.fit(input_data.path)

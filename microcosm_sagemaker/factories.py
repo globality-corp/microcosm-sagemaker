@@ -17,9 +17,13 @@ def configure_active_evaluation(graph):
 
 
 def configure_sagemaker(graph):
+    """
+    Instantiates all the necessary sagemaker factories.
+
+    """
     graph.use(
         "active_bundle",
         "active_evaluation",
-        "frameworks",
+        "training_initializers",
         "random",
     )

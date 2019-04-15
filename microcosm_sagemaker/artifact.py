@@ -30,6 +30,9 @@ class InputArtifact:
         When we train a model, we freeze all of the current graph variables and store it alongside
         the artifact. Whenever we boot up the model again, we want to hydrate this from disk.
 
+        Note that this function is designed to be used as a microcosm loader,
+        hence the unused `metadata` parameter.
+
         """
         config_path = self.path / ARTIFACT_CONFIGURATION_PATH
 
