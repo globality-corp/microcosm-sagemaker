@@ -3,13 +3,11 @@ from logging import info
 
 from boto3 import client
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
-from microcosm.api import binding
 
 from microcosm_sagemaker.metrics.models import MetricMode
 
 
-@binding("sagemaker_metrics")
-class SageMakerMetrics(object):
+class SageMakerMetrics:
     def __init__(self, graph):
         pass
 

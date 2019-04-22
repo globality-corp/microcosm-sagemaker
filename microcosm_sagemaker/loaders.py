@@ -10,7 +10,7 @@ from microcosm.config.model import Configuration
 from microcosm.loaders.compose import merge
 from microcosm.loaders.keys import expand_config
 
-from microcosm_sagemaker.constants import CONFIGURATION_CACHE, SagemakerPath
+from microcosm_sagemaker.constants import ARTIFACT_CONFIGURATION_PATH, SagemakerPath
 from microcosm_sagemaker.s3 import S3Object
 
 
@@ -82,7 +82,7 @@ def load_model_artifact_config(artifact_path):
 
     """
     def _load_path(metadata):
-        path = join(artifact_path, CONFIGURATION_CACHE)
+        path = join(artifact_path, ARTIFACT_CONFIGURATION_PATH)
 
         with open(path) as raw_file:
             return json_load(raw_file)

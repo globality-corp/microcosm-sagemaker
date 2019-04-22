@@ -22,6 +22,7 @@ setup(
         "boto3>=1.9.90",
         "click>=7.0",
         "microcosm>=2.0.0",
+        "microcosm_flask[metrics,spooky]>=1.20.0",
     ],
     setup_requires=[
         "nose>=1.3.6",
@@ -30,14 +31,18 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "train = microcosm_sagemaker.commands.train:train_cli",
-            "evaluate = microcosm_sagemaker.commands.evaluate:evaluate_cli",
-            "runserver = microcosm_sagemaker.commands.runserver:runserver_cli",
+            "train = microcosm_sagemaker.commands.train:main",
+            "evaluate = microcosm_sagemaker.commands.evaluate:main",
+            "runserver = microcosm_sagemaker.commands.runserver:main",
         ],
         "microcosm.factories": [
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",
             "active_evaluation = microcosm_sagemaker.factories:configure_active_evaluation",
-            "sagemaker_metrics_store = microcosm_sagemaker.metrics.store:SageMakerMetrics",
+            "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
+            "random = microcosm_sagemaker.random:Random",
+            "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
+            "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
+            "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
         ],
     },
     tests_require=[
