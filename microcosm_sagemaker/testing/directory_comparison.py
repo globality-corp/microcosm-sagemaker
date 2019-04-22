@@ -7,17 +7,24 @@ from hamcrest import (
     equal_to,
     is_,
 )
-from hamcrest.core.base_matcher import BaseMatcher
+
+from microcosm_sagemaker.testing.bytes_extractor import ExtractorMatcherPair
 
 
-def directory_comparison(gold_dir: Path,
-                         actual_dir: Path,
-                         matchers: Optional[Mapping[Path, BaseMatcher]] = None):
+def identity(x):
+    return x
+
+
+def directory_comparison(
+    gold_dir: Path,
+    actual_dir: Path,
+    matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None,
+):
     """
     Recursively checks the contents of `actual_dir` against the expected
     contents in `gold_dir`.  It is also possible to leave certain files out of
-    the gold dir, and instead specify a matcher that should be used for the
-    contents of the given file instead.
+    the gold dir, and instead specify an (extractor, matcher) pair that should
+    be used to extract and match the contents of the given file instead.
 
     """
     matchers = matchers or dict()
@@ -43,8 +50,15 @@ def directory_comparison(gold_dir: Path,
             assert_that(actual_path.is_dir(), is_(True))
         else:
             if path in matchers:
-                matcher = matchers[path]
+                extractor, matcher = matchers[path]
             else:
-                matcher = is_(equal_to(gold_path.read_bytes()))
+                extractor, matcher = ExtractorMatcherPair(
+                    identity,
+                    is_(equal_to(gold_path.read_bytes())),
+                )
 
-            assert_that(actual_path.read_bytes(), matcher, path)
+            assert_that(
+                extractor(actual_path.read_bytes()),
+                matcher,
+                path,
+            )
