@@ -2,13 +2,12 @@
 Main web service CLI
 
 """
-from click import Path, command, option
+from click import command, option
 from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.app_hooks import create_serve_app
 from microcosm_sagemaker.artifact import InputArtifact
-from microcosm_sagemaker.click import make_click_callback
-from microcosm_sagemaker.constants import SagemakerPath
+from microcosm_sagemaker.commands.options import input_artifact_option
 
 
 @command()
@@ -24,30 +23,27 @@ from microcosm_sagemaker.constants import SagemakerPath
     "--debug/--no-debug",
     default=False,
 )
-@option(
-    "--input-artifact",
-    type=Path(
-        resolve_path=True,
-        file_okay=False,
-        exists=True,
-    ),
-    callback=make_click_callback(InputArtifact),
-    default=SagemakerPath.MODEL,
-    help="Path from which to load artifact",
-)
+@input_artifact_option()
 def main(host, port, debug, input_artifact):
     graph = create_serve_app(
         debug=debug,
         loaders=[input_artifact.load_config],
     )
 
-    run_serve(graph, input_artifact)
+    run_serve(
+        graph=graph,
+        input_artifact=input_artifact,
+        host=host,
+        port=port,
+    )
 
 
-def run_serve(graph: ObjectGraph,
-              input_artifact: InputArtifact,
-              host: str,
-              port: int):
+def run_serve(
+        graph: ObjectGraph,
+        input_artifact: InputArtifact,
+        host: str,
+        port: int,
+) -> None:
     graph.active_bundle.load(input_artifact)
 
     graph.flask.run(
