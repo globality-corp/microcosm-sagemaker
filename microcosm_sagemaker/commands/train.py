@@ -2,63 +2,59 @@
 Main training CLI
 
 """
-from json import load as json_load
-from os import chdir
+import json
 
-from click import Path, command, option
+from click import File, command, option
+from microcosm.object_graph import ObjectGraph
 
-from microcosm_sagemaker.app_hooks import AppHooks
-from microcosm_sagemaker.commands.evaluate import evaluate
-from microcosm_sagemaker.constants import SagemakerPath
+from microcosm_sagemaker.app_hooks import create_train_app
+from microcosm_sagemaker.artifact import OutputArtifact
+from microcosm_sagemaker.commands.options import input_data_option, output_artifact_option
 from microcosm_sagemaker.exceptions import raise_sagemaker_exception
+from microcosm_sagemaker.input_data import InputData
 
 
 @command()
 @option(
     "--configuration",
-    type=Path(resolve_path=True),
-    required=False,
+    type=File('r'),
     help="Manual import of configuration file, used for local testing",
 )
+@input_data_option()
+@output_artifact_option()
 @option(
-    "--input_path",
-    type=Path(resolve_path=True),
-    required=False,
-    help="Path of the folder that houses the train/test datasets",
-)
-@option(
-    "--artifact_path",
-    type=Path(resolve_path=True),
-    required=False,
-    help="Path for outputting artifacts, used for local testing",
-)
-@option(
-    "--auto_evaluate",
-    type=bool,
+    "--auto-evaluate/--no-auto-evaluate",
     default=True,
     help="Whether to automatically evaluate after the training has completed",
 )
-def train_cli(configuration, input_path, artifact_path, auto_evaluate):
-    if not artifact_path:
-        artifact_path = SagemakerPath.MODEL
-    if not input_path:
-        input_path = SagemakerPath.INPUT
-
-    if configuration:
-        with open(configuration) as configuration_file:
-            extra_config = json_load(configuration_file)
-    else:
-        extra_config = {}
-
-    graph = AppHooks.create_train_graph(extra_config=extra_config)
-
-    chdir(input_path)
-
+def main(configuration, input_data, output_artifact, auto_evaluate):
     try:
-        model = graph.active_bundle
-        model.fit(artifact_path)
+        extra_config = json.load(configuration) if configuration else dict()
+
+        graph = create_train_app(extra_config=extra_config)
+
+        run_train(graph, input_data, output_artifact)
+
+        if auto_evaluate:
+            run_auto_evaluate(graph, input_data)
     except Exception as e:
         raise_sagemaker_exception(e)
 
-    if auto_evaluate:
-        evaluate(input_path, artifact_path)
+
+def run_train(
+    graph: ObjectGraph,
+    input_data: InputData,
+    output_artifact: OutputArtifact,
+) -> None:
+    output_artifact.init()
+    output_artifact.save_config(graph.config)
+
+    graph.training_initializers.init()
+
+    bundle = graph.active_bundle
+    bundle.fit(input_data)
+    bundle.save(output_artifact)
+
+
+def run_auto_evaluate(graph: ObjectGraph, input_data: InputData) -> None:
+    graph.active_evaluation(graph.active_bundle, input_data)
