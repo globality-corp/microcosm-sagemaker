@@ -13,10 +13,12 @@ class TrainCliTestCase(CliTestCase):
     Helper base class for writing tests of the train cli.
 
     """
-    def test_train(self,
-                   input_data_path: Path,
-                   gold_output_artifact_path: Path,
-                   output_artifact_matchers: Mapping[Path, ExtractorMatcherPair]):
+    def test_train(
+        self,
+        input_data_path: Path,
+        gold_output_artifact_path: Path,
+        output_artifact_matchers: Mapping[Path, ExtractorMatcherPair],
+    ) -> None:
         """
         Runs the `train` command on the given `input_data_path` and then
         recursively checks the contents of the output artifact against the

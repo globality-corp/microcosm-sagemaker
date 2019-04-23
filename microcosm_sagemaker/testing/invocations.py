@@ -24,7 +24,7 @@ class InvocationsRouteTestCase:
     Helper base class for writing tests of the invocations route.
 
     """
-    def setup(self, input_artifact_path: Path):
+    def setup(self, input_artifact_path: Path) -> None:
         self.input_artifact = InputArtifact(input_artifact_path)
 
         self.graph = create_serve_app(
@@ -34,9 +34,11 @@ class InvocationsRouteTestCase:
 
         self.client = self.graph.flask.test_client()
 
-    def test_search(self,
-                    request_json: dict,
-                    response_items_matcher: BaseMatcher):
+    def test_search(
+        self,
+        request_json: dict,
+        response_items_matcher: BaseMatcher,
+    ) -> None:
         """
         Invokes the invocations endpoint with `request_json`, and checks the
         `items` entry of the response against `response_items_matcher`.

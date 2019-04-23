@@ -41,9 +41,11 @@ def main(configuration, input_data, output_artifact, auto_evaluate):
         raise_sagemaker_exception(e)
 
 
-def run_train(graph: ObjectGraph,
-              input_data: InputData,
-              output_artifact: OutputArtifact):
+def run_train(
+    graph: ObjectGraph,
+    input_data: InputData,
+    output_artifact: OutputArtifact,
+) -> None:
     output_artifact.init()
     output_artifact.save_config(graph.config)
 
@@ -54,6 +56,5 @@ def run_train(graph: ObjectGraph,
     bundle.save(output_artifact)
 
 
-def run_auto_evaluate(graph: ObjectGraph,
-                      input_data: InputData):
+def run_auto_evaluate(graph: ObjectGraph, input_data: InputData) -> None:
     graph.active_evaluation(graph.active_bundle, input_data)

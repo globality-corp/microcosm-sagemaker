@@ -22,9 +22,11 @@ def main(input_data, input_artifact):
     run_evaluate(graph, input_data, input_artifact)
 
 
-def run_evaluate(graph: ObjectGraph,
-                 input_data: InputData,
-                 input_artifact: InputArtifact):
+def run_evaluate(
+    graph: ObjectGraph,
+    input_data: InputData,
+    input_artifact: InputArtifact,
+) -> None:
     # Load the saved artifact
     graph.active_bundle.load(input_artifact)
 

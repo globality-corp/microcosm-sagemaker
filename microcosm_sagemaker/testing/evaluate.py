@@ -10,10 +10,10 @@ class EvaluateCliTestCase(CliTestCase):
 
     """
     def test_evaluate(
-            self,
-            input_data_path: Path,
-            input_artifact_path: Path,
-    ):
+        self,
+        input_data_path: Path,
+        input_artifact_path: Path,
+    ) -> None:
         """
         Runs the `evaluate` command on the given `input_data_path` and
         `input_artifact_path`.

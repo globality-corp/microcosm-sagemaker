@@ -43,7 +43,7 @@ def run_serve(
         input_artifact: InputArtifact,
         host: str,
         port: int,
-):
+) -> None:
     graph.active_bundle.load(input_artifact)
 
     graph.flask.run(
