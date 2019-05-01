@@ -1,7 +1,10 @@
 import json
-from typing import Any, Callable, NamedTuple
+from typing import Callable, NamedTuple, TypeVar
 
 from hamcrest.core.base_matcher import BaseMatcher
+
+
+T = TypeVar('T')
 
 
 class ExtractorMatcherPair(NamedTuple):
@@ -12,8 +15,8 @@ class ExtractorMatcherPair(NamedTuple):
 
     """
     # NB: We cannot use a dataclass due to python/mypy#5485
-    extractor: Callable[[bytes], Any]
-    matcher: BaseMatcher
+    extractor: Callable[[bytes], T]
+    matcher_constructor: Callable[[T], BaseMatcher]
 
 
 def json_extractor(raw_bytes):
