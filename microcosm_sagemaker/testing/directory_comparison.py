@@ -33,12 +33,10 @@ def directory_comparison(
         subpath.relative_to(actual_dir)
         for subpath in actual_dir.glob('**/*')
     ])
-    gold_paths = sorted(
-        [
-            subpath.relative_to(gold_dir)
-            for subpath in gold_dir.glob('**/*')
-        ] + list(matchers.keys())
-    )
+    gold_paths = sorted([
+        subpath.relative_to(gold_dir)
+        for subpath in gold_dir.glob('**/*')
+    ])
 
     assert_that(actual_paths, contains(*gold_paths))
 
@@ -50,15 +48,17 @@ def directory_comparison(
             assert_that(actual_path.is_dir(), is_(True))
         else:
             if path in matchers:
-                extractor, matcher = matchers[path]
+                extractor, matcher_constructor = matchers[path]
             else:
-                extractor, matcher = ExtractorMatcherPair(
+                extractor, matcher_constructor = ExtractorMatcherPair(
                     identity,
-                    is_(equal_to(gold_path.read_bytes())),
+                    lambda x: is_(equal_to(x)),
                 )
 
             assert_that(
                 extractor(actual_path.read_bytes()),
-                matcher,
+                matcher_constructor(
+                    extractor(gold_path.read_bytes()),
+                ),
                 path,
             )
