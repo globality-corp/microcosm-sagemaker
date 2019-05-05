@@ -3,6 +3,7 @@ Loaders to inject SM parameters as microcosm configurations.
 
 """
 import json
+from os.path import join
 
 from boto3 import client
 from microcosm.config.model import Configuration
@@ -10,7 +11,7 @@ from microcosm.loaders.compose import merge
 from microcosm.loaders.keys import expand_config
 from microcosm.metadata import Metadata
 
-from microcosm_sagemaker.constants import SagemakerPath
+from microcosm_sagemaker.constants import ARTIFACT_CONFIGURATION_PATH, SagemakerPath
 from microcosm_sagemaker.s3 import S3Object
 
 
@@ -73,3 +74,17 @@ def load_train_conventions(metadata: Metadata) -> Configuration:
         ])
 
     return configuration
+
+
+def load_model_artifact_config(artifact_path):
+    """
+    When we train a model, we freeze all of the current graph variables and store it alongside
+    the artifact. Whenever we boot up the model again, we want to hydrate this from disk.
+    """
+    def _load_path(metadata):
+        path = join(artifact_path, ARTIFACT_CONFIGURATION_PATH)
+
+        with open(path) as raw_file:
+            return json.load(raw_file)
+
+    return _load_path
