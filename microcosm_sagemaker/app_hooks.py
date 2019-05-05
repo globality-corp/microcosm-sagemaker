@@ -12,18 +12,18 @@ from microcosm_sagemaker.exceptions import AppHookNotFoundError
 
 
 def create_train_app(*args, **kwargs) -> ObjectGraph:
-    return _create_app(TRAIN_APP_HOOK, args, kwargs)
+    return _create_app(TRAIN_APP_HOOK, *args, **kwargs)
 
 
 def create_serve_app(*args, **kwargs) -> ObjectGraph:
-    return _create_app(SERVE_APP_HOOK, args, kwargs)
+    return _create_app(SERVE_APP_HOOK, *args, **kwargs)
 
 
 def create_evaluate_app(*args, **kwargs) -> ObjectGraph:
-    return _create_app(EVALUATE_APP_HOOK, args, kwargs)
+    return _create_app(EVALUATE_APP_HOOK, *args, **kwargs)
 
 
-def _create_app(name: str, args: tuple, kwargs: dict) -> ObjectGraph:
+def _create_app(name: str, *args: tuple, **kwargs: dict) -> ObjectGraph:
     try:
         entry_point = next(
             entry_point
