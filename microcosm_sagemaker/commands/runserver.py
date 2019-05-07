@@ -48,7 +48,8 @@ def run_serve(
         host: str,
         port: int,
 ) -> None:
-    graph.active_bundle.load(input_artifact)
+    active_bundle_input_artifact = input_artifact / graph.config.active_bundle
+    graph.active_bundle.load(active_bundle_input_artifact)
 
     graph.flask.run(
         host=host,

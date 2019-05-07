@@ -15,6 +15,14 @@ class OutputArtifact:
     def init(self) -> None:
         self.path.mkdir(parents=True, exist_ok=True)
 
+    def __truediv__(self, name: str):
+        return OutputArtifact(self.path / name)
+
+
+class RootOutputArtifact(OutputArtifact):
+    def __init__(self, path: Union[str, Path]):
+        super().__init__(path)
+
     def save_config(self, config: Configuration) -> None:
         config_path = self.path / ARTIFACT_CONFIGURATION_PATH
 
@@ -25,6 +33,14 @@ class OutputArtifact:
 class InputArtifact:
     def __init__(self, path: Union[str, Path]):
         self.path = Path(path)
+
+    def __truediv__(self, name: str):
+        return InputArtifact(self.path / name)
+
+
+class RootInputArtifact(InputArtifact):
+    def __init__(self, path: Union[str, Path]):
+        super().__init__(path)
 
     def load_config(self, metadata: Metadata) -> Configuration:
         """
