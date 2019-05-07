@@ -16,7 +16,7 @@ from hamcrest import (
 from hamcrest.core.base_matcher import BaseMatcher
 
 from microcosm_sagemaker.app_hooks import create_serve_app
-from microcosm_sagemaker.artifact import InputArtifact
+from microcosm_sagemaker.artifact import RootInputArtifact
 
 
 class InvocationsRouteTestCase:
@@ -25,7 +25,7 @@ class InvocationsRouteTestCase:
 
     """
     def setup(self, input_artifact_path: Path) -> None:
-        self.input_artifact = InputArtifact(input_artifact_path)
+        self.input_artifact = RootInputArtifact(input_artifact_path)
 
         self.graph = create_serve_app(
             testing=True,

@@ -1,6 +1,6 @@
 from click import Path, option
 
-from microcosm_sagemaker.artifact import InputArtifact, OutputArtifact
+from microcosm_sagemaker.artifact import RootInputArtifact, RootOutputArtifact
 from microcosm_sagemaker.constants import SagemakerPath
 from microcosm_sagemaker.input_data import InputData
 
@@ -27,7 +27,7 @@ def input_artifact_option():
             file_okay=False,
             exists=True,
         ),
-        callback=_make_click_callback(InputArtifact),
+        callback=_make_click_callback(RootInputArtifact),
         default=SagemakerPath.MODEL,
         help="Path from which to load artifact",
     )
@@ -41,7 +41,7 @@ def output_artifact_option():
             file_okay=False,
             writable=True,
         ),
-        callback=_make_click_callback(OutputArtifact),
+        callback=_make_click_callback(RootOutputArtifact),
         default=SagemakerPath.MODEL,
         help="Path for outputting trained artifact",
     )
