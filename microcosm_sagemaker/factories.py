@@ -3,6 +3,8 @@ Consumer factories.
 
 """
 
+import microcosm_sagemaker.bundle_registry  # noqa: 401
+
 
 def configure_active_bundle(graph):
     if not getattr(graph.config, "active_bundle", ""):
@@ -24,6 +26,7 @@ def configure_sagemaker(graph):
     graph.use(
         "active_bundle",
         "active_evaluation",
+        "bundles",
         "training_initializers",
         "random",
     )
