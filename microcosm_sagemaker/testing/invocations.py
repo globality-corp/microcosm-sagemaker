@@ -44,7 +44,8 @@ class InvocationsRouteTestCase:
         `items` entry of the response against `response_items_matcher`.
 
         """
-        self.graph.active_bundle.load(self.input_artifact)
+        active_bundle_input_artifact = self.input_artifact / self.graph.config.active_bundle
+        self.graph.active_bundle.load(active_bundle_input_artifact)
 
         uri = "/invocations"
 
