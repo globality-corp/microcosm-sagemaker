@@ -7,6 +7,7 @@ from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.app_hooks import create_serve_app
 from microcosm_sagemaker.artifact import InputArtifact
+from microcosm_sagemaker.commands.config import load_default_runserver_config
 from microcosm_sagemaker.commands.options import input_artifact_option
 
 
@@ -27,7 +28,10 @@ from microcosm_sagemaker.commands.options import input_artifact_option
 def main(host, port, debug, input_artifact):
     graph = create_serve_app(
         debug=debug,
-        loaders=[input_artifact.load_config],
+        loaders=[
+            load_default_runserver_config,
+            input_artifact.load_config,
+        ],
     )
 
     run_serve(
