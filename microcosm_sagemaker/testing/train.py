@@ -13,7 +13,7 @@ class TrainCliTestCase(CliTestCase):
     Helper base class for writing tests of the train cli.
 
     """
-    def test_train(
+    def run_and_check_train(
         self,
         input_data_path: Path,
         gold_output_artifact_path: Path,

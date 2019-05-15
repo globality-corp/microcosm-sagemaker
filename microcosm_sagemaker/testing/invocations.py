@@ -25,7 +25,7 @@ class InvocationsRouteTestCase:
     Helper base class for writing tests of the invocations route.
 
     """
-    def setup(self, input_artifact_path: Path) -> None:
+    def handle_setup(self, input_artifact_path: Path) -> None:
         self.input_artifact = RootInputArtifact(input_artifact_path)
 
         self.graph = create_serve_app(
@@ -38,7 +38,7 @@ class InvocationsRouteTestCase:
 
         self.client = self.graph.flask.test_client()
 
-    def test_search(
+    def check_search(
         self,
         request_json: dict,
         response_items_matcher: BaseMatcher,
@@ -48,8 +48,7 @@ class InvocationsRouteTestCase:
         `items` entry of the response against `response_items_matcher`.
 
         """
-        active_bundle_input_artifact = self.input_artifact / self.graph.config.active_bundle
-        self.graph.active_bundle.load(active_bundle_input_artifact)
+        self.graph.load_active_bundle_and_dependencies(self.input_artifact)
 
         uri = "/invocations"
 

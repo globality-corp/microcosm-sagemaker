@@ -9,7 +9,7 @@ class EvaluateCliTestCase(CliTestCase):
     Helper base class for writing tests of the evaluate cli.
 
     """
-    def test_evaluate(
+    def run_and_check_evaluate(
         self,
         input_data_path: Path,
         input_artifact_path: Path,
