@@ -9,12 +9,12 @@ class TestSimpleEvaluation:
         self.graph = create_app(extra_deps=["simple_evaluation"])
 
         self.input_data = InputData(get_fixture_path("simple_input_data"))
-        input_artifact = (
+
+        self.graph.load_active_bundle_and_dependencies(
             InputArtifact(
                 get_fixture_path("input_artifact")
             )
         )
-        self.graph.load_active_bundle_and_dependencies(input_artifact)
 
     def test_evaluation(self) -> None:
         self.graph.simple_evaluation(self.graph.active_bundle, self.input_data)
