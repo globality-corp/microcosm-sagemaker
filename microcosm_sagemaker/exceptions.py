@@ -8,6 +8,11 @@ from traceback import format_exc
 from microcosm_sagemaker.constants import APP_HOOKS_GROUP, SagemakerPath
 
 
+class DependencyCycleError(Exception):
+    def __init__(self, component):
+        super().__init__(f"Dependency cycle involving '{component}'.")
+
+
 class AppHookNotFoundError(Exception):
     def __init__(self, hook_name):
         super().__init__(

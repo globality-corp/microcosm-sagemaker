@@ -28,8 +28,7 @@ def run_evaluate(
     input_artifact: RootInputArtifact,
 ) -> None:
     # Load the saved artifact
-    active_bundle_input_artifact = input_artifact / graph.config.active_bundle
-    graph.active_bundle.load(active_bundle_input_artifact)
+    graph.load_active_bundle_and_dependencies(input_artifact)
 
     # Evaluate
     graph.active_evaluation(graph.active_bundle, input_data)

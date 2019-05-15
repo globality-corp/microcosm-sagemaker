@@ -49,14 +49,9 @@ def run_train(
     output_artifact.init()
     output_artifact.save_config(graph.config)
 
-    active_bundle_output_artifact = output_artifact / graph.config.active_bundle
-    active_bundle_output_artifact.init()
-
     graph.training_initializers.init()
 
-    bundle = graph.active_bundle
-    bundle.fit(input_data)
-    bundle.save(active_bundle_output_artifact)
+    graph.train_active_bundle_and_dependencies(input_data, output_artifact)
 
 
 def run_auto_evaluate(graph: ObjectGraph, input_data: InputData) -> None:

@@ -43,13 +43,12 @@ def main(host, port, debug, input_artifact):
 
 
 def run_serve(
-        graph: ObjectGraph,
-        input_artifact: InputArtifact,
-        host: str,
-        port: int,
+    graph: ObjectGraph,
+    input_artifact: InputArtifact,
+    host: str,
+    port: int,
 ) -> None:
-    active_bundle_input_artifact = input_artifact / graph.config.active_bundle
-    graph.active_bundle.load(active_bundle_input_artifact)
+    graph.load_active_bundle_and_dependencies(input_artifact)
 
     graph.flask.run(
         host=host,

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, List
 
 from microcosm_sagemaker.artifact import InputArtifact, OutputArtifact
 from microcosm_sagemaker.input_data import InputData
@@ -12,7 +12,7 @@ class Bundle(ABC):
         Perform training
 
         """
-        pass
+        ...
 
     @abstractmethod
     def predict(self) -> Any:
@@ -23,7 +23,7 @@ class Bundle(ABC):
         expected to return something.
 
         """
-        pass
+        ...
 
     @abstractmethod
     def save(self, output_artifact: OutputArtifact) -> None:
@@ -31,7 +31,7 @@ class Bundle(ABC):
         Save the trained model
 
         """
-        pass
+        ...
 
     @abstractmethod
     def load(self, input_artifact: InputArtifact) -> None:
@@ -39,4 +39,16 @@ class Bundle(ABC):
         Load the trained model
 
         """
-        pass
+        ...
+
+    @property
+    @abstractmethod
+    def dependencies(self) -> List["Bundle"]:
+        """
+        List of bundles upon which this bundle depends.  Whenever the `fit`,
+        `save` or `load` methods are called on this bundle, it is guaranteed
+        that the corresponding methods will have first been called all all
+        `dependency` bundles.
+
+        """
+        ...
