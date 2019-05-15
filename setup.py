@@ -22,7 +22,7 @@ setup(
     install_requires=[
         "boto3>=1.9.90",
         "click>=7.0",
-        "microcosm>=2.0.0",
+        "microcosm>=2.7.0",
         "microcosm_flask[metrics,spooky]>=1.20.0",
     ],
     setup_requires=[
