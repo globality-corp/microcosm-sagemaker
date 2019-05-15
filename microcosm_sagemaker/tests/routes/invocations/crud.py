@@ -1,7 +1,7 @@
 from microcosm.api import binding
 from microcosm_flask.conventions.base import EndpointDefinition
-from microcosm_sagemaker.conventions.invocations import configure_invocations
 
+from microcosm_sagemaker.conventions.invocations import configure_invocations
 from microcosm_sagemaker.tests.resources.invocations_resources import (
     ClassificationResultSchema,
     NewPredictionSchema,

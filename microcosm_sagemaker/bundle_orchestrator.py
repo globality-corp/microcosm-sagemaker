@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 
-from microcosm.api import binding
 from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.bundle import Bundle

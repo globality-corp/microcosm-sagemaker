@@ -39,7 +39,6 @@ class SimpleBundle(Bundle):
         with a number in it, and we store that as our trained param.
 
         """
-        print("simple_bundle fit")
         with open(input_data.path / "simple.txt") as input_file:
             self.simple_trained_param = float(input_file.read())
 

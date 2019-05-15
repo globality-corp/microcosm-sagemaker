@@ -1,6 +1,5 @@
 from microcosm_sagemaker.artifact import InputArtifact
 from microcosm_sagemaker.input_data import InputData
-
 from microcosm_sagemaker.tests.app_hooks.train.app import create_app
 from microcosm_sagemaker.tests.fixtures import get_fixture_path
 

@@ -5,8 +5,6 @@ Tests are sunny day cases under the assumption that framework conventions
 handle most error conditions.
 
 """
-from pathlib import Path
-
 from hamcrest import (
     assert_that,
     equal_to,
@@ -15,29 +13,14 @@ from hamcrest import (
 )
 from hamcrest.core.base_matcher import BaseMatcher
 
-from microcosm_sagemaker.app_hooks import create_serve_app
-from microcosm_sagemaker.artifact import RootInputArtifact
-from microcosm_sagemaker.commands.config import load_default_runserver_config
+from microcosm_sagemaker.testing.route import RouteTestCase
 
 
-class InvocationsRouteTestCase:
+class InvocationsRouteTestCase(RouteTestCase):
     """
     Helper base class for writing tests of the invocations route.
 
     """
-    def handle_setup(self, input_artifact_path: Path) -> None:
-        self.input_artifact = RootInputArtifact(input_artifact_path)
-
-        self.graph = create_serve_app(
-            testing=True,
-            loaders=[
-                load_default_runserver_config,
-                self.input_artifact.load_config,
-            ],
-        )
-
-        self.client = self.graph.flask.test_client()
-
     def check_search(
         self,
         request_json: dict,
@@ -48,8 +31,6 @@ class InvocationsRouteTestCase:
         `items` entry of the response against `response_items_matcher`.
 
         """
-        self.graph.load_active_bundle_and_dependencies(self.input_artifact)
-
         uri = "/invocations"
 
         response = self.client.post(
