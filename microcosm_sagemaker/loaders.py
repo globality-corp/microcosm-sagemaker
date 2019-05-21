@@ -73,3 +73,22 @@ def load_train_conventions(metadata: Metadata) -> Configuration:
         ])
 
     return configuration
+
+
+def load_serve_conventions(metadata: Metadata) -> Configuration:
+    """
+    Loads the configuration.json file from the input artifact directory on the docker
+
+    """
+    model_path = SagemakerPath.MODEL
+    config_path = model_path / "configuration.json"
+
+    try:
+        with open(config_path) as raw_file:
+            return expand_config(
+                json.load(raw_file),
+                skip_to=0,
+            )
+
+    except FileNotFoundError:
+        return Configuration()

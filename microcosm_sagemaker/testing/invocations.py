@@ -17,6 +17,7 @@ from hamcrest.core.base_matcher import BaseMatcher
 
 from microcosm_sagemaker.app_hooks import create_serve_app
 from microcosm_sagemaker.artifact import InputArtifact
+from microcosm_sagemaker.commands.config import load_default_runserver_config
 
 
 class InvocationsRouteTestCase:
@@ -29,7 +30,10 @@ class InvocationsRouteTestCase:
 
         self.graph = create_serve_app(
             testing=True,
-            loaders=[self.input_artifact.load_config],
+            loaders=[
+                load_default_runserver_config,
+                self.input_artifact.load_config,
+            ],
         )
 
         self.client = self.graph.flask.test_client()
