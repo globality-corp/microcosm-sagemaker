@@ -1,8 +1,8 @@
-
 from microcosm.api import defaults
 from microcosm.object_graph import ObjectGraph
 
-from microcosm_sagemaker.artifact import InputArtifact, OutputArtifact
+from microcosm_sagemaker.artifact import InputArtifact, RootOutputArtifact
+from microcosm_sagemaker.bundle import Bundle
 from microcosm_sagemaker.input_data import InputData
 
 
@@ -26,6 +26,19 @@ class ActiveBundleAndDependenciesLoader:
         self.bundle_orchestrator(self.active_bundle, load)
 
 
+def save_bundle(
+    graph: ObjectGraph,
+    output_artifact: RootOutputArtifact,
+    bundle: Bundle,
+) -> None:
+    bundle_name = _get_component_name(graph, bundle)
+
+    nested_output_artifact = output_artifact / bundle_name
+    nested_output_artifact.init()
+
+    bundle.save(nested_output_artifact)
+
+
 @defaults(
     bundle_orchestrator="single_threaded_bundle_orchestrator",
 )
@@ -38,14 +51,14 @@ class ActiveBundleAndDependenciesTrainer:
         self.active_bundle = graph.active_bundle
         self.graph = graph
 
-    def __call__(self, input_data: InputData, output_artifact: OutputArtifact):
-        def train(bundle):
-            name = _get_component_name(self.graph, bundle)
-            nested_output_artifact = output_artifact / name
-            nested_output_artifact.init()
-
+    def __call__(
+        self,
+        input_data: InputData,
+        output_artifact: RootOutputArtifact,
+    ):
+        def train(graph, bundle, input_data, output_artifact):
             bundle.fit(input_data)
-            bundle.save(nested_output_artifact)
+            save_bundle(self.graph, output_artifact, bundle)
 
         self.bundle_orchestrator(self.active_bundle, train)
 

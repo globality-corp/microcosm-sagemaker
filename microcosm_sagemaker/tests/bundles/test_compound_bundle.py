@@ -7,11 +7,15 @@ from microcosm_sagemaker.tests.fixtures import get_fixture_path
 
 class TestCompoundBundle:
     def setup(self) -> None:
-        self.graph = create_app(extra_deps=["simple_bundle", "compound_bundle"])
+        self.graph = create_app(
+            extra_config=dict(
+                active_bundle="compound_bundle",
+            )
+        )
 
-        self.graph.simple_bundle.load(
+        self.graph.load_active_bundle_and_dependencies(
             InputArtifact(
-                get_fixture_path("input_artifact") / "simple_bundle"
+                get_fixture_path("input_artifact"),
             )
         )
 
@@ -20,6 +24,6 @@ class TestCompoundBundle:
             self.graph.compound_bundle.predict(1.0),
             contains(has_properties(
                 uri="http://simple.com",
-                score=4.0,
+                score=5.0,
             )),
         )

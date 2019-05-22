@@ -20,13 +20,15 @@ class CompoundBundle(Bundle):
         ]
 
     def fit(self, input_data: InputData) -> None:
-        pass
+        self.trained_param = self.simple_bundle.simple_trained_param + 1.0
 
     def save(self, output_artifact: OutputArtifact) -> None:
-        pass
+        with open(output_artifact.path / "param.txt", "w") as output_file:
+            output_file.write(str(self.trained_param))
 
     def load(self, input_artifact: InputArtifact) -> None:
-        pass
+        with open(input_artifact.path / "param.txt") as input_file:
+            self.trained_param = float(input_file.read())
 
     def predict(self, simple_arg: float) -> List[SimplePrediction]:
         """
@@ -36,7 +38,7 @@ class CompoundBundle(Bundle):
         return [
             SimplePrediction(
                 uri=prediction.uri,
-                score=prediction.score + 1.0,
+                score=prediction.score + self.trained_param,
             )
             for prediction in self.simple_bundle.predict(simple_arg)
         ]

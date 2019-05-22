@@ -27,7 +27,7 @@ class TestInvocationsRoute(InvocationsRouteTestCase):
         response_items_matcher = contains(
             has_entries(
                 uri="http://simple.com",
-                score=4.0,
+                score=5.0,
             ),
         )
 
