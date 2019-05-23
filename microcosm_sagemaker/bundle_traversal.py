@@ -3,7 +3,6 @@ from microcosm.api import defaults
 from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.artifact import InputArtifact, OutputArtifact
-from microcosm_sagemaker.graph import get_component_name
 from microcosm_sagemaker.input_data import InputData
 
 
@@ -21,7 +20,7 @@ class ActiveBundleAndDependenciesLoader:
 
     def __call__(self, input_artifact: InputArtifact):
         def load(bundle):
-            name = get_component_name(self.graph, bundle)
+            name = _get_component_name(self.graph, bundle)
             bundle.load(input_artifact / name)
 
         self.bundle_orchestrator(self.active_bundle, load)
@@ -41,7 +40,7 @@ class ActiveBundleAndDependenciesTrainer:
 
     def __call__(self, input_data: InputData, output_artifact: OutputArtifact):
         def train(bundle):
-            name = get_component_name(self.graph, bundle)
+            name = _get_component_name(self.graph, bundle)
             nested_output_artifact = output_artifact / name
             nested_output_artifact.init()
 
@@ -49,3 +48,11 @@ class ActiveBundleAndDependenciesTrainer:
             bundle.save(nested_output_artifact)
 
         self.bundle_orchestrator(self.active_bundle, train)
+
+
+def _get_component_name(graph, component):
+    return next(
+        key
+        for key, possible_component in graph.items()
+        if possible_component == component
+    )

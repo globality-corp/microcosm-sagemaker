@@ -1,52 +1,53 @@
 from contextlib import contextmanager
-from operator import attrgetter
-from typing import (
-    Callable,
-    Iterable,
-    Set,
-    TypeVar,
-)
+from typing import Any
 
 from microcosm_sagemaker.exceptions import DependencyCycleError
 
 
-T = TypeVar('T')
-
-
-def traverse_component_and_dependencies(
-    component: T,
-    dependency_getter: Callable[[T], Iterable[T]] = attrgetter("dependencies"),
-):
+def traverse_component_and_dependencies(component):
     """
     Given a component in a dependency graph, traverses the graph in topological
     order, ie such that all dependencies of a component will be yielded before
     the component itself.
 
-    """
-    seen: Set[T] = set()
-    reserved: Set[T] = set()
+    Each component is expected to have a `dependencies` property that returns
+    an iterable of dependency components.  Each component is also expected to
+    be hashable.
 
+    """
     yield from _traverse_helper(
-        dependency_getter=dependency_getter,
-        seen=seen,
-        reserved=reserved,
+        seen=set(),
+        reserved=set(),
         component=component,
     )
 
 
 def _traverse_helper(
-    dependency_getter: Callable[[T], Iterable[T]],
-    seen: Set[T],
-    reserved: Set[T],
-    component: T,
+    seen: set,
+    reserved: set,
+    component: Any,
 ):
+    """
+    Helper to recursively yield a component and its dependencies.
+
+    `seen` contains a list of all components that have already been visited.
+    Its purpose is to prevent us from yielding the same component twice.
+
+    `reserved` is designed to help detect cycles.  We add a component to
+    `reserved` just before we visit its dependencies, in order to check that we
+    don't see it as one of its transitive dependencies.  We remove it after we
+    are done visiting its dependencies, because it is ok if we see the
+    component again.  In that case, it will still be in `seen`, so we won't
+    visit it again, but it won't be an error, as it would be if the component
+    were in `reserved`.
+
+    """
     if component in seen:
         return
 
     with _reserve(reserved, component):
-        for dependency in dependency_getter(component):
+        for dependency in component.dependencies:
             yield from _traverse_helper(
-                dependency_getter=dependency_getter,
                 seen=seen,
                 reserved=reserved,
                 component=dependency,
@@ -57,10 +58,10 @@ def _traverse_helper(
 
 
 @contextmanager
-def _reserve(reserved: Set[T], component: T):
+def _reserve(reserved: set, component: Any):
     """
     Adds component to a list of reserved components, erroring if the component
-    has already been reserved, then remove compenet from list of reserved
+    has already been reserved, then remove component from list of reserved
     components.
 
     """
