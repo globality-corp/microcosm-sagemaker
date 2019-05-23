@@ -1,6 +1,6 @@
 *
 !microcosm_sagemaker
-microcosm_sagemaker/test*
+microcosm_sagemaker/tests
 !dist/*-none-any.whl
 !entrypoint.sh
 !MANIFEST.in
