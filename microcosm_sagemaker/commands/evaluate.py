@@ -16,19 +16,26 @@ from microcosm_sagemaker.input_data import InputData
 @input_artifact_option()
 def main(input_data, input_artifact):
     graph = create_evaluate_app(
-        loaders=[input_artifact.load_config],
+        extra_loader=input_artifact.load_config,
     )
 
-    run_evaluate(graph, input_data, input_artifact)
+    run_evaluate(
+        graph=graph,
+        input_data=input_data,
+        root_input_artifact=input_artifact,
+    )
 
 
 def run_evaluate(
     graph: ObjectGraph,
     input_data: InputData,
-    input_artifact: RootInputArtifact,
+    root_input_artifact: RootInputArtifact,
 ) -> None:
     # Load the saved artifact
-    graph.load_active_bundle_and_dependencies(input_artifact)
+    graph.load_bundle_and_dependencies(
+        bundle=graph.active_bundle,
+        root_input_artifact=root_input_artifact,
+    )
 
     # Evaluate
     graph.active_evaluation(graph.active_bundle, input_data)

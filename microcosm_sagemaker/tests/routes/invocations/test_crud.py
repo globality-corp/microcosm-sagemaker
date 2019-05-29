@@ -16,7 +16,7 @@ class TestInvocationsRoute(InvocationsRouteTestCase):
     @mock_app_hooks()
     def setup(self) -> None:
         self.handle_setup(
-            input_artifact_path=get_fixture_path("input_artifact")
+            root_input_artifact_path=get_fixture_path("input_artifact")
         )
 
     def test_search(self) -> None:

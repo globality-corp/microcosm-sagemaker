@@ -14,14 +14,18 @@ class BundleOrchestrator(ABC):
     @abstractmethod
     def __call__(
         self,
-        active_bundle: Bundle,
+        bundle: Bundle,
         bundle_handler: Callable[[Bundle], None],
+        dependencies_only: bool = False,
     ):
         """
-        Given an `active_bundle`, call `bundle_handler` on `active_bundle` and
-        all its transitive dependencies, ensuring that `bundle_handler` has
-        been called on all dependencies of any bundle before it is called on
-        the bundle itself.
+        Given a `bundle`, call `bundle_handler` on `bundle` and all its
+        transitive dependencies, ensuring that `bundle_handler` has been called
+        on all dependencies of any bundle before it is called on the bundle
+        itself.
+
+        If `dependencies_only` is `True`, do not call `bundle_handler` on the
+        given `bundle` itself, but rather only its dependencies.
 
         """
         ...
@@ -29,14 +33,18 @@ class BundleOrchestrator(ABC):
 
 class SingleThreadedBundleOrchestrator(BundleOrchestrator):
     """
-    Performs topological sort on dependencies of `active_bundle` and calls
+    Performs topological sort on dependencies of `bundle` and calls
     `bundle_handler` on each bundle one at a time.
 
     """
     def __call__(
         self,
-        active_bundle: Bundle,
+        bundle: Bundle,
         bundle_handler: Callable[[Bundle], None],
+        dependencies_only: bool = False,
     ):
-        for bundle in traverse_component_and_dependencies(active_bundle):
-            bundle_handler(bundle)
+        for bundle_to_handle in traverse_component_and_dependencies(bundle):
+            if dependencies_only and bundle_to_handle == bundle:
+                continue
+
+            bundle_handler(bundle_to_handle)

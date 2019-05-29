@@ -7,6 +7,8 @@ handle most error conditions.
 """
 from pathlib import Path
 
+from microcosm.loaders import load_each
+
 from microcosm_sagemaker.app_hooks import create_serve_app
 from microcosm_sagemaker.artifact import RootInputArtifact
 from microcosm_sagemaker.commands.config import load_default_runserver_config
@@ -17,17 +19,20 @@ class RouteTestCase:
     Helper base class for writing tests of a route.
 
     """
-    def handle_setup(self, input_artifact_path: Path) -> None:
-        self.input_artifact = RootInputArtifact(input_artifact_path)
+    def handle_setup(self, root_input_artifact_path: Path) -> None:
+        root_input_artifact = RootInputArtifact(root_input_artifact_path)
 
         self.graph = create_serve_app(
             testing=True,
-            loaders=[
+            extra_loader=load_each(
                 load_default_runserver_config,
-                self.input_artifact.load_config,
-            ],
+                root_input_artifact.load_config,
+            ),
         )
 
         self.client = self.graph.flask.test_client()
 
-        self.graph.load_active_bundle_and_dependencies(self.input_artifact)
+        self.graph.load_bundle_and_dependencies(
+            bundle=self.graph.active_bundle,
+            root_input_artifact=root_input_artifact,
+        )

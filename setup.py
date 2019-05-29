@@ -40,8 +40,8 @@ setup(
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",
             "active_evaluation = microcosm_sagemaker.factories:configure_active_evaluation",
             (
-                "load_active_bundle_and_dependencies = "
-                "microcosm_sagemaker.bundle_traversal:ActiveBundleAndDependenciesLoader"
+                "load_bundle_and_dependencies = "
+                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesLoader"
             ),
             "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
             "random = microcosm_sagemaker.random:Random",
@@ -53,8 +53,8 @@ setup(
             ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
             (
-                "train_active_bundle_and_dependencies = "
-                "microcosm_sagemaker.bundle_traversal:ActiveBundleAndDependenciesTrainer"
+                "train_bundle_and_dependencies = "
+                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesTrainer"
             ),
         ],
     },

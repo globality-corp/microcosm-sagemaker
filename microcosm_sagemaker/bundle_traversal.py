@@ -1,7 +1,7 @@
 from microcosm.api import defaults
 from microcosm.object_graph import ObjectGraph
 
-from microcosm_sagemaker.artifact import InputArtifact, RootOutputArtifact
+from microcosm_sagemaker.artifact import RootInputArtifact, RootOutputArtifact
 from microcosm_sagemaker.bundle import Bundle
 from microcosm_sagemaker.input_data import InputData
 
@@ -9,31 +9,39 @@ from microcosm_sagemaker.input_data import InputData
 @defaults(
     bundle_orchestrator="single_threaded_bundle_orchestrator",
 )
-class ActiveBundleAndDependenciesLoader:
+class BundleAndDependenciesLoader:
     def __init__(self, graph: ObjectGraph):
         self.bundle_orchestrator = getattr(
             graph,
-            graph.config.load_active_bundle_and_dependencies.bundle_orchestrator,
+            graph.config.load_bundle_and_dependencies.bundle_orchestrator,
         )
-        self.active_bundle = graph.active_bundle
         self.graph = graph
 
-    def __call__(self, input_artifact: InputArtifact):
+    def __call__(
+        self,
+        bundle: Bundle,
+        root_input_artifact: RootInputArtifact,
+        dependencies_only: bool = False,
+    ):
         def load(bundle):
             name = _get_component_name(self.graph, bundle)
-            bundle.load(input_artifact / name)
+            bundle.load(root_input_artifact / name)
 
-        self.bundle_orchestrator(self.active_bundle, load)
+        self.bundle_orchestrator(
+            bundle=bundle,
+            bundle_handler=load,
+            dependencies_only=dependencies_only,
+        )
 
 
 def save_bundle(
     graph: ObjectGraph,
-    output_artifact: RootOutputArtifact,
     bundle: Bundle,
+    root_output_artifact: RootOutputArtifact,
 ) -> None:
     bundle_name = _get_component_name(graph, bundle)
 
-    nested_output_artifact = output_artifact / bundle_name
+    nested_output_artifact = root_output_artifact / bundle_name
     nested_output_artifact.init()
 
     bundle.save(nested_output_artifact)
@@ -42,25 +50,30 @@ def save_bundle(
 @defaults(
     bundle_orchestrator="single_threaded_bundle_orchestrator",
 )
-class ActiveBundleAndDependenciesTrainer:
+class BundleAndDependenciesTrainer:
     def __init__(self, graph: ObjectGraph):
         self.bundle_orchestrator = getattr(
             graph,
-            graph.config.train_active_bundle_and_dependencies.bundle_orchestrator,
+            graph.config.train_bundle_and_dependencies.bundle_orchestrator,
         )
-        self.active_bundle = graph.active_bundle
         self.graph = graph
 
     def __call__(
         self,
+        bundle: Bundle,
         input_data: InputData,
-        output_artifact: RootOutputArtifact,
+        root_output_artifact: RootOutputArtifact,
+        dependencies_only: bool = False,
     ):
-        def train(graph, bundle, input_data, output_artifact):
+        def train(bundle):
             bundle.fit(input_data)
-            save_bundle(self.graph, output_artifact, bundle)
+            save_bundle(self.graph, bundle, root_output_artifact)
 
-        self.bundle_orchestrator(self.active_bundle, train)
+        self.bundle_orchestrator(
+            bundle=bundle,
+            bundle_handler=train,
+            dependencies_only=dependencies_only,
+        )
 
 
 def _get_component_name(graph, component):

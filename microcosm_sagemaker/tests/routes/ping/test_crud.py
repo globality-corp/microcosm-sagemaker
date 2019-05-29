@@ -17,11 +17,11 @@ from microcosm_sagemaker.tests.fixtures import get_fixture_path
 from microcosm_sagemaker.tests.mocks import mock_app_hooks
 
 
-class TestInvocationsRoute(RouteTestCase):
+class TestPingRoute(RouteTestCase):
     @mock_app_hooks()
     def setup(self) -> None:
         self.handle_setup(
-            input_artifact_path=get_fixture_path("input_artifact")
+            root_input_artifact_path=get_fixture_path("input_artifact")
         )
 
     def test_ping(self) -> None:

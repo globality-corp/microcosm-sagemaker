@@ -2,7 +2,7 @@
 Create the application.
 
 """
-from typing import Callable, Iterable, Optional
+from typing import Callable
 
 from microcosm.api import create_object_graph
 from microcosm.config.model import Configuration
@@ -17,24 +17,22 @@ from microcosm_sagemaker.tests.app_hooks.serve.config import load_default_config
 
 
 Loader = Callable[[Metadata], Configuration]
+empty_loader = load_each()
 
 
 def create_app(
     debug: bool = False,
     testing: bool = False,
     model_only: bool = False,
-    loaders: Optional[Iterable[Loader]] = None,
+    extra_loader: Loader = empty_loader,
 ) -> ObjectGraph:
     """
     Create the object graph for serving.
 
     """
-    if loaders is None:
-        loaders = []
-
     loader = load_each(
         load_default_config,
-        *loaders,
+        extra_loader,
     )
 
     graph = create_object_graph(

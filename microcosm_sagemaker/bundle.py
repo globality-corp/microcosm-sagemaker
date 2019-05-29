@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from microcosm_sagemaker.artifact import InputArtifact, OutputArtifact
+from microcosm_sagemaker.artifact import BundleInputArtifact, BundleOutputArtifact
 from microcosm_sagemaker.input_data import InputData
 
 
@@ -32,7 +32,7 @@ class Bundle(ABC):
         ...
 
     @abstractmethod
-    def save(self, output_artifact: OutputArtifact) -> None:
+    def save(self, output_artifact: BundleOutputArtifact) -> None:
         """
         Save the trained model
 
@@ -40,7 +40,7 @@ class Bundle(ABC):
         ...
 
     @abstractmethod
-    def load(self, input_artifact: InputArtifact) -> None:
+    def load(self, input_artifact: BundleInputArtifact) -> None:
         """
         Load the trained model
 
