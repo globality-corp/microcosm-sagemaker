@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 from hamcrest import (
@@ -13,13 +13,10 @@ from microcosm_sagemaker.dependency_traverser import traverse_component_and_depe
 from microcosm_sagemaker.exceptions import DependencyCycleError
 
 
-@dataclass
+@dataclass(eq=True, frozen=True)
 class Component:
     name: str
-    dependencies: List["Component"]
-
-    def __hash__(self):
-        return hash(self.name)
+    dependencies: List["Component"] = field(compare=False)
 
 
 def test_no_dependencies():
