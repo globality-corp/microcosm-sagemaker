@@ -19,8 +19,10 @@ class RouteTestCase:
     Helper base class for writing tests of a route.
 
     """
-    def handle_setup(self, root_input_artifact_path: Path) -> None:
-        root_input_artifact = RootInputArtifact(root_input_artifact_path)
+    root_input_artifact_path: Path
+
+    def setup(self) -> None:
+        root_input_artifact = RootInputArtifact(self.root_input_artifact_path)
 
         self.graph = create_serve_app(
             testing=True,

@@ -14,17 +14,15 @@ def construct_configuration_matcher(gold_configuration) -> BaseMatcher:
 
 
 class TestTrainCli(TrainCliTestCase):
-    @mock_app_hooks()
-    def test_train(self) -> None:
-        configuration_extractor_matcher = ExtractorMatcherPair(
+    input_data_path = get_fixture_path("simple_input_data")
+    gold_output_artifact_path = get_fixture_path("gold_output_artifact")
+    output_artifact_matchers = {
+        Path("configuration.json"): ExtractorMatcherPair(
             extractor=json_extractor,
             matcher_constructor=construct_configuration_matcher,
-        )
+        ),
+    }
 
-        self.run_and_check_train(
-            input_data_path=get_fixture_path("simple_input_data"),
-            gold_output_artifact_path=get_fixture_path("gold_output_artifact"),
-            output_artifact_matchers={
-                Path("configuration.json"): configuration_extractor_matcher,
-            }
-        )
+    @mock_app_hooks()
+    def test_train(self) -> None:
+        super().test_train()

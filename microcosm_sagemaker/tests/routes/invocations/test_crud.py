@@ -13,25 +13,15 @@ from microcosm_sagemaker.tests.mocks import mock_app_hooks
 
 
 class TestInvocationsRoute(InvocationsRouteTestCase):
+    root_input_artifact_path = get_fixture_path("input_artifact")
+    request_json = dict(simpleArg=1.0)
+    response_items_matcher = contains(
+        has_entries(
+            uri="http://simple.com",
+            score=5.0,
+        ),
+    )
+
     @mock_app_hooks()
     def setup(self) -> None:
-        self.handle_setup(
-            root_input_artifact_path=get_fixture_path("input_artifact")
-        )
-
-    def test_search(self) -> None:
-        request_json = dict(
-            simpleArg=1.0,
-        )
-
-        response_items_matcher = contains(
-            has_entries(
-                uri="http://simple.com",
-                score=5.0,
-            ),
-        )
-
-        self.check_search(
-            request_json=request_json,
-            response_items_matcher=response_items_matcher,
-        )
+        super().setup()

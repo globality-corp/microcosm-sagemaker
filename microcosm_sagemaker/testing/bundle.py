@@ -18,81 +18,97 @@ BundleType = TypeVar('BundleType', bound=Bundle)
 class BundleTestCase(ABC, Generic[BundleType]):
     # These should be defined in actual test case derived class
     bundle_name: str
-    input_data_path: Path
     root_input_artifact_path: Path
-    gold_bundle_output_artifact_path: Path
 
     @abstractmethod
     def check_bundle_prediction(self, bundle: BundleType) -> None:
         ...
 
     @property
+    def _root_input_artifact(self) -> RootInputArtifact:
+        return RootInputArtifact(self.root_input_artifact_path)
+
+
+class BundleFitTestCase(BundleTestCase):
+    input_data_path: Path
+
+    @property
     def _input_data(self) -> InputData:
         return InputData(self.input_data_path)
 
-    @property
-    def _root_input_artifact(self) -> RootInputArtifact:
-        return RootInputArtifact(self.root_input_artifact_path)
+    def setup(self) -> None:
+        self.graph = create_train_app(
+            extra_loader=load_from_dict(
+                active_bundle=self.bundle_name,
+            )
+        )
+
+        self.graph.load_bundle_and_dependencies(
+            bundle=self.graph.active_bundle,
+            root_input_artifact=self._root_input_artifact,
+            dependencies_only=True,
+        )
+
+        self.graph.training_initializers.init()
+
+    def test_fit(self) -> None:
+        self.graph.active_bundle.fit(self._input_data)
+        self.check_bundle_prediction(self.graph.active_bundle)
+
+
+class BundleSaveTestCase(BundleTestCase):
+    gold_bundle_output_artifact_path: Path
 
     @property
     def _gold_bundle_output_artifact(self) -> BundleOutputArtifact:
         return BundleOutputArtifact(self.gold_bundle_output_artifact_path)
 
-    def test_fit(self) -> None:
-        graph = create_train_app(
+    def setup(self) -> None:
+        self.graph = create_train_app(
             extra_loader=load_from_dict(
                 active_bundle=self.bundle_name,
             )
         )
 
-        graph.load_bundle_and_dependencies(
-            bundle=graph.active_bundle,
+        self.graph.load_bundle_and_dependencies(
+            bundle=self.graph.active_bundle,
+            root_input_artifact=self._root_input_artifact,
+        )
+
+        self.temporary_directory = tempfile.TemporaryDirectory()
+        self.bundle_output_artifact = BundleOutputArtifact(self.temporary_directory.name)
+
+    def teardown(self) -> None:
+        self.temporary_directory.cleanup()
+
+    def test_save(self) -> None:
+        self.graph.active_bundle.save(self.bundle_output_artifact)
+
+        directory_comparison(
+            gold_dir=self._gold_bundle_output_artifact.path,
+            actual_dir=self.bundle_output_artifact.path,
+        )
+
+
+class BundleLoadTestCase(BundleTestCase):
+    gold_bundle_output_artifact_path: Path
+
+    def setup(self) -> None:
+        self.graph = create_evaluate_app(
+            extra_loader=load_from_dict(
+                active_bundle=self.bundle_name,
+            )
+        )
+
+        self.graph.load_bundle_and_dependencies(
+            bundle=self.graph.active_bundle,
             root_input_artifact=self._root_input_artifact,
             dependencies_only=True,
         )
-
-        graph.training_initializers.init()
-        graph.active_bundle.fit(self._input_data)
-
-        self.check_bundle_prediction(graph.active_bundle)
 
     def test_load(self) -> None:
-        graph = create_evaluate_app(
-            extra_loader=load_from_dict(
-                active_bundle=self.bundle_name,
-            )
-        )
-
-        graph.load_bundle_and_dependencies(
-            bundle=graph.active_bundle,
-            root_input_artifact=self._root_input_artifact,
-            dependencies_only=True,
-        )
-
-        graph.active_bundle.load(
+        self.graph.active_bundle.load(
             self._root_input_artifact / self.bundle_name,
         )
 
-        self.check_bundle_prediction(graph.active_bundle)
-
-    def test_save(self) -> None:
-        graph = create_train_app(
-            extra_loader=load_from_dict(
-                active_bundle=self.bundle_name,
-            )
-        )
-
-        graph.load_bundle_and_dependencies(
-            bundle=graph.active_bundle,
-            root_input_artifact=self._root_input_artifact,
-        )
-
-        with tempfile.TemporaryDirectory() as bundle_output_artifact_path:
-            bundle_output_artifact = BundleOutputArtifact(bundle_output_artifact_path)
-
-            graph.active_bundle.save(bundle_output_artifact)
-
-            directory_comparison(
-                gold_dir=self._gold_bundle_output_artifact.path,
-                actual_dir=bundle_output_artifact.path,
-            )
+        self.check_bundle_prediction(self.graph.active_bundle)

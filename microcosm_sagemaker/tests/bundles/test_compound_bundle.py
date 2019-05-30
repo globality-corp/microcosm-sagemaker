@@ -1,16 +1,19 @@
 from hamcrest import assert_that, contains, has_properties
 
-from microcosm_sagemaker.testing.bundle import BundleTestCase
+from microcosm_sagemaker.testing.bundle import (
+    BundleFitTestCase,
+    BundleLoadTestCase,
+    BundleSaveTestCase,
+    BundleTestCase,
+)
 from microcosm_sagemaker.tests.bundles.compound import CompoundBundle
 from microcosm_sagemaker.tests.fixtures import get_fixture_path
 from microcosm_sagemaker.tests.mocks import mock_app_hooks
 
 
-class TestCompoundBundle(BundleTestCase):
+class CompoundBundleTestCase(BundleTestCase):
     bundle_name = "compound_bundle"
-    input_data_path = get_fixture_path("simple_input_data")
     root_input_artifact_path = get_fixture_path("input_artifact")
-    gold_bundle_output_artifact_path = get_fixture_path("gold_output_artifact") / "compound_bundle"
 
     def check_bundle_prediction(self, bundle: CompoundBundle) -> None:
         assert_that(
@@ -21,17 +24,24 @@ class TestCompoundBundle(BundleTestCase):
             )),
         )
 
-    # NB: The below definitions won't be required by client services using
-    # BundleTestCase.  This is only necessary because we can't define app_hooks
-    # within microcosm_sagemaker as would be done by a client service.
-    @mock_app_hooks()
-    def test_fit(self) -> None:
-        super().test_fit()
+
+class TestCompoundBundleFit(BundleFitTestCase, CompoundBundleTestCase):
+    input_data_path = get_fixture_path("simple_input_data")
 
     @mock_app_hooks()
-    def test_save(self) -> None:
-        super().test_save()
+    def setup(self) -> None:
+        super().setup()
+
+
+class TestCompoundBundleSave(BundleSaveTestCase, CompoundBundleTestCase):
+    gold_bundle_output_artifact_path = get_fixture_path("gold_output_artifact") / "compound_bundle"
 
     @mock_app_hooks()
-    def test_load(self) -> None:
-        super().test_load()
+    def setup(self) -> None:
+        super().setup()
+
+
+class TestCompoundBundleLoad(BundleLoadTestCase, CompoundBundleTestCase):
+    @mock_app_hooks()
+    def setup(self) -> None:
+        super().setup()

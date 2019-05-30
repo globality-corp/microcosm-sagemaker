@@ -21,11 +21,11 @@ class InvocationsRouteTestCase(RouteTestCase):
     Helper base class for writing tests of the invocations route.
 
     """
-    def check_search(
-        self,
-        request_json: dict,
-        response_items_matcher: BaseMatcher,
-    ) -> None:
+
+    request_json: dict
+    response_items_matcher: BaseMatcher
+
+    def test_search(self) -> None:
         """
         Invokes the invocations endpoint with `request_json`, and checks the
         `items` entry of the response against `response_items_matcher`.
@@ -35,13 +35,13 @@ class InvocationsRouteTestCase(RouteTestCase):
 
         response = self.client.post(
             uri,
-            json=request_json,
+            json=self.request_json,
         )
 
         assert_that(response.status_code, is_(equal_to(200)))
         assert_that(
             response.json,
             has_entries(
-                items=response_items_matcher,
+                items=self.response_items_matcher,
             ),
         )
