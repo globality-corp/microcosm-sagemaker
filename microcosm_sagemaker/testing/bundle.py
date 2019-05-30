@@ -1,7 +1,12 @@
 import tempfile
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Generic, TypeVar
+from typing import (
+    Generic,
+    Mapping,
+    Optional,
+    TypeVar,
+)
 
 from microcosm.loaders import load_from_dict
 
@@ -9,6 +14,7 @@ from microcosm_sagemaker.app_hooks import create_evaluate_app, create_train_app
 from microcosm_sagemaker.artifact import BundleOutputArtifact, RootInputArtifact
 from microcosm_sagemaker.bundle import Bundle
 from microcosm_sagemaker.input_data import InputData
+from microcosm_sagemaker.testing.bytes_extractor import ExtractorMatcherPair
 from microcosm_sagemaker.testing.directory_comparison import directory_comparison
 
 
@@ -58,6 +64,7 @@ class BundleFitTestCase(BundleTestCase):
 
 class BundleSaveTestCase(BundleTestCase):
     gold_bundle_output_artifact_path: Path
+    output_artifact_matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None
 
     @property
     def _gold_bundle_output_artifact(self) -> BundleOutputArtifact:
@@ -87,6 +94,7 @@ class BundleSaveTestCase(BundleTestCase):
         directory_comparison(
             gold_dir=self._gold_bundle_output_artifact.path,
             actual_dir=self.bundle_output_artifact.path,
+            matchers=self.output_artifact_matchers,
         )
 
 

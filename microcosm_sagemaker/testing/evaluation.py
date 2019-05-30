@@ -1,0 +1,54 @@
+from abc import ABC
+from pathlib import Path
+
+from microcosm.loaders import load_from_dict
+
+from microcosm_sagemaker.app_hooks import create_evaluate_app
+from microcosm_sagemaker.artifact import RootInputArtifact
+from microcosm_sagemaker.bundle import Bundle
+from microcosm_sagemaker.evaluation import Evaluation
+from microcosm_sagemaker.input_data import InputData
+
+
+class EvaluationTestCase(ABC):
+    # These should be defined in actual test case derived class
+    evaluation_name: str
+    root_input_artifact_path: Path
+    input_data_path: Path
+
+    # If necessary, this function can be overridden to do something more
+    # sophisticated to check the evaluation
+    def check_evaluation(
+        self,
+        bundle: Bundle,
+        evaluation: Evaluation,
+        input_data: InputData,
+    ) -> None:
+        evaluation(bundle, input_data)
+
+    @property
+    def _root_input_artifact(self) -> RootInputArtifact:
+        return RootInputArtifact(self.root_input_artifact_path)
+
+    @property
+    def _input_data(self) -> InputData:
+        return InputData(self.input_data_path)
+
+    def setup(self) -> None:
+        self.graph = create_evaluate_app(
+            extra_loader=load_from_dict(
+                active_evaluation=self.evaluation_name,
+            )
+        )
+
+        self.graph.load_bundle_and_dependencies(
+            bundle=self.graph.active_bundle,
+            root_input_artifact=self._root_input_artifact,
+        )
+
+    def test_evaluation(self) -> None:
+        self.check_evaluation(
+            self.graph.active_bundle,
+            self.graph.active_evaluation,
+            self._input_data,
+        )
