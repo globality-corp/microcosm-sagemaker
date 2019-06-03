@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 from setuptools import find_packages, setup
 
+
 project = "microcosm-sagemaker"
-version = "0.2.5"
+version = "0.3.0"
 
 setup(
     name=project,
@@ -21,7 +22,7 @@ setup(
     install_requires=[
         "boto3>=1.9.90",
         "click>=7.0",
-        "microcosm>=2.0.0",
+        "microcosm>=2.7.0",
         "microcosm_flask[metrics,spooky]>=1.20.0",
     ],
     setup_requires=[
@@ -38,15 +39,29 @@ setup(
         "microcosm.factories": [
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",
             "active_evaluation = microcosm_sagemaker.factories:configure_active_evaluation",
+            (
+                "load_bundle_and_dependencies = "
+                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesLoader"
+            ),
             "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
             "random = microcosm_sagemaker.random:Random",
             "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
             "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
+            (
+                "single_threaded_bundle_orchestrator = "
+                "microcosm_sagemaker.bundle_orchestrator:SingleThreadedBundleOrchestrator"
+            ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
+            (
+                "train_bundle_and_dependencies = "
+                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesTrainer"
+            ),
         ],
     },
-    tests_require=[
-        "coverage>=3.7.1",
-        "PyHamcrest>=1.9.0",
-    ],
+    extras_require={
+        "test": [
+            "coverage>=4.0.3",
+            "PyHamcrest>=1.9.0",
+        ],
+    },
 )

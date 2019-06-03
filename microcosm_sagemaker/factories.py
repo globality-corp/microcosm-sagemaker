@@ -24,6 +24,8 @@ def configure_sagemaker(graph):
     graph.use(
         "active_bundle",
         "active_evaluation",
-        "training_initializers",
+        "load_bundle_and_dependencies",
         "random",
+        "train_bundle_and_dependencies",
+        "training_initializers",
     )

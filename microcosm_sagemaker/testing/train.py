@@ -13,12 +13,11 @@ class TrainCliTestCase(CliTestCase):
     Helper base class for writing tests of the train cli.
 
     """
-    def test_train(
-        self,
-        input_data_path: Path,
-        gold_output_artifact_path: Path,
-        output_artifact_matchers: Mapping[Path, ExtractorMatcherPair],
-    ) -> None:
+    input_data_path: Path
+    gold_output_artifact_path: Path
+    output_artifact_matchers: Mapping[Path, ExtractorMatcherPair]
+
+    def test_train(self) -> None:
         """
         Runs the `train` command on the given `input_data_path` and then
         recursively checks the contents of the output artifact against the
@@ -33,14 +32,14 @@ class TrainCliTestCase(CliTestCase):
                 command=train.main,
                 args=[
                     "--input-data",
-                    str(input_data_path),
+                    str(self.input_data_path),
                     "--output-artifact",
                     output_artifact_path,
                 ],
             )
 
             directory_comparison(
-                gold_dir=gold_output_artifact_path,
+                gold_dir=self.gold_output_artifact_path,
                 actual_dir=Path(output_artifact_path),
-                matchers=output_artifact_matchers,
+                matchers=self.output_artifact_matchers,
             )
