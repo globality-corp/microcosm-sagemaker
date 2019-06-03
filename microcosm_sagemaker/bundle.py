@@ -7,8 +7,7 @@ from microcosm_sagemaker.input_data import InputData
 
 class Bundle(ABC):
     """
-    Abstract base class for all bundles.  Note that bundles will usually also
-    define a `predict` method, but the signature will vary.
+    Abstract base class for all bundles.
 
     """
     predict: Callable
