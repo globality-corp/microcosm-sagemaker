@@ -13,7 +13,7 @@ from microcosm_sagemaker.tests.mocks import mock_app_hooks
 
 class CompoundBundleTestCase(BundleTestCase):
     bundle_name = "compound_bundle"
-    root_input_artifact_path = get_fixture_path("input_artifact")
+    root_input_artifact_path = get_fixture_path("artifact")
     bundle_prediction_checks = [
         BundlePredictionCheck(
             args=[1.0],
@@ -28,7 +28,7 @@ class CompoundBundleTestCase(BundleTestCase):
 
 
 class TestCompoundBundleFit(BundleFitTestCase, CompoundBundleTestCase):
-    input_data_path = get_fixture_path("simple_input_data")
+    input_data_path = get_fixture_path("input_data")
 
     @mock_app_hooks()
     def setup(self) -> None:
@@ -36,7 +36,9 @@ class TestCompoundBundleFit(BundleFitTestCase, CompoundBundleTestCase):
 
 
 class TestCompoundBundleSave(BundleSaveTestCase, CompoundBundleTestCase):
-    gold_bundle_output_artifact_path = get_fixture_path("gold_output_artifact") / "compound_bundle"
+    gold_bundle_output_artifact_path = (
+        get_fixture_path("artifact") / "compound_bundle"
+    )
 
     @mock_app_hooks()
     def setup(self) -> None:

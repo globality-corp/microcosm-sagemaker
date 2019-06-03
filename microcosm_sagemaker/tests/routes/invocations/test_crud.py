@@ -13,7 +13,7 @@ from microcosm_sagemaker.tests.mocks import mock_app_hooks
 
 
 class TestInvocationsRoute(InvocationsRouteTestCase):
-    root_input_artifact_path = get_fixture_path("input_artifact")
+    root_input_artifact_path = get_fixture_path("artifact")
     request_json = dict(simpleArg=1.0)
     response_items_matcher = contains(
         has_entries(

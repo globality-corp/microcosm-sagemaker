@@ -26,11 +26,11 @@ bundle_prediction_checks = [
 
 class SimpleBundleTestCase(BundleTestCase):
     bundle_name = "simple_bundle"
-    root_input_artifact_path = get_fixture_path("input_artifact")
+    root_input_artifact_path = get_fixture_path("artifact")
 
 
 class TestSimpleBundleFit(BundleFitTestCase, SimpleBundleTestCase):
-    input_data_path = get_fixture_path("simple_input_data")
+    input_data_path = get_fixture_path("input_data")
     bundle_prediction_checks = bundle_prediction_checks
 
     @mock_app_hooks()
@@ -39,7 +39,9 @@ class TestSimpleBundleFit(BundleFitTestCase, SimpleBundleTestCase):
 
 
 class TestSimpleBundleSave(BundleSaveTestCase, SimpleBundleTestCase):
-    gold_bundle_output_artifact_path = get_fixture_path("gold_output_artifact") / "simple_bundle"
+    gold_bundle_output_artifact_path = (
+        get_fixture_path("artifact") / "simple_bundle"
+    )
 
     @mock_app_hooks()
     def setup(self) -> None:

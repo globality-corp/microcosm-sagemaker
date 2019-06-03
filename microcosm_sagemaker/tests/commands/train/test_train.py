@@ -14,8 +14,8 @@ def construct_configuration_matcher(gold_configuration) -> BaseMatcher:
 
 
 class TestTrainCli(TrainCliTestCase):
-    input_data_path = get_fixture_path("simple_input_data")
-    gold_output_artifact_path = get_fixture_path("gold_output_artifact")
+    input_data_path = get_fixture_path("input_data")
+    gold_output_artifact_path = get_fixture_path("artifact")
     output_artifact_matchers = {
         Path("configuration.json"): ExtractorMatcherPair(
             extractor=json_extractor,
