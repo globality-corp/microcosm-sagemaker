@@ -6,7 +6,7 @@ from typing import List, Mapping, Optional
 
 from hamcrest import assert_that
 from hamcrest.core.base_matcher import BaseMatcher
-from microcosm.loaders import load_from_dict
+from microcosm.loaders import load_each, load_from_dict
 
 from microcosm_sagemaker.app_hooks import create_evaluate_app, create_train_app
 from microcosm_sagemaker.artifact import BundleOutputArtifact, RootInputArtifact
@@ -26,6 +26,8 @@ class BundlePredictionCheck:
 class BundlePredictionChecker:
     bundle_prediction_checks: List[BundlePredictionCheck]
 
+    # If necessary, this function can be overridden to do something more
+    # sophisticated to check the bundle prediction
     def check_bundle_prediction(self, bundle: Bundle) -> None:
         for bundle_prediction_check in self.bundle_prediction_checks:
             assert_that(
@@ -43,6 +45,15 @@ class BundleTestCase(ABC):
     root_input_artifact_path: Path
 
     @property
+    def extra_config(self) -> dict:
+        """
+        Derived classes can override this to provide extra config to the
+        various create_app functions.
+
+        """
+        return {}
+
+    @property
     def _root_input_artifact(self) -> RootInputArtifact:
         return RootInputArtifact(self.root_input_artifact_path)
 
@@ -56,9 +67,12 @@ class BundleFitTestCase(BundleTestCase, BundlePredictionChecker):
 
     def setup(self) -> None:
         self.graph = create_train_app(
-            extra_loader=load_from_dict(
-                active_bundle=self.bundle_name,
-            )
+            extra_loader=load_each(
+                load_from_dict(
+                    active_bundle=self.bundle_name,
+                ),
+                load_from_dict(self.extra_config),
+            ),
         )
 
         self.graph.load_bundle_and_dependencies(
@@ -84,9 +98,12 @@ class BundleSaveTestCase(BundleTestCase):
 
     def setup(self) -> None:
         self.graph = create_train_app(
-            extra_loader=load_from_dict(
-                active_bundle=self.bundle_name,
-            )
+            extra_loader=load_each(
+                load_from_dict(
+                    active_bundle=self.bundle_name,
+                ),
+                load_from_dict(self.extra_config),
+            ),
         )
 
         self.graph.load_bundle_and_dependencies(
@@ -115,9 +132,12 @@ class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
 
     def setup(self) -> None:
         self.graph = create_evaluate_app(
-            extra_loader=load_from_dict(
-                active_bundle=self.bundle_name,
-            )
+            extra_loader=load_each(
+                load_from_dict(
+                    active_bundle=self.bundle_name,
+                ),
+                load_from_dict(self.extra_config),
+            ),
         )
 
         self.graph.load_bundle_and_dependencies(

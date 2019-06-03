@@ -1,7 +1,7 @@
 from abc import ABC
 from pathlib import Path
 
-from microcosm.loaders import load_from_dict
+from microcosm.loaders import load_each, load_from_dict
 
 from microcosm_sagemaker.app_hooks import create_evaluate_app
 from microcosm_sagemaker.artifact import RootInputArtifact
@@ -15,6 +15,15 @@ class EvaluationTestCase(ABC):
     evaluation_name: str
     root_input_artifact_path: Path
     input_data_path: Path
+
+    @property
+    def extra_config(self) -> dict:
+        """
+        Derived classes can override this to provide extra config to the
+        create_app function.
+
+        """
+        return {}
 
     # If necessary, this function can be overridden to do something more
     # sophisticated to check the evaluation
@@ -36,9 +45,12 @@ class EvaluationTestCase(ABC):
 
     def setup(self) -> None:
         self.graph = create_evaluate_app(
-            extra_loader=load_from_dict(
-                active_evaluation=self.evaluation_name,
-            )
+            extra_loader=load_each(
+                load_from_dict(
+                    active_evaluation=self.evaluation_name,
+                ),
+                load_from_dict(self.extra_config),
+            ),
         )
 
         self.graph.load_bundle_and_dependencies(
