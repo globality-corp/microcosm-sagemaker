@@ -9,11 +9,10 @@ class EvaluateCliTestCase(CliTestCase):
     Helper base class for writing tests of the evaluate cli.
 
     """
-    def test_evaluate(
-        self,
-        input_data_path: Path,
-        input_artifact_path: Path,
-    ) -> None:
+    input_data_path: Path
+    input_artifact_path: Path
+
+    def test_evaluate(self) -> None:
         """
         Runs the `evaluate` command on the given `input_data_path` and
         `input_artifact_path`.
@@ -23,8 +22,8 @@ class EvaluateCliTestCase(CliTestCase):
             command=evaluate.main,
             args=[
                 "--input-data",
-                str(input_data_path),
+                str(self.input_data_path),
                 "--input-artifact",
-                str(input_artifact_path),
+                str(self.input_artifact_path),
             ],
         )
