@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Callable, List
 
 from microcosm_sagemaker.artifact import BundleInputArtifact, BundleOutputArtifact
 from microcosm_sagemaker.input_data import InputData
@@ -11,6 +11,8 @@ class Bundle(ABC):
     define a `predict` method, but the signature will vary.
 
     """
+    predict: Callable
+
     @property
     @abstractmethod
     def dependencies(self) -> List["Bundle"]:

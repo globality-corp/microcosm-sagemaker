@@ -1,13 +1,11 @@
 import tempfile
-from abc import ABC, abstractmethod
+from abc import ABC
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import (
-    Generic,
-    Mapping,
-    Optional,
-    TypeVar,
-)
+from typing import List, Mapping, Optional
 
+from hamcrest import assert_that
+from hamcrest.core.base_matcher import BaseMatcher
 from microcosm.loaders import load_from_dict
 
 from microcosm_sagemaker.app_hooks import create_evaluate_app, create_train_app
@@ -18,24 +16,38 @@ from microcosm_sagemaker.testing.bytes_extractor import ExtractorMatcherPair
 from microcosm_sagemaker.testing.directory_comparison import directory_comparison
 
 
-BundleType = TypeVar('BundleType', bound=Bundle)
+@dataclass
+class BundlePredictionCheck:
+    return_value_matcher: BaseMatcher
+    args: list = field(default_factory=list)
+    kwargs: dict = field(default_factory=dict)
 
 
-class BundleTestCase(ABC, Generic[BundleType]):
+class BundlePredictionChecker:
+    bundle_prediction_checks: List[BundlePredictionCheck]
+
+    def check_bundle_prediction(self, bundle: Bundle) -> None:
+        for bundle_prediction_check in self.bundle_prediction_checks:
+            assert_that(
+                bundle.predict(
+                    *bundle_prediction_check.args,
+                    **bundle_prediction_check.kwargs,
+                ),
+                bundle_prediction_check.return_value_matcher,
+            )
+
+
+class BundleTestCase(ABC):
     # These should be defined in actual test case derived class
     bundle_name: str
     root_input_artifact_path: Path
-
-    @abstractmethod
-    def check_bundle_prediction(self, bundle: BundleType) -> None:
-        ...
 
     @property
     def _root_input_artifact(self) -> RootInputArtifact:
         return RootInputArtifact(self.root_input_artifact_path)
 
 
-class BundleFitTestCase(BundleTestCase):
+class BundleFitTestCase(BundleTestCase, BundlePredictionChecker):
     input_data_path: Path
 
     @property
@@ -98,7 +110,7 @@ class BundleSaveTestCase(BundleTestCase):
         )
 
 
-class BundleLoadTestCase(BundleTestCase):
+class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
     gold_bundle_output_artifact_path: Path
 
     def setup(self) -> None:
