@@ -1,99 +1,179 @@
 from typing import NamedTuple
 
+from microcosm_sagemaker.tests.directory_test_description import Dir, File
+
 
 class DirectoryComparisonTest(NamedTuple):
-    name: str
+    gold: Dir
+    actual: Dir
     should_pass: bool
     use_json_matcher: bool = False
+    ignore_empty_directories: bool = False
 
 
 DIRECTORY_COMPARISON_TEST_CASES = [
-    # simple-pass/
-    # ├── actual/
-    # │  ├── subdir/
-    # │  │  └── hi.txt = hi
-    # │  └── hello.txt = hello
-    # └── gold/
-    #    ├── subdir/
-    #    │  └── hi.txt = hi
-    #    └── hello.txt = hello
-    DirectoryComparisonTest("simple-pass", True),
+    # Simple pass
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        should_pass=True,
+    ),
 
-    # added-path-fail/
-    # ├── actual/
-    # │  ├── subdir/
-    # │  │  ├── extra.txt
-    # │  │  └── hi.txt = hi
-    # │  └── hello.txt = hello
-    # └── gold/
-    #    ├── subdir/
-    #    │  └── hi.txt = hi
-    #    └── hello.txt = hello
-    DirectoryComparisonTest("added-path-fail", False),
+    # Extra path
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+                "extra.txt": File(),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        should_pass=False,
+    ),
 
-    # missing-path-fail/
-    # ├── actual/
-    # │  ├── subdir/
-    # │  │  └── keep
-    # │  └── hello.txt = hello
-    # └── gold/
-    #    ├── subdir/
-    #    │  ├── hi.txt = hi
-    #    │  └── keep
-    #    └── hello.txt = hello
-    DirectoryComparisonTest("missing-path-fail", False),
+    # Missing an expected path
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "keep": File(),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "keep": File(),
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        should_pass=False,
+    ),
 
-    # content-fail/
-    # ├── actual/
-    # │  ├── subdir/
-    # │  │  └── hi.txt = hi
-    # │  └── hello.txt = hello
-    # └── gold/
-    #    ├── subdir/
-    #    │  └── hi.txt = hi uh oh
-    #    └── hello.txt = hello
-    DirectoryComparisonTest("content-fail", False),
+    # Contents of a file differ
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi uh oh"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        should_pass=False,
+    ),
 
-    # file-to-dir-fail/
-    # ├── actual/
-    # │  ├── hello.txt/
-    # │  └── subdir/
-    # │     └── hi.txt = hi
-    # └── gold/
-    #    ├── subdir/
-    #    │  └── hi.txt = hi
-    #    └── hello.txt = hello
-    DirectoryComparisonTest("file-to-dir-fail", False),
+    # Expected file but found directory
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": Dir(),
+        }),
+        should_pass=False,
+    ),
 
-    # dir-to-file-fail/
-    # ├── actual/
-    # │  ├── hello.txt = hello
-    # │  └── subdir
-    # └── gold/
-    #    ├── subdir/
-    #    │  └── hi.txt = hi
-    #    └── hello.txt = hello
-    DirectoryComparisonTest("dir-to-file-fail", False),
+    # Expected directory but found file
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        actual=Dir({
+            "subdir": File(),
+            "hello.txt": File("hello"),
+        }),
+        should_pass=False,
+    ),
 
-    # matcher-pass/
-    # ├── actual/
-    # │  ├── subdir/
-    # │  │  └── hi.json = {"foo":"bar","extra":"fine"}
-    # │  └── hello.json = {"foo":"baz","extra":"fine"}
-    # └── gold/
-    #    ├── subdir/
-    #    │  └── hi.json = {"foo":"bar"}
-    #    └── hello.json = {"foo":"bar"}
-    DirectoryComparisonTest("matcher-pass", True, use_json_matcher=True),
+    # Pass using a matcher to ignore some json entries
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.json": File('{"foo":"bar"}'),
+            }),
+            "hello.json": File('{"foo":"bar"}'),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.json": File('{"foo":"bar","extra":"fine"}'),
+            }),
+            "hello.json": File('{"foo":"bar","extra":"fine"}'),
+        }),
+        should_pass=True,
+        use_json_matcher=True,
+    ),
 
-    # matcher-fail/
-    # ├── actual/
-    # │  ├── subdir/
-    # │  │  └── hi.json = {"foo":"baz","extra":"fine"}
-    # │  └── hello.json = {"foo":"baz","extra":"fine"}
-    # └── gold/
-    #    ├── subdir/
-    #    │  └── hi.json = {"foo":"bar"}
-    #    └── hello.json = {"foo":"bar"}
-    DirectoryComparisonTest("matcher-fail", False, use_json_matcher=True),
+    # Fail using a matcher to ignore some json entries
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.json": File('{"foo":"baz"}'),
+            }),
+            "hello.json": File('{"foo":"baz"}'),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.json": File('{"foo":"bar","extra":"fine"}'),
+            }),
+            "hello.json": File('{"foo":"bar","extra":"fine"}'),
+        }),
+        should_pass=False,
+        use_json_matcher=True,
+    ),
+
+    # Both directories empty
+    DirectoryComparisonTest(
+        gold=Dir(),
+        actual=Dir(),
+        should_pass=True,
+    ),
+
+    # Using ignore_empty_directories=True
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+            }),
+            "hello.txt": File("hello"),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.txt": File("hi"),
+                "empty_nested_subdir": Dir(),
+            }),
+            "hello.txt": File("hello"),
+            "empty_subdir": Dir(),
+        }),
+        should_pass=True,
+        ignore_empty_directories=True,
+    ),
 ]
