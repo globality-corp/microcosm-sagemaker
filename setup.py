@@ -62,6 +62,7 @@ setup(
         "test": [
             "coverage>=4.0.3",
             "PyHamcrest>=1.9.0",
+            "parameterized>=0.7.0",
         ],
     },
 )

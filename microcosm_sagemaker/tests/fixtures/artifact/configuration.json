@@ -1,5 +1,5 @@
 {
-    "active_bundle": "compound_bundle",
+    "active_bundle": "noop_compound_bundle",
     "simple_bundle": {
         "simple_param": 1
     }

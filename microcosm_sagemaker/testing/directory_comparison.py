@@ -19,6 +19,7 @@ def directory_comparison(
     gold_dir: Path,
     actual_dir: Path,
     matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None,
+    ignore_hidden: bool = True,
 ):
     """
     Recursively checks the contents of `actual_dir` against the expected
@@ -32,10 +33,12 @@ def directory_comparison(
     actual_paths = sorted([
         subpath.relative_to(actual_dir)
         for subpath in actual_dir.glob('**/*')
+        if not (subpath.name.startswith(".") and ignore_hidden)  # exclude hidden files if ignore_hidden is True
     ])
     gold_paths = sorted([
         subpath.relative_to(gold_dir)
         for subpath in gold_dir.glob('**/*')
+        if not (subpath.name.startswith(".") and ignore_hidden)  # exclude hidden files if ignore_hidden is True
     ])
 
     assert_that(actual_paths, contains(*gold_paths))
@@ -47,6 +50,7 @@ def directory_comparison(
         if gold_path.is_dir():
             assert_that(actual_path.is_dir(), is_(True))
         else:
+            assert_that(actual_path.is_dir(), is_(False))
             if path in matchers:
                 extractor, matcher_constructor = matchers[path]
             else:
