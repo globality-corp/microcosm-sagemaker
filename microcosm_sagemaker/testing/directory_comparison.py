@@ -11,7 +11,39 @@ from hamcrest import (
 from microcosm_sagemaker.testing.bytes_extractor import ExtractorMatcherPair
 
 
-def identity(x):
+def _is_empty_dir(path: Path):
+    if not path.is_dir():
+        return False
+
+    try:
+        next(path.iterdir())
+    except StopIteration:
+        return True
+
+    return False
+
+
+def _get_relevant_subpaths(directory: Path, ignore_empty_directories: bool):
+    """
+    Return all subpaths of directory, recursively, optionally ignoring empty
+    directories.
+
+    """
+    subpaths = sorted([
+        subpath.relative_to(directory)
+        for subpath in directory.glob('**/*')
+    ])
+
+    if ignore_empty_directories:
+        subpaths = list(filter(
+            lambda path: not _is_empty_dir(directory / path),
+            subpaths,
+        ))
+
+    return subpaths
+
+
+def _identity(x):
     return x
 
 
@@ -19,6 +51,7 @@ def directory_comparison(
     gold_dir: Path,
     actual_dir: Path,
     matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None,
+    ignore_empty_directories: bool = True,
 ):
     """
     Recursively checks the contents of `actual_dir` against the expected
@@ -27,16 +60,20 @@ def directory_comparison(
     be used to extract and match the contents of the given file instead.
 
     """
-    matchers = matchers or dict()
+    if matchers is None:
+        matchers = dict()
 
-    actual_paths = sorted([
-        subpath.relative_to(actual_dir)
-        for subpath in actual_dir.glob('**/*')
-    ])
-    gold_paths = sorted([
-        subpath.relative_to(gold_dir)
-        for subpath in gold_dir.glob('**/*')
-    ])
+    assert_that(gold_dir.exists(), is_(True))
+    assert_that(actual_dir.exists(), is_(True))
+
+    actual_paths = _get_relevant_subpaths(
+        directory=actual_dir,
+        ignore_empty_directories=ignore_empty_directories,
+    )
+    gold_paths = _get_relevant_subpaths(
+        directory=gold_dir,
+        ignore_empty_directories=ignore_empty_directories,
+    )
 
     assert_that(actual_paths, contains(*gold_paths))
 
@@ -44,14 +81,16 @@ def directory_comparison(
         gold_path = gold_dir / path
         actual_path = actual_dir / path
 
-        if gold_path.is_dir():
-            assert_that(actual_path.is_dir(), is_(True))
-        else:
+        assert_that(
+            actual_path.is_dir(),
+            is_(equal_to(gold_path.is_dir())),
+        )
+        if not gold_path.is_dir():
             if path in matchers:
                 extractor, matcher_constructor = matchers[path]
             else:
                 extractor, matcher_constructor = ExtractorMatcherPair(
-                    identity,
+                    _identity,
                     lambda x: is_(equal_to(x)),
                 )
 

@@ -127,9 +127,25 @@ class BundleSaveTestCase(BundleTestCase):
         )
 
 
-class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
-    gold_bundle_output_artifact_path: Path
+class BundleEmptySaveTestCase(BundleSaveTestCase):
+    """
+    For convenience, this can be used to test bundles that don't save anything.
 
+    """
+    def setup(self) -> None:
+        self.gold_temp_dir = tempfile.TemporaryDirectory()
+        super().setup()
+
+    def teardown(self) -> None:
+        self.gold_temp_dir.cleanup()
+        super().teardown()
+
+    @property
+    def _gold_bundle_output_artifact(self) -> BundleOutputArtifact:
+        return BundleOutputArtifact(self.gold_temp_dir.name)
+
+
+class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
     def setup(self) -> None:
         self.graph = create_evaluate_app(
             extra_loader=load_each(
