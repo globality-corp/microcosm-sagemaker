@@ -65,3 +65,17 @@ def test_directory_comparison(
                 ),
                 raises(AssertionError),
             )
+
+
+def test_nonexistent_directory_comparison():
+
+    gold_dir = Path("nonexistent-gold")
+    actual_dir = Path("nonexistent-actual")
+
+    assert_that(
+        calling(directory_comparison).with_args(
+            gold_dir=gold_dir,
+            actual_dir=actual_dir,
+        ),
+        raises(AssertionError),
+    )

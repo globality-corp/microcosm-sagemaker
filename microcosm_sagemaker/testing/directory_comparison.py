@@ -15,6 +15,10 @@ def identity(x):
     return x
 
 
+def is_hidden(path: Path) -> bool:
+    return path.name.startswith(".")
+
+
 def directory_comparison(
     gold_dir: Path,
     actual_dir: Path,
@@ -30,15 +34,18 @@ def directory_comparison(
     """
     matchers = matchers or dict()
 
+    assert_that(gold_dir.exists(), is_(True))
+    assert_that(actual_dir.exists(), is_(True))
+
     actual_paths = sorted([
         subpath.relative_to(actual_dir)
         for subpath in actual_dir.glob('**/*')
-        if not (subpath.name.startswith(".") and ignore_hidden)  # exclude hidden files if ignore_hidden is True
+        if not (is_hidden(subpath) and ignore_hidden)  # exclude hidden files if ignore_hidden is True
     ])
     gold_paths = sorted([
         subpath.relative_to(gold_dir)
         for subpath in gold_dir.glob('**/*')
-        if not (subpath.name.startswith(".") and ignore_hidden)  # exclude hidden files if ignore_hidden is True
+        if not (is_hidden(subpath) and ignore_hidden)  # exclude hidden files if ignore_hidden is True
     ])
 
     assert_that(actual_paths, contains(*gold_paths))

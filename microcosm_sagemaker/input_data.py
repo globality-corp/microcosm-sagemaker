@@ -7,4 +7,4 @@ class InputData:
         self.path = Path(path)
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({str(self.path)})"
+        return f'{type(self).__name__}("{str(self.path)}")'

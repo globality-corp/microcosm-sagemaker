@@ -165,7 +165,7 @@ DIRECTORY_COMPARISON_TEST_CASES = [
             }),
             "hello.txt": File("hello"),
             "subdir2": Dir({
-                ".keep": File(""),
+                ".keep": File(),
             }),
         }),
         actual=Dir({
@@ -187,7 +187,7 @@ DIRECTORY_COMPARISON_TEST_CASES = [
             }),
             "hello.txt": File("hello"),
             "subdir2": Dir({
-                ".keep": File(""),
+                ".keep": File(),
             }),
         }),
         actual=Dir({
@@ -199,5 +199,31 @@ DIRECTORY_COMPARISON_TEST_CASES = [
         }),
         should_pass=False,
         ignore_hidden=False,
+    ),
+
+    # Doubly nested directory using ignore_hidden=True
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir1": Dir({
+                "hi.txt": File("hi"),
+                "subdir1-1": Dir()
+            }),
+            "hello.txt": File("hello"),
+            "subdir2": Dir({
+                ".keep": File(),
+            }),
+        }),
+        actual=Dir({
+            "subdir1": Dir({
+                "hi.txt": File("hi"),
+                "subdir1-1": Dir({
+                    ".keep": File(),
+                })
+            }),
+            "hello.txt": File("hello"),
+            "subdir2": Dir(),
+        }),
+        should_pass=True,
+        ignore_hidden=True,
     ),
 ]

@@ -17,7 +17,7 @@ class OutputArtifact(ABC):
         self.path.mkdir(parents=True, exist_ok=True)
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({str(self.path)})"
+        return f'{type(self).__name__}("{str(self.path)}")'
 
 
 class BundleOutputArtifact(OutputArtifact):
@@ -43,7 +43,7 @@ class InputArtifact(ABC):
         self.path = Path(path)
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({str(self.path)})"
+        return f'{type(self).__name__}("{str(self.path)}")'
 
 
 class BundleInputArtifact(InputArtifact):
