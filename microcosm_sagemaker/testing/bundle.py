@@ -128,8 +128,6 @@ class BundleSaveTestCase(BundleTestCase):
 
 
 class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
-    gold_bundle_output_artifact_path: Path
-
     def setup(self) -> None:
         self.graph = create_evaluate_app(
             extra_loader=load_each(
