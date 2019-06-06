@@ -11,14 +11,19 @@ from hamcrest import (
 from microcosm_sagemaker.testing.bytes_extractor import ExtractorMatcherPair
 
 
-def identity(x):
+def _identity(x):
     return x
+
+
+def _is_hidden(path: Path) -> bool:
+    return path.name.startswith(".")
 
 
 def directory_comparison(
     gold_dir: Path,
     actual_dir: Path,
     matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None,
+    ignore_hidden: bool = True,
 ):
     """
     Recursively checks the contents of `actual_dir` against the expected
@@ -26,16 +31,27 @@ def directory_comparison(
     the gold dir, and instead specify an (extractor, matcher) pair that should
     be used to extract and match the contents of the given file instead.
 
+    By default, this function ignores hidden files.  This functionality is
+    useful when you expect an empty directory, because git won't allow checking
+    in an empty directory.  In this situation you can add an empty `.keep` file
+    to the directory to make sure it is checked in.
+
     """
-    matchers = matchers or dict()
+    if matchers is None:
+        matchers = dict()
+
+    assert_that(gold_dir.exists(), is_(True))
+    assert_that(actual_dir.exists(), is_(True))
 
     actual_paths = sorted([
         subpath.relative_to(actual_dir)
         for subpath in actual_dir.glob('**/*')
+        if not (ignore_hidden and _is_hidden(subpath))  # exclude hidden files if ignore_hidden is True
     ])
     gold_paths = sorted([
         subpath.relative_to(gold_dir)
         for subpath in gold_dir.glob('**/*')
+        if not (ignore_hidden and _is_hidden(subpath))  # exclude hidden files if ignore_hidden is True
     ])
 
     assert_that(actual_paths, contains(*gold_paths))
@@ -47,11 +63,12 @@ def directory_comparison(
         if gold_path.is_dir():
             assert_that(actual_path.is_dir(), is_(True))
         else:
+            assert_that(actual_path.is_dir(), is_(False))
             if path in matchers:
                 extractor, matcher_constructor = matchers[path]
             else:
                 extractor, matcher_constructor = ExtractorMatcherPair(
-                    identity,
+                    _identity,
                     lambda x: is_(equal_to(x)),
                 )
 

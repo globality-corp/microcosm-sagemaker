@@ -15,7 +15,7 @@ def load_default_config(metadata: Metadata) -> Configuration:
     """
 
     config = Configuration(
-        active_bundle="compound_bundle",
+        active_bundle="noop_compound_bundle",
         active_evaluation="simple_evaluation",
     )
 

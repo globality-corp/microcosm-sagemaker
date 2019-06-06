@@ -16,6 +16,9 @@ class OutputArtifact(ABC):
     def init(self) -> None:
         self.path.mkdir(parents=True, exist_ok=True)
 
+    def __repr__(self) -> str:
+        return f'{type(self).__name__}("{str(self.path)}")'
+
 
 class BundleOutputArtifact(OutputArtifact):
     pass
@@ -38,6 +41,9 @@ class RootOutputArtifact(OutputArtifact):
 class InputArtifact(ABC):
     def __init__(self, path: Union[str, Path]):
         self.path = Path(path)
+
+    def __repr__(self) -> str:
+        return f'{type(self).__name__}("{str(self.path)}")'
 
 
 class BundleInputArtifact(InputArtifact):
