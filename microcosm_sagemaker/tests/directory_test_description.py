@@ -1,10 +1,12 @@
 """
 A small DSL for defining directory structures for use in testing directory
 comparison.
+
 """
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Optional
+from typing import Mapping
 
 
 class Entry(ABC):
@@ -13,11 +15,9 @@ class Entry(ABC):
         ...
 
 
+@dataclass
 class Dir(Entry):
-    def __init__(self, entries: Optional[Mapping[str, Entry]] = None):
-        if entries is None:
-            entries = dict()
-        self.entries = entries
+    entries: Mapping[str, Entry] = field(default_factory=dict)
 
     def instantiate(self, path: Path):
         path.mkdir()
@@ -25,16 +25,10 @@ class Dir(Entry):
         for name, entry in self.entries.items():
             entry.instantiate(path / name)
 
-    def __repr__(self) -> str:
-        return f"Dir({repr(self.entries)})"
 
-
+@dataclass
 class File(Entry):
-    def __init__(self, content: str = ""):
-        self.content = content
+    content: str = ""
 
     def instantiate(self, path: Path):
         path.write_text(self.content)
-
-    def __repr__(self) -> str:
-        return f"File({repr(self.content)})"

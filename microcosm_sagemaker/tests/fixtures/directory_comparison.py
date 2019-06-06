@@ -136,15 +136,35 @@ DIRECTORY_COMPARISON_TEST_CASES = [
     DirectoryComparisonTest(
         gold=Dir({
             "subdir": Dir({
-                "hi.json": File('{"foo":"baz"}'),
+                "hi.json": File('{"foo":"bar"}'),
             }),
-            "hello.json": File('{"foo":"baz"}'),
+            "hello.json": File('{"foo":"bar"}'),
+        }),
+        actual=Dir({
+            "subdir": Dir({
+                "hi.json": File('{"foo":"whoops","extra":"fine"}'),
+            }),
+            "hello.json": File('{"foo":"whoops","extra":"fine"}'),
+        }),
+        should_pass=False,
+        use_json_matcher=True,
+    ),
+
+    # Fail when a matcher doesn't ignore some json entries
+    DirectoryComparisonTest(
+        gold=Dir({
+            "subdir": Dir({
+                "hi.json": File('{"foo":"bar"}'),
+            }),
+            "hello.json": File('{"foo":"bar"}'),
+            "bad.json": File('{"foo":"bar"}'),
         }),
         actual=Dir({
             "subdir": Dir({
                 "hi.json": File('{"foo":"bar","extra":"fine"}'),
             }),
             "hello.json": File('{"foo":"bar","extra":"fine"}'),
+            "bad.json": File('{"foo":"bar","extra":"not fine!"}'),
         }),
         should_pass=False,
         use_json_matcher=True,
@@ -205,7 +225,6 @@ DIRECTORY_COMPARISON_TEST_CASES = [
     DirectoryComparisonTest(
         gold=Dir({
             "subdir1": Dir({
-                "hi.txt": File("hi"),
                 "subdir1-1": Dir()
             }),
             "hello.txt": File("hello"),
@@ -215,7 +234,6 @@ DIRECTORY_COMPARISON_TEST_CASES = [
         }),
         actual=Dir({
             "subdir1": Dir({
-                "hi.txt": File("hi"),
                 "subdir1-1": Dir({
                     ".keep": File(),
                 })

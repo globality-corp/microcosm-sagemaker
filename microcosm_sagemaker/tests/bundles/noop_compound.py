@@ -12,6 +12,7 @@ from microcosm_sagemaker.tests.data_models.simple_prediction import SimplePredic
 class NoopCompoundBundle(Bundle):
     """
     This doesn't do any of its own training.
+
     """
     def __init__(self, graph):
         self.compound_bundle = graph.compound_bundle
@@ -34,6 +35,7 @@ class NoopCompoundBundle(Bundle):
     def predict(self, simple_arg: float) -> List[SimplePrediction]:
         """
         We just add 1.0 to all predictions of the dependency bundle.
+
         """
         return [
             SimplePrediction(

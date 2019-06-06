@@ -60,8 +60,8 @@ setup(
     },
     extras_require={
         "test": [
-            "coverage>=4.0.3",
             "PyHamcrest>=1.9.0",
+            "coverage>=4.0.3",
             "parameterized>=0.7.0",
         ],
     },
