@@ -4,14 +4,23 @@ from tempfile import NamedTemporaryFile
 from unittest import TestCase
 from unittest.mock import patch
 
-from hamcrest import assert_that, equal_to, is_
+from hamcrest import (
+    assert_that,
+    equal_to,
+    has_entries,
+    is_,
+)
+from microcosm.loaders import load_from_dict
 from microcosm.metadata import Metadata
 
 from microcosm_sagemaker.loaders import (
+    evaluate_conventions_loader,
     load_from_hyperparameters,
     load_from_s3,
-    load_train_conventions,
+    serve_conventions_loader,
+    train_conventions_loader,
 )
+from microcosm_sagemaker.tests.fixtures import get_fixture_path
 
 
 class TestLoaders(TestCase):
@@ -27,35 +36,79 @@ class TestLoaders(TestCase):
         assert_that(config, is_(equal_to(hyperparameters)))
 
     def test_load_from_s3(self):
-        metadata = Metadata("foo")
         remote_configuration = {
             "bar": "baz"
         }
 
         with self.patch_s3_value(remote_configuration):
-            loader = load_from_s3("s3://foo/config.json")
-            config = loader(metadata)
+            config = load_from_s3("s3://foo/config.json")
 
         assert_that(config, is_(equal_to(remote_configuration)))
 
-    def test_load_train_conventions(self):
+    def test_train_conventions_loader(self):
         metadata = Metadata("foo")
-        hyperparameters = {
-            "base_configuration": "s3://foo/config.json",
-            "bar2": "baz2",
-        }
-        remote_configuration = {
-            "bar": "baz"
-        }
+        hyperparameters = dict(
+            base_configuration="s3://foo/config.json",
+            bar2="baz2",
+        )
+        remote_configuration = dict(
+            bar="baz"
+        )
+        initial_configuration = dict(
+            bongo="bazman"
+        )
 
         with self.patch_s3_value(remote_configuration):
             with self.patch_hyperparameter_value(hyperparameters):
-                config = load_train_conventions(metadata)
+                loader = train_conventions_loader(
+                    initial_loader=load_from_dict(initial_configuration),
+                )
+                config = loader(metadata)
 
         assert_that(config, is_(equal_to({
             "bar2": "baz2",
             **remote_configuration,
+            **initial_configuration,
         })))
+
+    def test_serve_conventions_loader(self):
+        metadata = Metadata("foo")
+        root_input_artifact_path = get_fixture_path("artifact")
+        initial_configuration = dict(
+            active_bundle="spaghetti",
+            bongo="bazman",
+            root_input_artifact_path=root_input_artifact_path,
+        )
+
+        loader = serve_conventions_loader(
+            initial_loader=load_from_dict(initial_configuration),
+        )
+        config = loader(metadata)
+
+        assert_that(config, has_entries(
+            build_route_path=has_entries(
+                prefix="",
+            ),
+            **initial_configuration,
+        ))
+
+    def test_evaluate_conventions_loader(self):
+        metadata = Metadata("foo")
+        root_input_artifact_path = get_fixture_path("artifact")
+        initial_configuration = dict(
+            active_bundle="spaghetti",
+            bongo="bazman",
+            root_input_artifact_path=root_input_artifact_path,
+        )
+
+        loader = evaluate_conventions_loader(
+            initial_loader=load_from_dict(initial_configuration),
+        )
+        config = loader(metadata)
+
+        assert_that(config, has_entries(
+            **initial_configuration,
+        ))
 
     @staticmethod
     @contextmanager
