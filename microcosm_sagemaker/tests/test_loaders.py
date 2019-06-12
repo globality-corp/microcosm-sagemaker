@@ -15,8 +15,7 @@ from microcosm.metadata import Metadata
 
 from microcosm_sagemaker.loaders import (
     evaluate_conventions_loader,
-    load_from_hyperparameters,
-    load_from_s3,
+    hyperparameter_loader,
     serve_conventions_loader,
     train_conventions_loader,
 )
@@ -31,19 +30,9 @@ class TestLoaders(TestCase):
         }
 
         with self.patch_hyperparameter_value(hyperparameters):
-            config = load_from_hyperparameters(metadata)
+            config = hyperparameter_loader(metadata)
 
         assert_that(config, is_(equal_to(hyperparameters)))
-
-    def test_load_from_s3(self):
-        remote_configuration = {
-            "bar": "baz"
-        }
-
-        with self.patch_s3_value(remote_configuration):
-            config = load_from_s3("s3://foo/config.json")
-
-        assert_that(config, is_(equal_to(remote_configuration)))
 
     def test_train_conventions_loader(self):
         metadata = Metadata("foo")
@@ -66,7 +55,7 @@ class TestLoaders(TestCase):
                 config = loader(metadata)
 
         assert_that(config, is_(equal_to({
-            "bar2": "baz2",
+            **hyperparameters,
             **remote_configuration,
             **initial_configuration,
         })))
