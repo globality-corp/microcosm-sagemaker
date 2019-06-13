@@ -59,7 +59,6 @@ class IsObjectEqual(BaseMatcher):
         return True
 
     def describe_to(self, description: StringDescription) -> None:
-        print(type(description))
         description.append_text(str(self.compare_object))
 
     def _get_dict_structure(self, obj: Any) -> Mapping[str, Any]:
