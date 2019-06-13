@@ -75,7 +75,7 @@ class BundleFitTestCase(BundleTestCase, BundlePredictionChecker):
             ),
         )
 
-        self.graph.load_bundle_and_dependencies(
+        self.graph.bundle_and_dependencies_loader(
             bundle=self.graph.active_bundle,
             root_input_artifact=self._root_input_artifact,
             dependencies_only=True,
@@ -97,18 +97,14 @@ class BundleSaveTestCase(BundleTestCase):
         return BundleOutputArtifact(self.gold_bundle_output_artifact_path)
 
     def setup(self) -> None:
-        self.graph = create_train_app(
+        self.graph = create_evaluate_app(
             extra_loader=load_each(
                 load_from_dict(
                     active_bundle=self.bundle_name,
+                    root_input_artifact_path=self.root_input_artifact_path,
                 ),
                 load_from_dict(self.extra_config),
             ),
-        )
-
-        self.graph.load_bundle_and_dependencies(
-            bundle=self.graph.active_bundle,
-            root_input_artifact=self._root_input_artifact,
         )
 
         self.temporary_directory = tempfile.TemporaryDirectory()
@@ -133,12 +129,16 @@ class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
             extra_loader=load_each(
                 load_from_dict(
                     active_bundle=self.bundle_name,
+                    root_input_artifact_path=self.root_input_artifact_path,
+                    load_active_bundle_and_dependencies=dict(
+                        perform_load=False,
+                    ),
                 ),
                 load_from_dict(self.extra_config),
             ),
         )
 
-        self.graph.load_bundle_and_dependencies(
+        self.graph.bundle_and_dependencies_loader(
             bundle=self.graph.active_bundle,
             root_input_artifact=self._root_input_artifact,
             dependencies_only=True,

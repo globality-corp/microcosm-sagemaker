@@ -1,8 +1,10 @@
 from microcosm.config.model import Configuration
 from microcosm.metadata import Metadata
 
+from microcosm_sagemaker.constants import SagemakerPath
 
-def load_default_runserver_config(metadata: Metadata) -> Configuration:
+
+def load_default_microcosm_runserver_config(metadata: Metadata) -> Configuration:
     """
     Construct runserver default configuration.
 
@@ -13,6 +15,8 @@ def load_default_runserver_config(metadata: Metadata) -> Configuration:
         build_route_path=dict(
             prefix="",
         ),
+
+        root_input_artifact_path=SagemakerPath.MODEL,
     )
 
     return config

@@ -22,7 +22,7 @@ setup(
     install_requires=[
         "boto3>=1.9.90",
         "click>=7.0",
-        "microcosm>=2.7.0",
+        "microcosm>=2.8.0",
         "microcosm_flask[metrics,spooky]>=1.20.0",
     ],
     setup_requires=[
@@ -40,8 +40,16 @@ setup(
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",
             "active_evaluation = microcosm_sagemaker.factories:configure_active_evaluation",
             (
-                "load_bundle_and_dependencies = "
+                "bundle_and_dependencies_loader = "
                 "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesLoader"
+            ),
+            (
+                "bundle_and_dependencies_trainer = "
+                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesTrainer"
+            ),
+            (
+                "load_active_bundle_and_dependencies = "
+                "microcosm_sagemaker.factories:load_active_bundle_and_dependencies"
             ),
             "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
             "random = microcosm_sagemaker.random:Random",
@@ -52,10 +60,6 @@ setup(
                 "microcosm_sagemaker.bundle_orchestrator:SingleThreadedBundleOrchestrator"
             ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
-            (
-                "train_bundle_and_dependencies = "
-                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesTrainer"
-            ),
         ],
     },
     extras_require={

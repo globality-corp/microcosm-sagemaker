@@ -2,6 +2,10 @@
 Consumer factories.
 
 """
+from microcosm.api import defaults
+from microcosm.object_graph import ObjectGraph
+
+from microcosm_sagemaker.artifact import RootInputArtifact
 
 
 def configure_active_bundle(graph):
@@ -16,6 +20,25 @@ def configure_active_evaluation(graph):
     return getattr(graph, graph.config.active_evaluation)
 
 
+@defaults(
+    perform_load=True,
+)
+def load_active_bundle_and_dependencies(graph: ObjectGraph):
+    """
+    Loads the active bundle and its dependencies immediately upon instantation.
+
+    """
+    if not graph.config.load_active_bundle_and_dependencies.perform_load:
+        return
+
+    root_input_artifact = RootInputArtifact(graph.config.root_input_artifact_path)
+
+    graph.bundle_and_dependencies_loader(
+        bundle=graph.active_bundle,
+        root_input_artifact=root_input_artifact,
+    )
+
+
 def configure_sagemaker(graph):
     """
     Instantiates all the necessary sagemaker factories.
@@ -24,8 +47,8 @@ def configure_sagemaker(graph):
     graph.use(
         "active_bundle",
         "active_evaluation",
-        "load_bundle_and_dependencies",
+        "bundle_and_dependencies_loader",
+        "bundle_and_dependencies_trainer",
         "random",
-        "train_bundle_and_dependencies",
         "training_initializers",
     )
