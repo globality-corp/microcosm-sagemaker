@@ -61,7 +61,10 @@ def pickle_extractor(binary):
     return joblib.load(BytesIO(binary))
 
 
-def _matches_with_object(obj, ignore_properties=None):
+def matches_object(
+    obj: Union[object, dict],
+    ignore_properties: Optional[List[str]]=None,
+):
     if ignore_properties is None:
         ignore_properties = []
     return IsObjectEqual(obj, ignore_properties)
