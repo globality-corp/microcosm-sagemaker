@@ -4,7 +4,6 @@ from pathlib import Path
 from microcosm.loaders import load_each, load_from_dict
 
 from microcosm_sagemaker.app_hooks import create_evaluate_app
-from microcosm_sagemaker.artifact import RootInputArtifact
 from microcosm_sagemaker.bundle import Bundle
 from microcosm_sagemaker.evaluation import Evaluation
 from microcosm_sagemaker.input_data import InputData
@@ -36,10 +35,6 @@ class EvaluationTestCase(ABC):
         evaluation(bundle, input_data)
 
     @property
-    def _root_input_artifact(self) -> RootInputArtifact:
-        return RootInputArtifact(self.root_input_artifact_path)
-
-    @property
     def _input_data(self) -> InputData:
         return InputData(self.input_data_path)
 
@@ -48,14 +43,10 @@ class EvaluationTestCase(ABC):
             extra_loader=load_each(
                 load_from_dict(
                     active_evaluation=self.evaluation_name,
+                    root_input_artifact_path=self.root_input_artifact_path,
                 ),
                 load_from_dict(self.extra_config),
             ),
-        )
-
-        self.graph.load_bundle_and_dependencies(
-            bundle=self.graph.active_bundle,
-            root_input_artifact=self._root_input_artifact,
         )
 
     def test_evaluation(self) -> None:

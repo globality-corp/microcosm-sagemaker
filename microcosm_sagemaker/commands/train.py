@@ -58,7 +58,7 @@ def run_train(
 
     graph.training_initializers.init()
 
-    graph.train_bundle_and_dependencies(
+    graph.bundle_and_dependencies_trainer(
         bundle=graph.active_bundle,
         input_data=input_data,
         root_output_artifact=root_output_artifact,
