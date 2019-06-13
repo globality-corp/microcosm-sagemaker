@@ -62,7 +62,7 @@ class IsObjectEqual(BaseMatcher):
         return vars(obj)
 
 
-def pickle_extractor(binary: BinaryIO) -> Any:
+def pickle_extractor(binary: bytes) -> Any:
     return joblib.load(BytesIO(binary))
 
 
