@@ -1,10 +1,16 @@
 from io import BytesIO
 from pathlib import Path
-from typing import List, Union, Any, Mapping, BinaryIO, Optional
-from hamcrest.core.string_description import StringDescription
+from typing import (
+    Any,
+    List,
+    Mapping,
+    Optional,
+    Union,
+)
 
 import numpy as np
 from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.string_description import StringDescription
 from sklearn.externals import joblib
 
 from microcosm_sagemaker.testing.bytes_extractor import ExtractorMatcherPair
