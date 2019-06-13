@@ -1,5 +1,8 @@
 {
   "params": {
+    "commitbot": {
+      "enabled": true
+    },
     "name": "microcosm-sagemaker",
     "pypi": {
       "enabled": true,
