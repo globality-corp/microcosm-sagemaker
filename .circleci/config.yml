@@ -147,7 +147,7 @@ jobs:
             twine upload --repository pypi dist/microcosm-sagemaker-${version}.tar.gz
             version=$(python setup.py --version)
             globality-build dependency-update \
-                --package-name microcosm_sagemaker \
+                --package-name microcosm-sagemaker \
                 --version $version \
                 --language python
 
