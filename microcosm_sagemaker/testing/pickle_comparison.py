@@ -64,6 +64,10 @@ class IsObjectEqual(BaseMatcher):
     def _get_dict_structure(self, obj: Any) -> Mapping[str, Any]:
         if isinstance(obj, dict):
             return obj
+        # the matcher expects a dictionary in the _matches method
+        # -> we convert the set into a dictionary with a dummy key
+        elif isinstance(obj, set):
+            return dict(dummy_attrb=obj)
         return vars(obj)
 
 
