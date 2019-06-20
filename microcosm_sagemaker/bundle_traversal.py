@@ -13,7 +13,7 @@ class BundleAndDependenciesLoader:
     def __init__(self, graph: ObjectGraph):
         self.bundle_orchestrator = getattr(
             graph,
-            graph.config.load_bundle_and_dependencies.bundle_orchestrator,
+            graph.config.bundle_and_dependencies_loader.bundle_orchestrator,
         )
         self.graph = graph
 
@@ -54,7 +54,7 @@ class BundleAndDependenciesTrainer:
     def __init__(self, graph: ObjectGraph):
         self.bundle_orchestrator = getattr(
             graph,
-            graph.config.train_bundle_and_dependencies.bundle_orchestrator,
+            graph.config.bundle_and_dependencies_trainer.bundle_orchestrator,
         )
         self.graph = graph
 
