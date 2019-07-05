@@ -91,7 +91,7 @@ class BundleFitTestCase(BundleTestCase, BundlePredictionChecker):
 class BundleSaveTestCase(BundleTestCase):
     gold_bundle_output_artifact_path: Path
     output_artifact_matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None
-    do_directory_comparison: bool = True
+    ignore_file_contents: bool = False
 
     @property
     def _gold_bundle_output_artifact(self) -> BundleOutputArtifact:
@@ -117,12 +117,12 @@ class BundleSaveTestCase(BundleTestCase):
     def test_save(self) -> None:
         self.graph.active_bundle.save(self.bundle_output_artifact)
 
-        if self.do_directory_comparison:
-            directory_comparison(
-                gold_dir=self._gold_bundle_output_artifact.path,
-                actual_dir=self.bundle_output_artifact.path,
-                matchers=self.output_artifact_matchers,
-            )
+        directory_comparison(
+            gold_dir=self._gold_bundle_output_artifact.path,
+            actual_dir=self.bundle_output_artifact.path,
+            matchers=self.output_artifact_matchers,
+            ignore_file_contents=self.ignore_file_contents,
+        )
 
 
 class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
