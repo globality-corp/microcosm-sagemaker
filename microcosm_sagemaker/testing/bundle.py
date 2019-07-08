@@ -91,6 +91,7 @@ class BundleFitTestCase(BundleTestCase, BundlePredictionChecker):
 class BundleSaveTestCase(BundleTestCase):
     gold_bundle_output_artifact_path: Path
     output_artifact_matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None
+    ignore_file_contents: bool = False
 
     @property
     def _gold_bundle_output_artifact(self) -> BundleOutputArtifact:
@@ -120,6 +121,7 @@ class BundleSaveTestCase(BundleTestCase):
             gold_dir=self._gold_bundle_output_artifact.path,
             actual_dir=self.bundle_output_artifact.path,
             matchers=self.output_artifact_matchers,
+            ignore_file_contents=self.ignore_file_contents,
         )
 
 

@@ -24,6 +24,7 @@ def directory_comparison(
     actual_dir: Path,
     matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None,
     ignore_hidden: bool = True,
+    ignore_file_contents: bool = False,
 ):
     """
     Recursively checks the contents of `actual_dir` against the expected
@@ -64,18 +65,20 @@ def directory_comparison(
             assert_that(actual_path.is_dir(), is_(True))
         else:
             assert_that(actual_path.is_dir(), is_(False))
-            if path in matchers:
-                extractor, matcher_constructor = matchers[path]
-            else:
-                extractor, matcher_constructor = ExtractorMatcherPair(
-                    _identity,
-                    lambda x: is_(equal_to(x)),
-                )
 
-            assert_that(
-                extractor(actual_path.read_bytes()),
-                matcher_constructor(
-                    extractor(gold_path.read_bytes()),
-                ),
-                path,
-            )
+            if not ignore_file_contents:
+                if path in matchers:
+                    extractor, matcher_constructor = matchers[path]
+                else:
+                    extractor, matcher_constructor = ExtractorMatcherPair(
+                        _identity,
+                        lambda x: is_(equal_to(x)),
+                    )
+
+                assert_that(
+                    extractor(actual_path.read_bytes()),
+                    matcher_constructor(
+                        extractor(gold_path.read_bytes()),
+                    ),
+                    path,
+                )
