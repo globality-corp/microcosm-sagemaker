@@ -8,6 +8,7 @@ from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.app_hooks import create_serve_app
 from microcosm_sagemaker.commands.options import input_artifact_option
+from microcosm_sagemaker.profiling import enable_profiling
 
 
 @command()
@@ -23,14 +24,21 @@ from microcosm_sagemaker.commands.options import input_artifact_option
     "--debug/--no-debug",
     default=False,
 )
+@option(
+    "--profile/--no-profile",
+    default=False,
+)
 @input_artifact_option()
-def main(host, port, debug, input_artifact):
+def main(host, port, debug, profile, input_artifact):
     graph = create_serve_app(
         debug=debug,
         extra_loader=load_from_dict(
             root_input_artifact_path=input_artifact.path,
         ),
     )
+
+    if profile:
+        enable_profiling(graph)
 
     run_serve(
         graph=graph,

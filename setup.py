@@ -68,5 +68,6 @@ setup(
             "coverage>=4.0.3",
             "parameterized>=0.7.0",
         ],
+        "profiling": "pyinstrument>=3.0",
     },
 )
