@@ -1,5 +1,4 @@
 from json import dumps
-from logging import info
 
 from boto3 import client
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
