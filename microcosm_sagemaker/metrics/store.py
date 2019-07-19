@@ -1,5 +1,4 @@
 from json import dumps
-from logging import info
 
 from boto3 import client
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
@@ -40,8 +39,8 @@ class SageMakerMetrics:
                 MetricData=metric_data,
             )
         except (ClientError, NoCredentialsError, NoRegionError):
-            info("CloudWatch publishing disabled")
-            info(dumps(metric_data, indent=4))
+            print("CloudWatch publishing disabled")  # noqa: T003
+            print(dumps(metric_data, indent=4))  # noqa: T003
             response = None
 
         return response
