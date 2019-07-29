@@ -68,8 +68,8 @@ def root_input_artifact_config_loader(metadata: Metadata, config: Configuration)
 def train_conventions_loader(initial_loader: Loader) -> Loader:
     return two_stage_loader(
         primary_loader=load_each(
-            hyperparameter_loader,
             initial_loader,
+            hyperparameter_loader,
         ),
         secondary_loader=s3_loader,
     )
