@@ -22,8 +22,8 @@ setup(
     install_requires=[
         "boto3>=1.9.90",
         "click>=7.0",
-        "microcosm>=2.8.0",
-        "microcosm_flask[metrics,spooky]>=1.20.0",
+        "microcosm>=2.11.0",
+        "microcosm_flask[metrics,spooky]>=1.28.0",
     ],
     setup_requires=[
         "nose>=1.3.6",
