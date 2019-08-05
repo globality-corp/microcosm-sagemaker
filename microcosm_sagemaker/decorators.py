@@ -4,9 +4,6 @@ from typing import Any, Callable
 
 from microcosm.object_graph import ObjectGraph
 
-from microcosm_sagemaker.artifact import BundleInputArtifact, BundleOutputArtifact
-from microcosm_sagemaker.input_data import InputData
-
 
 def training_initializer():
     """
@@ -25,7 +22,7 @@ def training_initializer():
 
 
 # TODO: remove this when get_component_name is released with microcosm
-try: 
+try:
     from microcosm.api import get_component_name
 
 except ImportError:
@@ -58,7 +55,8 @@ def _method_with_logging(original_method):
         with Timer() as t:
             original_method(*args, **kwargs)
         logging.info(
-            f"Completed method `{original_method.__name__}` of the `{self.bundle_name}` after {t.elapsed_seconds:.1f} seconds."
+            f"Completed method `{original_method.__name__}` of the `{self.bundle_name}` "
+            f"after {t.elapsed_seconds:.1f} seconds."
         )
     return new_method
 
