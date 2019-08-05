@@ -4,7 +4,6 @@ from typing import Any, Callable
 
 from microcosm.object_graph import ObjectGraph
 
-from microcosm_sagemaker.api import get_component_name
 from microcosm_sagemaker.artifact import BundleInputArtifact, BundleOutputArtifact
 from microcosm_sagemaker.input_data import InputData
 
@@ -23,6 +22,22 @@ def training_initializer():
             return component
         return factory
     return decorator
+
+
+# TODO: remove this when get_component_name is released with microcosm
+try: 
+    from microcosm.api import get_component_name
+
+except ImportError:
+    def get_component_name(graph: ObjectGraph, component) -> str:
+        """
+        Given an object that is attached to the graph, it returns the object name.
+        """
+        return next(
+            key
+            for key, possible_component in graph.items()
+            if possible_component == component
+        )
 
 
 class Timer:
