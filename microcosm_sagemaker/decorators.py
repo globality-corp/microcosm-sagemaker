@@ -53,7 +53,7 @@ def _method_with_logging(original_method):
             f"Started method `{original_method.__name__}` of the `{self.bundle_name}`."
         )
         with Timer() as t:
-            original_method(*args, **kwargs)
+            original_method(self, *args, **kwargs)
         logging.info(
             f"Completed method `{original_method.__name__}` of the `{self.bundle_name}` "
             f"after {t.elapsed_seconds:.1f} seconds."
