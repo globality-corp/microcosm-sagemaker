@@ -47,7 +47,7 @@ class Timer:
 
 
 def _method_with_logging(original_method):
-    def new_method(*args, **kwargs):
+    def new_method(self, *args, **kwargs):
         self = args[0]
         logging.info(
             f"Started method `{original_method.__name__}` of the `{self.bundle_name}`."
