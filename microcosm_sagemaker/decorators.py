@@ -2,7 +2,9 @@ import logging
 import time
 from typing import Any, Callable
 
+from microcosm.api import get_component_name
 from microcosm.object_graph import ObjectGraph
+from microcosm_logging.timing import elapsed_time
 
 
 def training_initializer():
@@ -21,42 +23,18 @@ def training_initializer():
     return decorator
 
 
-# TODO: remove this when get_component_name is released with microcosm
-try:
-    from microcosm.api import get_component_name
-
-except ImportError:
-    def get_component_name(graph: ObjectGraph, component) -> str:
-        """
-        Given an object that is attached to the graph, it returns the object name.
-        """
-        return next(
-            key
-            for key, possible_component in graph.items()
-            if possible_component == component
-        )
-
-
-class Timer:
-    def __enter__(self):
-        self._start = time.perf_counter()
-        return self
-
-    def __exit__(self, *args):
-        self.elapsed_seconds = time.perf_counter() - self._start
-
-
 def _method_with_logging(original_method):
     def new_method(self, *args, **kwargs):
-        self = args[0]
+        bundle_name = get_component_name(self._graph, self)
         logging.info(
-            f"Started method `{original_method.__name__}` of the `{self.bundle_name}`."
+            f"Started method `{original_method.__name__}` of the `{bundle_name}`."
         )
-        with Timer() as t:
+        timing = {}
+        with elapsed_time(timing):
             original_method(self, *args, **kwargs)
         logging.info(
-            f"Completed method `{original_method.__name__}` of the `{self.bundle_name}` "
-            f"after {t.elapsed_seconds:.1f} seconds."
+            f"Completed method `{original_method.__name__}` of the `{bundle_name}` "
+            f"after {timing['elapsed_time']/1000:.1f} seconds."
         )
     return new_method
 
@@ -69,12 +47,7 @@ def log_bundle_methods(cls):
         _init(self, graph, **kwargs)
         self._graph = graph
 
-    @property
-    def bundle_name(self):
-        return get_component_name(self._graph, self)
-
     cls.__init__ = __init__
-    cls.bundle_name = bundle_name
     cls.fit = _method_with_logging(cls.fit)
     cls.load = _method_with_logging(cls.load)
     cls.save = _method_with_logging(cls.save)
