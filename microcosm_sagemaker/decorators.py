@@ -1,5 +1,4 @@
 import logging
-import time
 from typing import Any, Callable
 
 from microcosm.api import get_component_name
