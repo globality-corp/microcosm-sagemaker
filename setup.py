@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 project = "microcosm-sagemaker"
-version = "0.4.3"
+version = "0.5.0"
 
 setup(
     name=project,
@@ -22,8 +22,8 @@ setup(
     install_requires=[
         "boto3>=1.9.90",
         "click>=7.0",
-        "microcosm>=2.8.0",
-        "microcosm_flask[metrics,spooky]>=1.20.0",
+        "microcosm>=2.12.0",
+        "microcosm_flask[metrics,spooky]>=1.28.0",
     ],
     setup_requires=[
         "nose>=1.3.6",
@@ -52,6 +52,7 @@ setup(
                 "microcosm_sagemaker.factories:load_active_bundle_and_dependencies"
             ),
             "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
+            "sagemaker_health_convention = microcosm_sagemaker.conventions.health:configure_health",
             "random = microcosm_sagemaker.random:Random",
             "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
             "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
