@@ -8,9 +8,9 @@ from microcosm_sagemaker.decorators import training_initializer
     seed=42,
 )
 @training_initializer()
-class PyTorchInitializer:
+class TorchInitializer:
     def __init__(self, graph):
-        self.seed = graph.config.pytorch_initializer.seed
+        self.seed = graph.config.torch_initializer.seed
 
     def init(self):
         manual_seed(self.seed)

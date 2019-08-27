@@ -1,4 +1,3 @@
-from abc import abstractproperty
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -7,6 +6,7 @@ from allennlp.common import Params
 from allennlp.models.archival import load_archive
 from allennlp.predictors.predictor import Predictor
 
+import microcosm_sagemaker.frameworks.allennlp.vanilla_predictor  # noqa
 from microcosm_sagemaker.artifact import BundleInputArtifact, BundleOutputArtifact
 from microcosm_sagemaker.bundle import Bundle
 from microcosm_sagemaker.frameworks.allennlp.constants import ARTIFACT_NAME, CUDA_DEVICE
@@ -18,12 +18,13 @@ class AllenNLPBundle(Bundle):
     Higher-order AllenNLP component that can wrap other models, serializing
     our configuration format the way that they expect.
 
-    """
-    predictor_name: Optional[str] = None
+    Note that any paths which appear in allennlp_parameters are expected to be
+    relative to the `input_data` directory.
 
-    @abstractproperty
-    def allennlp_parameters(self) -> Dict[str, Any]:
-        ...
+    """
+    # To specify custom predictor
+    predictor_name: Optional[str] = "vanilla_predictor"
+    allennlp_parameters: Dict[str, Any]
 
     def fit_and_save(
         self,
@@ -31,10 +32,11 @@ class AllenNLPBundle(Bundle):
         output_artifact: BundleOutputArtifact,
     ) -> None:
         allennlp_params = Params(self.allennlp_parameters)
-        train_model(
-            allennlp_params,
-            self._allenlp_path(output_artifact.path),
-        )
+        with input_data.cd():
+            train_model(
+                allennlp_params,
+                self._allenlp_path(output_artifact.path),
+            )
 
         self._set_predictor(output_artifact.path)
 
