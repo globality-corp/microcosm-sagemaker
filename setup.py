@@ -40,10 +40,6 @@ setup(
             "active_bundle = microcosm_sagemaker.factories:configure_active_bundle",
             "active_evaluation = microcosm_sagemaker.factories:configure_active_evaluation",
             (
-                "allennlp_initializer = "
-                "microcosm_sagemaker.frameworks.allennlp.initializer:AllenNlpInitializer [allennlp]"
-            ),
-            (
                 "bundle_and_dependencies_loader = "
                 "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesLoader"
             ),
@@ -57,7 +53,6 @@ setup(
             ),
             "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
             "sagemaker_health_convention = microcosm_sagemaker.conventions.health:configure_health",
-            "pytorch_initializer = microcosm_sagemaker.frameworks.pytorch.initializer:PyTorchInitializer [pytorch]",
             "random = microcosm_sagemaker.random:Random",
             "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
             "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
@@ -65,19 +60,15 @@ setup(
                 "single_threaded_bundle_orchestrator = "
                 "microcosm_sagemaker.bundle_orchestrator:SingleThreadedBundleOrchestrator"
             ),
-            (
-                "tensorflow_initializer = "
-                "microcosm_sagemaker.frameworks.tensorflow.initializer:TensorFlowInitializer [tensorflow]"
-            ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
         ],
     },
     extras_require={
         "allennlp": [
-            "torch>=1.1.0",
             "allennlp>=0.8.4",
+            "torch>=1.1.0",
         ],
-        "pytorch": [
+        "torch": [
             "torch>=1.1.0",
         ],
         "tensorflow": [

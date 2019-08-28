@@ -7,6 +7,11 @@ from microcosm_sagemaker.bundle import Bundle
 
 
 class PicklingBundle(Bundle):
+    """
+    Automatically defines save and load to pickle and load a list of attrs
+    specified in `pickle_attrs`
+
+    """
     pickle_attrs: List[str]
 
     def save(self, output_artifact: BundleOutputArtifact) -> None:
