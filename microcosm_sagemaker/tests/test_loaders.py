@@ -60,6 +60,32 @@ class TestLoaders(TestCase):
             **initial_configuration,
         })))
 
+    def test_train_conventions_loader_order(self):
+        metadata = Metadata("foo")
+        hyperparameters = dict(
+            base_configuration="s3://foo/config.json",
+            bar2="baz2",
+        )
+        remote_configuration = dict(
+            bar="baz"
+        )
+        initial_configuration = dict(
+            bar2="baz1"
+        )
+
+        with self.patch_s3_value(remote_configuration):
+            with self.patch_hyperparameter_value(hyperparameters):
+                loader = train_conventions_loader(
+                    initial_loader=load_from_dict(initial_configuration),
+                )
+                config = loader(metadata)
+
+        assert_that(config, has_entries(
+            base_configuration="s3://foo/config.json",
+            bar="baz",
+            bar2="baz2",  # making sure baz2 overwrites baz1 for the bar2 key
+        ))
+
     def test_serve_conventions_loader(self):
         metadata = Metadata("foo")
         root_input_artifact_path = get_fixture_path("artifact")
