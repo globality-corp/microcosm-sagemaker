@@ -80,13 +80,11 @@ class TestLoaders(TestCase):
                 )
                 config = loader(metadata)
 
-        expected_config = dict(
+        assert_that(config, has_entries(
             base_configuration="s3://foo/config.json",
             bar="baz",
             bar2="baz2",  # making sure baz2 overwrites baz1 for the bar2 key
-        )
-
-        assert_that(config, is_(equal_to(expected_config)))
+        ))
 
     def test_serve_conventions_loader(self):
         metadata = Metadata("foo")
