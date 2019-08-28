@@ -80,9 +80,11 @@ class TestLoaders(TestCase):
                 )
                 config = loader(metadata)
 
-        expected_config = dict()
-        for _config in [initial_configuration, hyperparameters, remote_configuration]:
-            expected_config.update(**_config)
+        expected_config = dict(
+            base_configuration="s3://foo/config.json",
+            bar="baz",
+            bar2="baz2",  # making sure baz2 overwrites baz1 for the bar2 key
+        )
 
         assert_that(config, is_(equal_to(expected_config)))
 
