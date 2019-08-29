@@ -5,6 +5,8 @@ Tests are sunny day cases under the assumption that framework conventions
 handle most error conditions.
 
 """
+from typing import Optional
+
 from hamcrest import (
     assert_that,
     equal_to,
@@ -23,7 +25,8 @@ class InvocationsRouteTestCase(RouteTestCase):
     """
 
     request_json: dict
-    response_items_matcher: BaseMatcher
+    response_items_matcher: Optional[BaseMatcher] = None
+    expected_status_code: int = 200
 
     def test_search(self) -> None:
         """
@@ -38,10 +41,12 @@ class InvocationsRouteTestCase(RouteTestCase):
             json=self.request_json,
         )
 
-        assert_that(response.status_code, is_(equal_to(200)))
-        assert_that(
-            response.json,
-            has_entries(
-                items=self.response_items_matcher,
-            ),
-        )
+        assert_that(response.status_code, is_(equal_to(self.expected_status_code)))
+
+        if self.response_items_matcher:
+            assert_that(
+                response.json,
+                has_entries(
+                    items=self.response_items_matcher,
+                ),
+            )
