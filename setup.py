@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 project = "microcosm-sagemaker"
-version = "0.5.0"
+version = "0.5.1"
 
 setup(
     name=project,
@@ -23,7 +23,7 @@ setup(
         "boto3>=1.9.90",
         "click>=7.0",
         "microcosm>=2.12.0",
-        "microcosm_flask[metrics,spooky]>=1.28.0",
+        "microcosm-flask[metrics]>=2.0.0",
     ],
     setup_requires=[
         "nose>=1.3.6",
