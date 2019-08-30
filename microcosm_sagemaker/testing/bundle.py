@@ -144,8 +144,15 @@ class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
 
 
 class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
+    """
+    One combined test of fit, save and load.  First fits and saves bundle, then
+    optionally tests artifact against a gold directory, then loads the trained
+    bundle and runs behaviour tests.
+
+    """
     input_data_path: Path
 
+    # These are optional; only required for doing gold-based testing
     gold_bundle_output_artifact_path: Optional[Path] = None
     output_artifact_matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None
     ignore_file_contents: bool = False
