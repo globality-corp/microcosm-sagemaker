@@ -1,6 +1,7 @@
 from hamcrest import contains, has_properties
 
 from microcosm_sagemaker.testing.bundle import (
+    BundleFitSaveLoadTestCase,
     BundleFitTestCase,
     BundleLoadTestCase,
     BundlePredictionCheck,
@@ -46,6 +47,14 @@ class TestSimpleBundleSave(BundleSaveTestCase, SimpleBundleTestCase):
 
 
 class TestSimpleBundleLoad(BundleLoadTestCase, SimpleBundleTestCase):
+    @mock_app_hooks()
+    def setup(self) -> None:
+        super().setup()
+
+
+class TestSimpleBundleFitSaveLoad(BundleFitSaveLoadTestCase, SimpleBundleTestCase):
+    input_data_path = get_fixture_path("input_data")
+
     @mock_app_hooks()
     def setup(self) -> None:
         super().setup()

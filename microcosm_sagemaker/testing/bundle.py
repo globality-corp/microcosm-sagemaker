@@ -6,7 +6,11 @@ from typing import List, Mapping, Optional
 from microcosm.loaders import load_each, load_from_dict
 
 from microcosm_sagemaker.app_hooks import create_evaluate_app, create_train_app
-from microcosm_sagemaker.artifact import BundleOutputArtifact, RootInputArtifact
+from microcosm_sagemaker.artifact import (
+    BundleInputArtifact,
+    BundleOutputArtifact,
+    RootInputArtifact,
+)
 from microcosm_sagemaker.bundle import Bundle
 from microcosm_sagemaker.input_data import InputData
 from microcosm_sagemaker.testing.bundle_prediction_check import BundlePredictionCheck
@@ -151,7 +155,6 @@ class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
         self.setup_evaluate_graph()
 
         self.temporary_directory = tempfile.TemporaryDirectory()
-        self.bundle_output_artifact = BundleOutputArtifact(self.temporary_directory.name)
 
     def teardown(self) -> None:
         self.temporary_directory.cleanup()
@@ -195,14 +198,15 @@ class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
         )
 
     def test_fit_save_load(self) -> None:
-        self.train_graph.active_bundle.fit_and_save(
+        self.graph = self.train_graph
+        self.graph.active_bundle.fit_and_save(
             self._input_data,
-            self.bundle_output_artifact,
+            BundleOutputArtifact(self.temporary_directory.name)
         )
-        self.check_bundle_prediction(self.train_graph.active_bundle)
+        self.check_bundle_prediction(self.graph.active_bundle)
 
-        evaluate_graph = self.setup_evaluate_graph()
-        evaluate_graph.active_bundle.load(
-            self._root_input_artifact / self.bundle_name,
+        self.graph = self.evaluate_graph
+        self.graph.active_bundle.load(
+            BundleInputArtifact(self.temporary_directory.name),
         )
-        self.check_bundle_prediction(evaluate_graph.active_bundle)
+        self.check_bundle_prediction(self.graph.active_bundle)

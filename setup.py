@@ -76,8 +76,10 @@ setup(
         ],
         "test": [
             "PyHamcrest>=1.9.0",
+            "allennlp>=0.8.4",
             "coverage>=4.0.3",
             "parameterized>=0.7.0",
+            "torch>=1.1.0",
         ],
         "profiling": "pyinstrument>=3.0",
     },
