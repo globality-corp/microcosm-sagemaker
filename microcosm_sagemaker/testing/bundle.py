@@ -146,6 +146,16 @@ class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
 class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
     input_data_path: Path
 
+    gold_bundle_output_artifact_path: Optional[Path] = None
+    output_artifact_matchers: Optional[Mapping[Path, ExtractorMatcherPair]] = None
+    ignore_file_contents: bool = False
+
+    @property
+    def _gold_bundle_output_artifact(self) -> BundleOutputArtifact:
+        assert self.gold_bundle_output_artifact_path is not None
+
+        return BundleOutputArtifact(self.gold_bundle_output_artifact_path)
+
     @property
     def _input_data(self) -> InputData:
         return InputData(self.input_data_path)
@@ -204,6 +214,14 @@ class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
             BundleOutputArtifact(self.temporary_directory.name)
         )
         self.check_bundle_prediction(self.graph.active_bundle)
+
+        if self.gold_bundle_output_artifact_path:
+            directory_comparison(
+                gold_dir=self._gold_bundle_output_artifact.path,
+                actual_dir=Path(self.temporary_directory.name),
+                matchers=self.output_artifact_matchers,
+                ignore_file_contents=self.ignore_file_contents,
+            )
 
         self.graph = self.evaluate_graph
         self.graph.active_bundle.load(

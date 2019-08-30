@@ -54,6 +54,9 @@ class TestSimpleBundleLoad(BundleLoadTestCase, SimpleBundleTestCase):
 
 class TestSimpleBundleFitSaveLoad(BundleFitSaveLoadTestCase, SimpleBundleTestCase):
     input_data_path = get_fixture_path("input_data")
+    gold_bundle_output_artifact_path = (
+        get_fixture_path("artifact") / "simple_bundle"
+    )
 
     @mock_app_hooks()
     def setup(self) -> None:
