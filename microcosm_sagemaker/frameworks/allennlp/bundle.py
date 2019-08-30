@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from allennlp.commands.train import train_model
 from allennlp.common import Params
@@ -23,7 +23,7 @@ class AllenNLPBundle(Bundle):
 
     """
     # To specify custom predictor
-    predictor_name: Optional[str] = "vanilla_predictor"
+    predictor_name: str = "vanilla_predictor"
     allennlp_parameters: Dict[str, Any]
 
     def fit_and_save(
