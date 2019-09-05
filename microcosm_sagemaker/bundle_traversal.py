@@ -47,7 +47,8 @@ def fit_and_save_bundle(
     nested_output_artifact = root_output_artifact / bundle_name
     nested_output_artifact.init()
 
-    bundle.fit_and_save(input_data, nested_output_artifact)
+    bundle.fit(input_data)
+    bundle.save(nested_output_artifact)
 
 
 @defaults(

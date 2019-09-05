@@ -216,9 +216,9 @@ class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
 
     def test_fit_save_load(self) -> None:
         self.graph = self.train_graph
-        self.graph.active_bundle.fit_and_save(
-            self._input_data,
-            BundleOutputArtifact(self.temporary_directory.name)
+        self.graph.active_bundle.fit(self._input_data)
+        self.graph.active_bundle.save(
+            BundleOutputArtifact(self.temporary_directory.name),
         )
         self.check_bundle_prediction(self.graph.active_bundle)
 

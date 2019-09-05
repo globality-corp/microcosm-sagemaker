@@ -24,33 +24,21 @@ class Bundle(ABC):
         """
         ...
 
+    @abstractmethod
     def fit(self, input_data: InputData) -> None:
         """
         Perform training
 
         """
-        raise NotImplementedError
+        ...
 
+    @abstractmethod
     def save(self, output_artifact: BundleOutputArtifact) -> None:
         """
         Save the trained model
 
         """
-        raise NotImplementedError
-
-    def fit_and_save(
-        self,
-        input_data: InputData,
-        output_artifact: BundleOutputArtifact,
-    ) -> None:
-        """
-        Perform training and save the trained artifact. By default just calls
-        `fit` and `save`, but the derived class can just override this
-        function instead if the two steps are not separable.
-
-        """
-        self.fit(input_data)
-        self.save(output_artifact)
+        ...
 
     @abstractmethod
     def load(self, input_artifact: BundleInputArtifact) -> None:

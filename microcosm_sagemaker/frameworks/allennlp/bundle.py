@@ -1,4 +1,5 @@
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any, Dict
 
 from allennlp.commands.train import train_model
@@ -26,25 +27,31 @@ class AllenNLPBundle(Bundle):
     predictor_name: str = "vanilla_predictor"
     allennlp_parameters: Dict[str, Any]
 
-    def fit_and_save(
-        self,
-        input_data: InputData,
-        output_artifact: BundleOutputArtifact,
-    ) -> None:
+    def fit(self, input_data: InputData) -> None:
         allennlp_params = Params(self.allennlp_parameters)
+        self.temporay_allennlp_dir = TemporaryDirectory()
+        self.temporay_allennlp_path = Path(self.temporay_allennlp_dir.name)
         with input_data.cd():
             train_model(
                 allennlp_params,
-                self._allenlp_path(output_artifact.path),
+                self.temporay_allennlp_path,
             )
 
-        self._set_predictor(output_artifact.path)
+        self._set_predictor(self.temporay_allennlp_path)
+
+    def save(self, output_artifact: BundleOutputArtifact) -> None:
+        allen_nlp_path = self._allenlp_path(output_artifact.path)
+        allen_nlp_path.mkdir(parents=True)
+
+        for child in self.temporay_allennlp_path.iterdir():
+            child.rename(allen_nlp_path / child.name)
+
+        self.temporay_allennlp_dir.cleanup()
 
     def load(self, input_artifact: BundleInputArtifact) -> None:
-        self._set_predictor(input_artifact.path)
+        self._set_predictor(self._allenlp_path(input_artifact.path))
 
-    def _set_predictor(self, path: Path) -> None:
-        allennlp_path = self._allenlp_path(path)
+    def _set_predictor(self, allennlp_path: Path) -> None:
         weights_path = allennlp_path / ARTIFACT_NAME
 
         archive = load_archive(
@@ -55,5 +62,5 @@ class AllenNLPBundle(Bundle):
 
         self.predictor = Predictor.from_archive(archive, self.predictor_name)
 
-    def _allenlp_path(self, artifact_path):
+    def _allenlp_path(self, artifact_path: Path):
         return Path(artifact_path) / "allennlp"
