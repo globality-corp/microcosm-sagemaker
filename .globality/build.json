@@ -3,6 +3,12 @@
     "commitbot": {
       "enabled": true
     },
+    "entrypoint": {
+      "pre_test_commands": [
+        "apt-get update",
+        "apt-get install -y --no-install-recommends build-essential"
+      ]
+    },
     "name": "microcosm-sagemaker",
     "pypi": {
       "enabled": true,
@@ -10,5 +16,5 @@
     }
   },
   "type": "python-library",
-  "version": "2019.32.0"
+  "version": "2019.35.30"
 }
