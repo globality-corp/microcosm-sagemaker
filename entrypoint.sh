@@ -21,6 +21,8 @@
 
 if [ "$1" = "test" ]; then
     # Install standard test dependencies; YMMV
+    apt-get update
+    apt-get install -y --no-install-recommends build-essential
     pip --quiet install \
         .[test] nose PyHamcrest coverage
     exec nosetests ${NAME}
