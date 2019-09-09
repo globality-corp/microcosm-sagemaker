@@ -29,24 +29,24 @@ class AllenNLPBundle(Bundle):
 
     def fit(self, input_data: InputData) -> None:
         allennlp_params = Params(self.allennlp_parameters)
-        self.temporay_allennlp_dir = TemporaryDirectory()
-        self.temporay_allennlp_path = Path(self.temporay_allennlp_dir.name)
+        self.temporary_allennlp_dir = TemporaryDirectory()
+        self.temporary_allennlp_path = Path(self.temporary_allennlp_dir.name)
         with input_data.cd():
             train_model(
                 allennlp_params,
-                self.temporay_allennlp_path,
+                self.temporary_allennlp_path,
             )
 
-        self._set_predictor(self.temporay_allennlp_path)
+        self._set_predictor(self.temporary_allennlp_path)
 
     def save(self, output_artifact: BundleOutputArtifact) -> None:
         allen_nlp_path = self._allenlp_path(output_artifact.path)
         allen_nlp_path.mkdir(parents=True)
 
-        for child in self.temporay_allennlp_path.iterdir():
+        for child in self.temporary_allennlp_path.iterdir():
             child.rename(allen_nlp_path / child.name)
 
-        self.temporay_allennlp_dir.cleanup()
+        self.temporary_allennlp_dir.cleanup()
 
     def load(self, input_artifact: BundleInputArtifact) -> None:
         self._set_predictor(self._allenlp_path(input_artifact.path))
