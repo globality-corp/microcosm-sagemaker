@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 project = "microcosm-sagemaker"
-version = "0.5.2"
+version = "0.6.0"
 
 setup(
     name=project,
@@ -52,9 +52,9 @@ setup(
                 "microcosm_sagemaker.factories:load_active_bundle_and_dependencies"
             ),
             "ping_convention = microcosm_sagemaker.conventions.ping:configure_ping",
-            "sagemaker_health_convention = microcosm_sagemaker.conventions.health:configure_health",
             "random = microcosm_sagemaker.random:Random",
             "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
+            "sagemaker_health_convention = microcosm_sagemaker.conventions.health:configure_health",
             "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
             (
                 "single_threaded_bundle_orchestrator = "
@@ -64,10 +64,22 @@ setup(
         ],
     },
     extras_require={
+        "allennlp": [
+            "allennlp>=0.8.4",
+            "torch>=1.1.0",
+        ],
+        "torch": [
+            "torch>=1.1.0",
+        ],
+        "tensorflow": [
+            "tensorflow>=1.14.0",
+        ],
         "test": [
             "PyHamcrest>=1.9.0",
+            "allennlp>=0.8.4",
             "coverage>=4.0.3",
             "parameterized>=0.7.0",
+            "torch>=1.1.0",
         ],
         "profiling": "pyinstrument>=3.0",
     },

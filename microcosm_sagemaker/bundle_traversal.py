@@ -1,3 +1,5 @@
+from functools import partial
+
 from microcosm.api import defaults
 from microcosm.object_graph import ObjectGraph
 
@@ -34,16 +36,18 @@ class BundleAndDependenciesLoader:
         )
 
 
-def save_bundle(
+def fit_and_save_bundle(
     graph: ObjectGraph,
-    bundle: Bundle,
+    input_data: InputData,
     root_output_artifact: RootOutputArtifact,
+    bundle: Bundle,
 ) -> None:
     bundle_name = _get_component_name(graph, bundle)
 
     nested_output_artifact = root_output_artifact / bundle_name
     nested_output_artifact.init()
 
+    bundle.fit(input_data)
     bundle.save(nested_output_artifact)
 
 
@@ -65,9 +69,12 @@ class BundleAndDependenciesTrainer:
         root_output_artifact: RootOutputArtifact,
         dependencies_only: bool = False,
     ):
-        def train(bundle):
-            bundle.fit(input_data)
-            save_bundle(self.graph, bundle, root_output_artifact)
+        train = partial(
+            fit_and_save_bundle,
+            self.graph,
+            input_data,
+            root_output_artifact,
+        )
 
         self.bundle_orchestrator(
             bundle=bundle,
