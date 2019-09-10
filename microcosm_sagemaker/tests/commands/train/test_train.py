@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from hamcrest import has_entries
+from hamcrest import contains, has_entries, has_properties
 from hamcrest.core.base_matcher import BaseMatcher
 
+from microcosm_sagemaker.testing.bundle import BundlePredictionCheck
 from microcosm_sagemaker.testing.bytes_extractor import ExtractorMatcherPair, json_extractor
 from microcosm_sagemaker.testing.train import TrainCliTestCase
 from microcosm_sagemaker.tests.fixtures import get_fixture_path
@@ -22,6 +23,17 @@ class TestTrainCli(TrainCliTestCase):
             matcher_constructor=construct_configuration_matcher,
         ),
     }
+    bundle_prediction_checks = [
+        BundlePredictionCheck(
+            args=[1.0],
+            return_value_matcher=contains(
+                has_properties(
+                    uri="http://simple.com",
+                    score=5.0,
+                ),
+            )
+        )
+    ]
 
     @mock_app_hooks()
     def test_train(self) -> None:
