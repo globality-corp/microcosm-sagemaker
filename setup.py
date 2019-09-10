@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 project = "microcosm-sagemaker"
-version = "0.5.2"
+version = "0.6.0"
 
 setup(
     name=project,
