@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Dict
@@ -44,7 +45,7 @@ class AllenNLPBundle(Bundle):
         allen_nlp_path.mkdir(parents=True)
 
         for child in self.temporary_allennlp_path.iterdir():
-            child.rename(allen_nlp_path / child.name)
+            shutil.move(child, allen_nlp_path / child.name)
 
         self.temporary_allennlp_dir.cleanup()
 
