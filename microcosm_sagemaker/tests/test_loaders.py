@@ -101,9 +101,6 @@ class TestLoaders(TestCase):
         config = loader(metadata)
 
         assert_that(config, has_entries(
-            build_route_path=has_entries(
-                prefix="",
-            ),
             **initial_configuration,
         ))
 

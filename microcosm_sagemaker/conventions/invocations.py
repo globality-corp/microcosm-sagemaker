@@ -18,7 +18,7 @@ def configure_invocations(graph, definition):
     graph.config.swagger_convention.operations.append("saved_search")
     ns = Namespace(
         subject="invocations",
-        version=None,
+        version="v1",
     )
     mappings = {
         Operation.SavedSearch: definition,
