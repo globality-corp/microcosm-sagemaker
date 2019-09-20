@@ -53,10 +53,6 @@ def create_app(
 
     if not model_only:
         graph.use(
-            # SageMaker conventions
-            "ping_convention",
-            "sagemaker_health_convention",
-
             # Routes
             "invocations_route",
         )

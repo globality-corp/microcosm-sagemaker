@@ -11,11 +11,6 @@ def load_default_microcosm_runserver_config(metadata: Metadata) -> Configuration
     """
 
     config = Configuration(
-        # We want our routes to come directly after the root /
-        build_route_path=dict(
-            prefix="",
-        ),
-
         root_input_artifact_path=SagemakerPath.MODEL,
     )
 
