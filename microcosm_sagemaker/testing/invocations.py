@@ -34,7 +34,7 @@ class InvocationsRouteTestCase(RouteTestCase):
         `items` entry of the response against `response_items_matcher`.
 
         """
-        uri = "/invocations"
+        uri = "/api/v1/invocations"
 
         response = self.client.post(
             uri,
