@@ -1,7 +1,5 @@
-import logging
 from typing import Any, Callable
 
-from microcosm.api import get_component_name
 from microcosm.object_graph import ObjectGraph
 from microcosm_logging.timing import elapsed_time
 
@@ -24,15 +22,14 @@ def training_initializer():
 
 def _method_with_logging(original_method):
     def new_method(self, *args, **kwargs):
-        bundle_name = get_component_name(self._graph, self)
-        logging.info(
-            f"Started method `{original_method.__name__}` of the `{bundle_name}`."
+        self.logger.info(
+            f"Started method `{original_method.__name__}`"
         )
         timing = {}
         with elapsed_time(timing):
             original_method(self, *args, **kwargs)
-        logging.info(
-            f"Completed method `{original_method.__name__}` of the `{bundle_name}` "
+        self.logger.info(
+            f"Completed method `{original_method.__name__}`"
             f"after {timing['elapsed_time']/1000:.1f} seconds."
         )
     return new_method
