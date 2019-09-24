@@ -22,15 +22,13 @@ def training_initializer():
 
 def _method_with_logging(original_method):
     def new_method(self, *args, **kwargs):
-        self.logger.info(
-            f"Started method `{original_method.__name__}`"
-        )
+        self.logger.info(f"Started method `{original_method.__name__}`.")
         timing = {}
         with elapsed_time(timing):
             original_method(self, *args, **kwargs)
         self.logger.info(
             f"Completed method `{original_method.__name__}`"
-            f"after {timing['elapsed_time']/1000:.1f} seconds."
+            f"after {timing['elapsed_time']/1000:.3g} seconds."
         )
     return new_method
 
