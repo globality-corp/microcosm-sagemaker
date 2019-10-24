@@ -21,6 +21,7 @@ setup(
     keywords="microcosm",
     install_requires=[
         "boto3>=1.9.90",
+        "awscli>=1.16.200",
         "click>=7.0",
         "microcosm>=2.12.0",
         "microcosm-flask[metrics]>=2.0.0",
