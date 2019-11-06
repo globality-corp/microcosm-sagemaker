@@ -71,7 +71,7 @@ def metrics(cls):
 
     def __init__(self, graph: ObjectGraph):
         _init(self, graph)
-        self.metrics = graph.metrics
+        self.metrics = graph.metric_loggers
 
     cls.__init__ = __init__
 

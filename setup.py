@@ -59,7 +59,7 @@ setup(
                 "microcosm_sagemaker.bundle_orchestrator:SingleThreadedBundleOrchestrator"
             ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
-            "metrics = microcosm_sagemaker.metric_loggers:Metrics",
+            "metric_loggers = microcosm_sagemaker.metric_loggers:MetricLoggers",
             "wandb = microcosm_sagemaker.wandb:WeightsAndBiases",
         ],
     },
