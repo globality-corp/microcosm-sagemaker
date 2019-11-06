@@ -20,6 +20,22 @@ def training_initializer():
     return decorator
 
 
+def metrics_observer():
+    """
+    Register a microcosm component as a training initializer, so that its init
+    method will automatically be called.  This function is designed to be used
+    as a decorator on a factory.
+
+    """
+    def decorator(func: Callable[[ObjectGraph], Any]):
+        def factory(graph):
+            component = func(graph)
+            graph.metrics.register(component)
+            return component
+        return factory
+    return decorator
+
+
 def _method_with_logging(original_method):
     def new_method(self, *args, **kwargs):
         self.logger.info(f"Started method `{original_method.__name__}`.")
