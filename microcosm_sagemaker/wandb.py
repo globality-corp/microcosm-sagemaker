@@ -18,6 +18,7 @@ class WeightsAndBiases:
         self.name = graph.metadata.name
 
     def init(self):
+        # os.environ["WANDB_API_KEY"] = "XXXXXXXX"
         if self.testing:
             os.environ["WANDB_MODE"] = "dryrun"
         wandb.init(
