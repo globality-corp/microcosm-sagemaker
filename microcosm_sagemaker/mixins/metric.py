@@ -43,7 +43,7 @@ class MetricMixin(metaclass=ABCMeta):
         # Get the best metric
         best_metric = self.get_best_metric(key, mode, best_fn)
 
-        print(f"Best Epoch ({key}, {mode}) = {best_metric.epoch}")  # noqa: N123
+        print(f"Best Epoch ({key}, {mode}) = {best_metric.epoch}")  # noqa: T001
 
         epoch_metrics = [
             metric
@@ -68,4 +68,4 @@ class MetricMixin(metaclass=ABCMeta):
 
         df = pd.DataFrame(grid, index=rows, columns=cols)
 
-        print(tabulate(df, headers="keys"))  # noqa: N123
+        print(tabulate(df, headers="keys"))  # noqa: T001

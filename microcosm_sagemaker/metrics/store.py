@@ -39,8 +39,8 @@ class SageMakerMetrics:
                 MetricData=metric_data,
             )
         except (ClientError, NoCredentialsError, NoRegionError):
-            print("CloudWatch publishing disabled")  # noqa: T003
-            print(dumps(metric_data, indent=4))  # noqa: T003
+            print("CloudWatch publishing disabled")  # noqa: T001
+            print(dumps(metric_data, indent=4))  # noqa: T001
             response = None
 
         return response
