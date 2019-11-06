@@ -62,6 +62,7 @@ class BundleFitTestCase(BundleTestCase, BundlePredictionChecker):
                 ),
                 load_from_dict(self.extra_config),
             ),
+            testing=True,
         )
 
         self.graph.bundle_and_dependencies_loader(
@@ -95,6 +96,7 @@ class BundleSaveTestCase(BundleTestCase):
                 ),
                 load_from_dict(self.extra_config),
             ),
+            testing=True,
         )
 
         self.temporary_directory = tempfile.TemporaryDirectory()
@@ -127,6 +129,7 @@ class BundleLoadTestCase(BundleTestCase, BundlePredictionChecker):
                 ),
                 load_from_dict(self.extra_config),
             ),
+            testing=True,
         )
 
         self.graph.bundle_and_dependencies_loader(
@@ -184,6 +187,7 @@ class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
                 ),
                 load_from_dict(self.extra_config),
             ),
+            testing=True,
         )
 
         self.train_graph.bundle_and_dependencies_loader(
@@ -206,6 +210,7 @@ class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
                 ),
                 load_from_dict(self.extra_config),
             ),
+            testing=True,
         )
 
         self.evaluate_graph.bundle_and_dependencies_loader(

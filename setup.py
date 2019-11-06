@@ -59,6 +59,8 @@ setup(
                 "microcosm_sagemaker.bundle_orchestrator:SingleThreadedBundleOrchestrator"
             ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
+            "metrics = microcosm_sagemaker.metric_loggers:Metrics",
+            "wandb = microcosm_sagemaker.wandb:WeightsAndBiases",
         ],
     },
     extras_require={
@@ -80,5 +82,6 @@ setup(
             "torch>=1.1.0",
         ],
         "profiling": "pyinstrument>=3.0",
+        "wandb": "wandb>=0.8.14",
     },
 )

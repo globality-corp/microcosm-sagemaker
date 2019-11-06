@@ -28,12 +28,18 @@ from microcosm_sagemaker.input_data import InputData
     default=True,
     help="Whether to automatically evaluate after the training has completed",
 )
-def main(configuration, input_data, output_artifact, auto_evaluate):
+@option(
+    "--testing/--no-testing",
+    default=False,
+    help="Whether the training is for testing purposes"
+)
+def main(configuration, input_data, output_artifact, auto_evaluate, testing):
     try:
         extra_config = json.load(configuration) if configuration else dict()
 
         graph = create_train_app(
             extra_loader=load_from_dict(extra_config),
+            testing=testing,
         )
 
         run_train(
