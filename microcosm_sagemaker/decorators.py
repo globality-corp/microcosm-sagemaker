@@ -30,7 +30,7 @@ def metrics_observer():
     def decorator(func: Callable[[ObjectGraph], Any]):
         def factory(graph):
             component = func(graph)
-            graph.metrics.register(component)
+            graph.metric_loggers.register(component)
             return component
         return factory
     return decorator
