@@ -1,8 +1,10 @@
 class MetricLoggers:
     """
-    The training initializer registry is a place to register functions that need to be
-    called during training initialization.  A typical example of this is to
-    seed random number generators.
+    This registry is a place to register functions that log metrics.
+    This registry calls the `init` method of the registered components
+    to initialize them.
+    The `log_metric` and `run_summary` methods are used to store multiple-value
+    and single-value metrics, respectively.
 
     """
     def __init__(self, graph):
