@@ -24,6 +24,7 @@ class WeightsAndBiases:
                 project=self.name.replace("_", "-"),
                 config=self.graph_config
             )
+            self.logger.info("`weights & biases` was registered as a metric logger.")
 
     def log_time_series(self, *args, **kwargs):
         wandb.log(*args, **kwargs)
