@@ -23,9 +23,13 @@ class MetricLoggers:
     def log_time_series(self, *args, **kwargs):
         if not self.testing:
             for metric_observer in self.metric_observers:
-                metric_observer.log_time_series(*args, **kwargs)
+                response = metric_observer.log_time_series(*args, **kwargs)
+                if response:
+                    self.logger.info(response)
 
     def log_static(self, *args, **kwargs):
         if not self.testing:
             for metric_observer in self.metric_observers:
-                metric_observer.log_static(*args, **kwargs)
+                response = metric_observer.log_static(*args, **kwargs)
+                if response:
+                    self.logger.info(response)
