@@ -1,3 +1,5 @@
+from microcosm_logging.decorators import logger
+
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
 
 
@@ -9,6 +11,7 @@ except ImportError:
 
 @training_initializer()
 @metrics_observer()
+@logger
 class WeightsAndBiases:
     def __init__(self, graph):
         self.graph_config = graph.config
