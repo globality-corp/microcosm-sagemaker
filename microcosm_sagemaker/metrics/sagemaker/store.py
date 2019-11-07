@@ -30,8 +30,8 @@ def normalize_hyperparam_value(v):
 
     """
     if v == "":
-        # TODO: what is the right solution?
-        return "EMPTY_STRING"
+        # TODO: better solution?
+        return "__EMPTY_STRING__"
     else:
         return str(v)
 
