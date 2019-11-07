@@ -1,3 +1,4 @@
+import logging
 from abc import ABCMeta
 from collections import namedtuple
 
@@ -43,7 +44,7 @@ class MetricMixin(metaclass=ABCMeta):
         # Get the best metric
         best_metric = self.get_best_metric(key, mode, best_fn)
 
-        print(f"Best Epoch ({key}, {mode}) = {best_metric.epoch}")  # noqa: T001
+        logging.info(f"Best Epoch ({key}, {mode}) = {best_metric.epoch}")
 
         epoch_metrics = [
             metric
@@ -68,4 +69,4 @@ class MetricMixin(metaclass=ABCMeta):
 
         df = pd.DataFrame(grid, index=rows, columns=cols)
 
-        print(tabulate(df, headers="keys"))  # noqa: T001
+        logging.info(tabulate(df, headers="keys"))
