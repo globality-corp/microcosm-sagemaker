@@ -54,14 +54,14 @@ setup(
             ),
             "random = microcosm_sagemaker.random:Random",
             "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
-            "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
             (
                 "single_threaded_bundle_orchestrator = "
                 "microcosm_sagemaker.bundle_orchestrator:SingleThreadedBundleOrchestrator"
             ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
-            "metric_loggers = microcosm_sagemaker.metric_loggers:MetricLoggers",
-            "wandb = microcosm_sagemaker.wandb:WeightsAndBiases",
+            "metric_loggers = microcosm_sagemaker.metrics.metric_loggers:MetricLoggers",
+            "wandb = microcosm_sagemaker.metrics.wandb.store:WeightsAndBiases",
+            "cloudwatch = microcosm_sagemaker.metrics.sagemaker.store:SageMakerMetrics",
         ],
     },
     extras_require={
