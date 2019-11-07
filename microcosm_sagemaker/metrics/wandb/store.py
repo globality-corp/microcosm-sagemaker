@@ -30,7 +30,7 @@ class WeightsAndBiases:
                 project=self.project_name,
                 config=self.graph_config,
             )
-            self.logger.info("`weights & biases` was registered as a metric logger.")
+            self.logger.info("`weights & biases` was registered as a metric observer.")
 
     def log_time_series(self, *args, **kwargs):
         wandb.log(*args, **kwargs)

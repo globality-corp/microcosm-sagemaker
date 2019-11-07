@@ -22,7 +22,7 @@ def training_initializer():
 
 def metrics_observer():
     """
-    Register a microcosm component as a metric logger, so that its init
+    Register a microcosm component as a metric observer, so that its init
     method will automatically be called.
     This function is designed to be used as a decorator on a factory.
 
@@ -30,7 +30,7 @@ def metrics_observer():
     def decorator(func: Callable[[ObjectGraph], Any]):
         def factory(graph):
             component = func(graph)
-            graph.metric_loggers.register(component)
+            graph.experiment_metrics.register(component)
             return component
         return factory
     return decorator

@@ -46,7 +46,7 @@ class SageMakerMetrics:
         self.model_name = graph.metadata.name
 
     def init(self):
-        self.logger.info("`cloudwatch` was registered as a metric logger.")
+        self.logger.info("`cloudwatch` was registered as a metric observer.")
 
     def log_static(self, **kwargs):
 
