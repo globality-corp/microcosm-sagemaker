@@ -63,16 +63,3 @@ def log_bundle_methods(cls):
     cls.save = _method_with_logging(cls.save)
 
     return cls
-
-
-def metrics(cls):
-
-    _init = cls.__init__
-
-    def __init__(self, graph: ObjectGraph):
-        _init(self, graph)
-        self.metrics = graph.metric_loggers
-
-    cls.__init__ = __init__
-
-    return cls
