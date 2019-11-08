@@ -36,17 +36,20 @@ def hyperparemeted(default_value, parameter_type=None):
 
 def get_graph_hyperparams():
     """
-    returns all of the graph hyperparameters as a list of (binding name, parameter name) pairs.
+    Returns all of the graph hyperparameters as a list of (binding name, parameter name) pairs.
+
+    To do so, it inspects the entire microcosm registry for class definitions with `_defaults`
+    that have an `is_hyperparameter=True` flag.
 
     """
 
     hyperparams = []
 
-    for binding_name, binding_factory in _registry.all.items():
+    for binding_name, class_definition in _registry.all.items():
         if "_defaults" in binding_factory.__dict__:
             hyperparams.extend([
                 (binding_name, hyperparamer_name)
-                for hyperparamer_name, hyperparamer in binding_factory.__dict__["_defaults"].items()
+                for hyperparamer_name, hyperparamer in class_definition.__dict__["_defaults"].items()
                 if getattr(hyperparamer, "is_hyperparameter", False)
             ])
 
