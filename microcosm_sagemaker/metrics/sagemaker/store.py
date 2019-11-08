@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 
 from boto3 import client
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
@@ -63,6 +64,7 @@ class SageMakerMetrics:
 
     def _log_metric(self, log_mode: LogMode, **kwargs):
 
+        timestamp: Optional[datetime.datetime]
         if log_mode == LogMode.TIMESERIES:
             timestamp = datetime.datetime.now()
         else:
@@ -80,7 +82,7 @@ class SageMakerMetrics:
                 MetricData=metric_data,
             )
         except (ClientError, NoCredentialsError, NoRegionError):
-            self.logger.warning("CloudWatch publishing disabled", extra=dict(metric_data=metric_data))
+            self.logger.warning("CloudWatch publishing disabled", extra=dict(metric_data=metric_data))  # type: ignore
             response = None
 
         return response
