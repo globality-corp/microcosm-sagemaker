@@ -46,7 +46,7 @@ def get_graph_hyperparams():
     hyperparams = []
 
     for binding_name, class_definition in _registry.all.items():
-        if "_defaults" in binding_factory.__dict__:
+        if "_defaults" in class_definition.__dict__:
             hyperparams.extend([
                 (binding_name, hyperparamer_name)
                 for hyperparamer_name, hyperparamer in class_definition.__dict__["_defaults"].items()
