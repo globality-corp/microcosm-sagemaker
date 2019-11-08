@@ -30,7 +30,7 @@ class WeightsAndBiases:
             wandb.init(
                 project=self.project_name,
                 config={
-                    f"{bundle_name}__{parameter}": str(getattr(getattr(self.graph.config, bundle_name), parameter))
+                    f"{bundle_name}__{parameter}": str(getattr(getattr(self.graph_config, bundle_name), parameter))
                     for (bundle_name, parameter) in get_graph_hyperparams()
                 }
             )
