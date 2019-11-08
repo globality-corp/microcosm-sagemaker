@@ -12,12 +12,26 @@ class HyperParameter(Requirement):
         self.is_hyperparameter = True
 
 
-def hyperparemeted(*args, **kwargs):
+def hyperparemeted(default_value, parameter_type=None):
     """
-    Fluent hyperParameter declaration.
+    Fluent hyperparameter declaration.
+    In most cases, the type is not needed and can be infered from the default value.
+    For example, to declare `epochs` as a hyperparameter, use:
+    ```
+    from microcosm.api import defaults
+    from microcosm_sagemaker.hyperparameters import hyperparametered
+
+    @defaults(
+        epochs=hyperparemeted(100)
+    )
+    class ClassifierBundle():
+        ...
+    ```
 
     """
-    return HyperParameter(*args, **kwargs)
+    if not parameter_type:
+        parameter_type = type(default_value)
+    return HyperParameter(type=parameter_type, default_value=default_value)
 
 
 def get_graph_hyperparams():
