@@ -6,9 +6,9 @@ from enum import Enum, unique
 
 
 @unique
-class MetricMode(Enum):
-    TRAINING = "Training"
-    DEVELOP = "Develop"
+class LogMode(Enum):
+    TIMESERIES = "timeseries"
+    STATIC = "static"
 
 
 @unique

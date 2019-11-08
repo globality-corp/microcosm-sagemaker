@@ -3,6 +3,7 @@ from os import environ
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
+from microcosm_sagemaker.hyperparameters import get_graph_hyperparams
 
 
 try:
@@ -28,12 +29,16 @@ class WeightsAndBiases:
 
             wandb.init(
                 project=self.project_name,
-                config=self.graph_config,
+                config={
+                    f"{bundle_name}__{parameter}": str(getattr(getattr(self.graph.config, bundle_name), parameter))
+                    for (bundle_name, parameter) in get_graph_hyperparams()
+                }
             )
             self.logger.info("`weights & biases` was registered as a metric observer.")
 
-    def log_time_series(self, *args, **kwargs):
-        wandb.log(*args, **kwargs)
+    def log_timeseries(self, **kwargs):
+        step = kwargs.pop("step")
+        wandb.log(row=kwargs, step=step)
         return None
 
     def log_static(self, **kwargs):
