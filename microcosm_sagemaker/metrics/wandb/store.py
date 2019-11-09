@@ -25,7 +25,7 @@ class WeightsAndBiases:
         # Only initialize wandb if it is not a testing
         if not self.testing:
             # TODO: Remove this line if devops come up with a solution
-            environ["WANDB_API_KEY"] = "e9698d764c80c1076a1ff017fa9f722b3135624a"
+            environ["WANDB_API_KEY"] = self.graph_config.wand.api_key
 
             wandb.init(
                 project=self.project_name,
