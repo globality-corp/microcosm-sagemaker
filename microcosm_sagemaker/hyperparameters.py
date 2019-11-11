@@ -19,7 +19,7 @@ def hyperparemeted(default_value, parameter_type=None):
     For example, to declare `epochs` as a hyperparameter, use:
     ```
     from microcosm.api import defaults
-    from microcosm_sagemaker.hyperparameters import hyperparametered
+    from microcosm_sagemaker.hyperparameters import hyperparameter
 
     @defaults(
         epochs=hyperparemeted(100)
