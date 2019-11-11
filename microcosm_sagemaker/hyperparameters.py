@@ -15,7 +15,7 @@ class HyperParameter(Requirement):
 def hyperparemeter(default_value, parameter_type=None):
     """
     Fluent hyperparameter declaration.
-    In most cases, the type is not needed and can be infered from the default value.
+    In most cases, the type is not needed and can be inferred from the default value.
     For example, to declare `epochs` as a hyperparameter, use:
     ```
     from microcosm.api import defaults
