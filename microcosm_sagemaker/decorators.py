@@ -22,8 +22,8 @@ def training_initializer():
 
 def metrics_observer():
     """
-    Register a microcosm component as a metric observer, so that its init
-    method will automatically be called.
+    Register a microcosm component as an experiment metric tracker,
+    so that its init method will automatically be called.
     This function is designed to be used as a decorator on a factory.
 
     """
