@@ -6,13 +6,13 @@ from microcosm.api import (
     typed,
 )
 
-from microcosm_sagemaker.hyperparameters import get_graph_hyperparams, hyperparemeted
+from microcosm_sagemaker.hyperparameters import get_graph_hyperparams, hyperparemeter
 
 
 @binding("test_factory")
 @defaults(
     foo_typed=typed(str, "foo"),
-    bar_hyperparameterd=hyperparemeted("bar"),
+    bar_hyperparameterd=hyperparemeter("bar"),
     baz="baz",
 )
 def generate_factory(graph):
