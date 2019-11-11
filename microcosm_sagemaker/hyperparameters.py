@@ -12,7 +12,7 @@ class HyperParameter(Requirement):
         self.is_hyperparameter = True
 
 
-def hyperparemeted(default_value, parameter_type=None):
+def hyperparemeter(default_value, parameter_type=None):
     """
     Fluent hyperparameter declaration.
     In most cases, the type is not needed and can be infered from the default value.
