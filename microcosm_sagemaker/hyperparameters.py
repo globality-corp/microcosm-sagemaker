@@ -22,7 +22,7 @@ def hyperparemeter(default_value, parameter_type=None):
     from microcosm_sagemaker.hyperparameters import hyperparameter
 
     @defaults(
-        epochs=hyperparemeted(100)
+        epochs=hyperparemeter(100)
     )
     class ClassifierBundle():
         ...
