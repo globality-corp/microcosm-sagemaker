@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Generator, List, Tuple
 
 from microcosm.config.model import Requirement
 from microcosm.errors import LockedGraphError
@@ -36,9 +36,9 @@ def hyperparameter(default_value, parameter_type=None):
     return HyperParameter(type=parameter_type, default_value=default_value)
 
 
-def get_nested_value(d: dict, keys: Optional[List[str]]):
+def get_nested_value(d: dict, keys: Tuple[str, ...]):
     """
-    Given a dictionary `d` and a list of keys `[k1, k2, ..., kn]`, retuns `d[k1][k2]...[kn]`.
+    Given a dictionary `d` and a `(k1, k2, ..., kn)` tuple, retuns `d[k1][k2]...[kn]`.
 
     """
 
@@ -52,7 +52,7 @@ class GraphHyperparameters:
     def __init__(self, graph) -> None:
         self.graph = graph
 
-    def find_all(self) -> List[str]:
+    def find_all(self) -> Generator:
         """
         Given a graph, yields all of the hyperparameters in the config as `__` seperated attributes.
 
@@ -121,7 +121,7 @@ class GraphHyperparameters:
                 # ("no_of_layers", "layer1"),
                 # ("no_of_layers", "layer2"),
                 # ```
-                expanded_hyperparams = []
+                expanded_hyperparams: List[Tuple[str]] = []
                 for hyperparam in hyperparams:
                     expanded_hyperparams.extend(
                         self._expand_hyperparameter(binding_name, hyperparam)
@@ -137,7 +137,7 @@ class GraphHyperparameters:
         """
         return self.graph._registry.all[binding_name].__dict__['_defaults']
 
-    def _find_hyperparameter_instances(self, default_params: dict, keys: Tuple[str]):
+    def _find_hyperparameter_instances(self, default_params: dict, keys: Tuple[str, ...]):
         """
         Recursively looks for parameters in `default_params` that are instances of the Hyperparameter class.
         Returns each hyperparameter as a `(attr1, attr2, ...)` tuple.
@@ -145,7 +145,7 @@ class GraphHyperparameters:
         """
 
         param = get_nested_value(default_params, keys)
-        hyperparams = []
+        hyperparams: List[Tuple[str]] = []
 
         if isinstance(param, HyperParameter):
             return [keys]
