@@ -82,3 +82,17 @@ class TestHyperparameters:
                 sorted(expected_hyperparameters)
             ))
         )
+
+    def test_get_hyperparameter_value(self):
+        graph_hyperparameters = GraphHyperparameters(self.graph)
+
+        for hyperparameter_string, expected_hyperparameter_value in [
+            ("config__used_component__hyperparam", 3),
+            ("config__component_with_dict_hyperparam__dict_hyperparam__param1", 1),
+            ("config__component_with_dict_hyperparam__dict_hyperparam__param2", 2),
+            ("config__component_with_nested_hyperparam__dict_param__hyperparam", 2),
+        ]:
+            assert_that(
+                graph_hyperparameters.get_hyperparameter_value(hyperparameter_string),
+                is_(equal_to(expected_hyperparameter_value))
+            )
