@@ -3,7 +3,7 @@ from os import environ
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
-from microcosm_sagemaker.hyperparameters import get_graph_hyperparams
+from microcosm_sagemaker.hyperparameters import GraphHyperparameters
 
 
 try:
@@ -17,7 +17,7 @@ except ImportError:
 @logger
 class WeightsAndBiases:
     def __init__(self, graph):
-        self.graph_config = graph.config
+        self.graph = graph
         self.testing = graph.metadata.testing
         self.project_name = graph.metadata.name.replace("_", "-")
 
@@ -25,13 +25,15 @@ class WeightsAndBiases:
         # Only initialize wandb if it is not a testing
         if not self.testing:
             # TODO: Remove this line if devops come up with a solution
-            environ["WANDB_API_KEY"] = self.graph_config.wandb.api_key
+            environ["WANDB_API_KEY"] = self.graph.config.wandb.api_key
+
+            graph_hyperparameters = GraphHyperparameters(self.graph)
 
             wandb.init(
                 project=self.project_name,
                 config={
-                    f"{bundle_name}__{parameter}": str(getattr(getattr(self.graph_config, bundle_name), parameter))
-                    for (bundle_name, parameter) in get_graph_hyperparams()
+                    flattened_hyperparam: graph_hyperparameters.get_hyperparameter_value(flattened_hyperparam)
+                    for flattened_hyperparam in graph_hyperparameters.find_all()
                 }
             )
             self.logger.info("`weights & biases` was registered as a metric observer.")

@@ -6,32 +6,79 @@ from microcosm.api import (
     typed,
 )
 
-from microcosm_sagemaker.hyperparameters import get_graph_hyperparams, hyperparemeter
+from microcosm_sagemaker.hyperparameters import GraphHyperparameters, hyperparameter
 
 
-@binding("test_factory")
+@binding("used_component")
 @defaults(
-    foo_typed=typed(str, "foo"),
-    bar_hyperparameterd=hyperparemeter("bar"),
-    baz="baz",
+    param=1,
+    typed_param=typed(int, 2),
+    hyperparam=hyperparameter(3),
 )
-def generate_factory(graph):
-    def test_func(x):
-        return x+1
-    return test_func
+class UsedComponent():
+    def __init__(self, graph):
+        self.param = graph.config.used_component.param
+        self.hyperparam = graph.config.used_component.hyperparam
+
+
+@binding("unused_component")
+@defaults(
+    param=1,
+    hyperparam=hyperparameter(1),
+)
+class UnusedComponent():
+    def __init__(self, graph):
+        self.param = graph.config.unused_component.param
+        self.hyperparam = graph.config.unused_component.hyperparam
+
+
+@binding("component_with_dict_hyperparam")
+@defaults(
+    dict_hyperparam=hyperparameter(dict(
+        param1=1,
+        param2=2,
+    ))
+)
+class ComponentWithDictHyperparam():
+    def __init__(self, graph):
+        self.dict_hyperparam = graph.config.component_with_dict_hyperparam.dict_hyperparam
+
+
+@binding("component_with_nested_hyperparam")
+@defaults(
+    dict_param=dict(
+        param=1,
+        hyperparam=hyperparameter(2),
+    )
+)
+class ComponentWithNestedHyperparam1():
+    def __init__(self, graph):
+        self.nested_param = graph.config.component_with_nested_hyperparam.dict_param
 
 
 class TestHyperparameters:
     def setup(self):
         self.graph = create_object_graph("test", testing=True)
-        self.graph.use("test_factory")
+        self.graph.use(
+            "used_component",
+            "component_with_dict_hyperparam",
+            "component_with_nested_hyperparam"
+        )
+        self.graph.lock()
 
     def test_detects_hyperparameters(self):
+        hyperparameters = [hp for hp in GraphHyperparameters(self.graph).find_all()]
+
+        expected_hyperparameters = [
+            "config__used_component__hyperparam",
+            "config__component_with_dict_hyperparam__dict_hyperparam__param1",
+            "config__component_with_dict_hyperparam__dict_hyperparam__param2",
+            "config__component_with_nested_hyperparam__dict_param__hyperparam"
+        ]
+
         assert_that(
-            get_graph_hyperparams(),
+            sorted(hyperparameters),
             is_(equal_to(
-                [
-                    ("test_factory", "bar_hyperparameterd")
-                ]
+                sorted(expected_hyperparameters)
             ))
         )

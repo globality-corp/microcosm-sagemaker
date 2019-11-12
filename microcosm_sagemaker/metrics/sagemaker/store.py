@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
-from microcosm_sagemaker.hyperparameters import get_graph_hyperparams
+from microcosm_sagemaker.hyperparameters import GraphHyperparameters
 from microcosm_sagemaker.metrics.sagemaker.models import LogMode, MetricUnit
 
 
@@ -29,22 +29,24 @@ class SageMakerMetrics:
         self.logger.info("`cloudwatch` was registered as a metric observer.")
 
     def _get_dimensions(self):
-        hyperparameters = get_graph_hyperparams()
-        if len(hyperparameters) > MAX_DIMENSIONS:
-            self.logger.warning(
-                f"The number of hyperparameters ({len(hyperparameters)}) is more than the maximum dimensions "
-                f"allowed by `cloudwatch` ({MAX_DIMENSIONS})."
-            )
+        graph_hyperparameters = GraphHyperparameters(self.graph)
 
         # Metric dimensions allow us to analyze metric performance against the
         # hyperparameters of our model
         dimensions = [
             {
-                "Name": f"{bundle_name}__{parameter}",
-                "Value": str(getattr(getattr(self.graph.config, bundle_name), parameter)),
+                "Name": flattened_hyperparam,
+                "Value": str(graph_hyperparameters.get_hyperparameter_value(flattened_hyperparam)),
             }
-            for (bundle_name, parameter) in hyperparameters[:MAX_DIMENSIONS]
+            for flattened_hyperparam in graph_hyperparameters.find_all()
         ]
+
+        if len(dimensions) > MAX_DIMENSIONS:
+            self.logger.warning(
+                f"The number of hyperparameters ({len(dimensions)}) is more than the maximum dimensions "
+                f"allowed by `cloudwatch` ({MAX_DIMENSIONS})."
+            )
+            dimensions = dimensions[:MAX_DIMENSIONS]
 
         return dimensions
 
