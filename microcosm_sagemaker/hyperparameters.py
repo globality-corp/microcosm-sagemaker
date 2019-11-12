@@ -177,6 +177,10 @@ class GraphHyperparameters:
                 children.append(child)
         return children
 
-    def get_hyperparameter_value(self, hyperparameter_string):
-        hyperparameter = hyperparameter_string.split("__")
-        return get_nested_value(self.graph.config, hyperparameter[1:])
+    def get_parameter_value(self, parameter_string):
+        """
+        Returns a config parameter value given its `__` seperated string.
+
+        """
+        parameter = parameter_string.split("__")
+        return get_nested_value(self.graph.config, parameter[1:])

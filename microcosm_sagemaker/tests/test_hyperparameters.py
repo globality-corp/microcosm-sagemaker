@@ -83,7 +83,7 @@ class TestHyperparameters:
             ))
         )
 
-    def test_get_hyperparameter_value(self):
+    def test_get_parameter_value(self):
         graph_hyperparameters = GraphHyperparameters(self.graph)
 
         for hyperparameter_string, expected_hyperparameter_value in [
@@ -93,6 +93,6 @@ class TestHyperparameters:
             ("config__component_with_nested_hyperparam__dict_param__hyperparam", 2),
         ]:
             assert_that(
-                graph_hyperparameters.get_hyperparameter_value(hyperparameter_string),
+                graph_hyperparameters.get_parameter_value(hyperparameter_string),
                 is_(equal_to(expected_hyperparameter_value))
             )

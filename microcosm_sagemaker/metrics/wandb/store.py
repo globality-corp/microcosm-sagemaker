@@ -32,7 +32,7 @@ class WeightsAndBiases:
             wandb.init(
                 project=self.project_name,
                 config={
-                    flattened_hyperparam: graph_hyperparameters.get_hyperparameter_value(flattened_hyperparam)
+                    flattened_hyperparam: graph_hyperparameters.get_parameter_value(flattened_hyperparam)
                     for flattened_hyperparam in graph_hyperparameters.find_all()
                 }
             )

@@ -36,7 +36,7 @@ class SageMakerMetrics:
         dimensions = [
             {
                 "Name": flattened_hyperparam,
-                "Value": str(graph_hyperparameters.get_hyperparameter_value(flattened_hyperparam)),
+                "Value": str(graph_hyperparameters.get_parameter_value(flattened_hyperparam)),
             }
             for flattened_hyperparam in graph_hyperparameters.find_all()
         ]
