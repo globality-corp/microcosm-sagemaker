@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
-from microcosm_sagemaker.hyperparameters import GraphHyperparameters
+from microcosm_sagemaker.hyperparameters import get_hyperparameters
 from microcosm_sagemaker.metrics.sagemaker.models import LogMode, MetricUnit
 
 
@@ -29,16 +29,14 @@ class SageMakerMetrics:
         self.logger.info("`cloudwatch` was registered as a metric observer.")
 
     def _get_dimensions(self):
-        graph_hyperparameters = GraphHyperparameters(self.graph)
-
         # Metric dimensions allow us to analyze metric performance against the
         # hyperparameters of our model
         dimensions = [
             {
                 "Name": flattened_hyperparam,
-                "Value": str(graph_hyperparameters.get_parameter_value(flattened_hyperparam)),
+                "Value": str(value),
             }
-            for flattened_hyperparam in graph_hyperparameters.find_all()
+            for flattened_hyperparam, value in get_hyperparameters(self.graph)
         ]
 
         if len(dimensions) > MAX_DIMENSIONS:
