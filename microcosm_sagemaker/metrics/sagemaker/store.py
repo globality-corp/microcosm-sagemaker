@@ -42,7 +42,7 @@ class SageMakerMetrics:
         if len(dimensions) > MAX_DIMENSIONS:
             self.logger.warning(
                 f"The number of hyperparameters ({len(dimensions)}) is more than the maximum dimensions "
-                f"allowed by `cloudwatch` ({MAX_DIMENSIONS})."
+                f"allowed by `cloudwatch` ({MAX_DIMENSIONS}).  Truncating to first {MAX_DIMENSIONS} dimensions."
             )
             dimensions = dimensions[:MAX_DIMENSIONS]
 
