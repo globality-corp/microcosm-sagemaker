@@ -1,4 +1,4 @@
-from hamcrest import assert_that, equal_to, is_
+from hamcrest import assert_that, contains, contains_inanyorder
 from microcosm.api import (
     binding,
     create_object_graph,
@@ -6,7 +6,7 @@ from microcosm.api import (
     typed,
 )
 
-from microcosm_sagemaker.hyperparameters import GraphHyperparameters, hyperparameter
+from microcosm_sagemaker.hyperparameters import get_hyperparameters, hyperparameter
 
 
 @binding("used_component")
@@ -32,18 +32,6 @@ class UnusedComponent():
         self.hyperparam = graph.config.unused_component.hyperparam
 
 
-@binding("component_with_dict_hyperparam")
-@defaults(
-    dict_hyperparam=hyperparameter(dict(
-        param1=1,
-        param2=2,
-    ))
-)
-class ComponentWithDictHyperparam():
-    def __init__(self, graph):
-        self.dict_hyperparam = graph.config.component_with_dict_hyperparam.dict_hyperparam
-
-
 @binding("component_with_nested_hyperparam")
 @defaults(
     dict_param=dict(
@@ -61,38 +49,15 @@ class TestHyperparameters:
         self.graph = create_object_graph("test", testing=True)
         self.graph.use(
             "used_component",
-            "component_with_dict_hyperparam",
             "component_with_nested_hyperparam"
         )
         self.graph.lock()
 
-    def test_detects_hyperparameters(self):
-        hyperparameters = [hp for hp in GraphHyperparameters(self.graph).find_all()]
-
-        expected_hyperparameters = [
-            "config__used_component__hyperparam",
-            "config__component_with_dict_hyperparam__dict_hyperparam__param1",
-            "config__component_with_dict_hyperparam__dict_hyperparam__param2",
-            "config__component_with_nested_hyperparam__dict_param__hyperparam"
-        ]
-
+    def test_hyperparameters(self):
         assert_that(
-            sorted(hyperparameters),
-            is_(equal_to(
-                sorted(expected_hyperparameters)
-            ))
+            list(get_hyperparameters(self.graph)),
+            contains_inanyorder(
+                contains("used_component__hyperparam", 3),
+                contains("component_with_nested_hyperparam__dict_param__hyperparam", 2),
+            ),
         )
-
-    def test_get_parameter_value(self):
-        graph_hyperparameters = GraphHyperparameters(self.graph)
-
-        for hyperparameter_string, expected_hyperparameter_value in [
-            ("config__used_component__hyperparam", 3),
-            ("config__component_with_dict_hyperparam__dict_hyperparam__param1", 1),
-            ("config__component_with_dict_hyperparam__dict_hyperparam__param2", 2),
-            ("config__component_with_nested_hyperparam__dict_param__hyperparam", 2),
-        ]:
-            assert_that(
-                graph_hyperparameters.get_parameter_value(hyperparameter_string),
-                is_(equal_to(expected_hyperparameter_value))
-            )

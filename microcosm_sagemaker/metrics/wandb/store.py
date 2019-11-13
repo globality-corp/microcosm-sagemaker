@@ -3,7 +3,7 @@ from os import environ
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
-from microcosm_sagemaker.hyperparameters import GraphHyperparameters
+from microcosm_sagemaker.hyperparameters import get_hyperparameters
 
 
 try:
@@ -27,13 +27,11 @@ class WeightsAndBiases:
             # TODO: Remove this line if devops come up with a solution
             environ["WANDB_API_KEY"] = self.graph.config.wandb.api_key
 
-            graph_hyperparameters = GraphHyperparameters(self.graph)
-
             wandb.init(
                 project=self.project_name,
                 config={
-                    flattened_hyperparam: graph_hyperparameters.get_parameter_value(flattened_hyperparam)
-                    for flattened_hyperparam in graph_hyperparameters.find_all()
+                    flattened_hyperparam: value
+                    for flattened_hyperparam, value in get_hyperparameters(self.graph)
                 }
             )
             self.logger.info("`weights & biases` was registered as a metric observer.")
