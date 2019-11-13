@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from boto3 import client
+import boto3
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 from microcosm_logging.decorators import logger
 
@@ -23,7 +23,10 @@ class SageMakerMetrics:
         self.graph = graph
         self.testing = graph.metadata.testing
         self.model_name = graph.metadata.name
-        self.dimensions = self._get_dimensions()
+
+    @property
+    def dimensions(self):
+        return self._get_dimensions()
 
     def init(self):
         self.logger.info("`cloudwatch` was registered as a metric observer.")
@@ -76,7 +79,7 @@ class SageMakerMetrics:
         ]
 
         try:
-            cloudwatch = client("cloudwatch")
+            cloudwatch = boto3.client("cloudwatch")
             response = cloudwatch.put_metric_data(
                 Namespace="/aws/sagemaker/" + self.model_name,
                 MetricData=metric_data,

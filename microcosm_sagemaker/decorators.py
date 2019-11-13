@@ -23,8 +23,7 @@ def training_initializer():
 def metrics_observer():
     """
     Register a microcosm component as an experiment metric tracker,
-    so that its init method will automatically be called.
-    This function is designed to be used as a decorator on a factory.
+    for it to get any metrics being logged.
 
     """
     def decorator(func: Callable[[ObjectGraph], Any]):

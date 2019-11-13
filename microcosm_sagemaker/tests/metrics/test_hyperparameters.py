@@ -49,7 +49,7 @@ class TestHyperparameters:
         self.graph = create_object_graph("test", testing=True)
         self.graph.use(
             "used_component",
-            "component_with_nested_hyperparam"
+            "component_with_nested_hyperparam",
         )
         self.graph.lock()
 

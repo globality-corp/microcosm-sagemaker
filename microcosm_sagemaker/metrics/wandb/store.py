@@ -25,8 +25,8 @@ class WeightsAndBiases:
         # Only initialize wandb if it is not a testing
         if not self.testing:
             # TODO: Remove this line if devops come up with a solution
+            # https://globality.atlassian.net/browse/DEVOPS-635
             environ["WANDB_API_KEY"] = self.graph.config.wandb.api_key
-
             wandb.init(
                 project=self.project_name,
                 config={

@@ -1,8 +1,5 @@
-from typing import Generator, List, Tuple
-
 from microcosm.config.model import Requirement
 from microcosm.config.validation import zip_dicts
-from microcosm.errors import LockedGraphError
 from microcosm.registry import get_defaults
 
 
@@ -49,9 +46,10 @@ def get_hyperparameters(graph):
     @binding("ann_classifier_bundle")
     @defaults(
         no_of_epochs=hyperparameter(100),
-        other_params=dict(
-            dropout=0.2,
-            learning_rate=hyperparameter(0.05),
+        layer_sizes=dict(
+            input_layer=10,
+            hidden_layer=hyperparameter(20),
+            output_layer=5,
         )
     )
     class ANNClassifierBundle():
@@ -63,7 +61,7 @@ def get_hyperparameters(graph):
     ```
     [
         "ann_classifier_bundle__no_of_epochs",
-        "ann_classifier_bundle__other_params__learning_rate",
+        "ann_classifier_bundle__layer_sizes__hidden_layer",
     ]
     ```
 
