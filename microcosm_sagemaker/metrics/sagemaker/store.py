@@ -84,7 +84,7 @@ class SageMakerMetrics:
             )
         except (ClientError, NoCredentialsError, NoRegionError) as e:
             self.logger.warning("CloudWatch publishing disabled", extra=dict(metric_data=metric_data))  # type: ignore
-            self.logger.warning(e)
+            self.logger.warning(e)  # type: ignore
             # Disable cloudwatch logging if it fails to push metrics due to one of the above errors
             self.enabled = False
             response = None
