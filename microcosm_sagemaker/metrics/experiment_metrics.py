@@ -5,10 +5,8 @@ from microcosm_logging.decorators import logger
 class ExperimentMetrics:
     """
     This registry is a place to register functions that log metrics.
-    This registry calls the `init` method of the registered components
-    to initialize them.
-    The `log_metric` and `run_summary` methods are used to store multiple-value
-    and single-value metrics, respectively.
+    The `log_static` and `log_timeseries` methods are used to store single-value
+    and multiple-value metrics, respectively.
 
     """
     def __init__(self, graph):

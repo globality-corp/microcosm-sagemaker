@@ -23,6 +23,7 @@ class TestCloudwatch():
         self.graph.use("training_initializers", "cloudwatch", "bundle_with_metric")
         self.graph.lock()
 
+        self.expected_namespace = "/aws/sagemaker/" + "test-project"
         self.expected_dimensions = [
             {
                 "Name": "bundle_with_metric__hyperparam",
@@ -36,11 +37,11 @@ class TestCloudwatch():
             self.graph.bundle_with_metric.log_static_metric()
 
             boto3_client().put_metric_data.assert_called_with(
-                Namespace="/aws/sagemaker/" + "test-project",
+                Namespace=self.expected_namespace,
                 MetricData=[
                     dict(
                         MetricName="static_metric",
-                        Dimensions=self.dimensions,
+                        Dimensions=self.expected_dimensions,
                         Value=3,
                         Unit=MetricUnit.NONE.name,
                         StorageResolution=1,
@@ -57,7 +58,7 @@ class TestCloudwatch():
 
             assert_that(
                 kwargs["Namespace"],
-                is_(equal_to("/aws/sagemaker/" + "test-project"))
+                is_(equal_to(self.expected_namespace))
             )
 
             assert_that(
@@ -65,7 +66,7 @@ class TestCloudwatch():
                 contains_inanyorder(
                     has_entries(
                         MetricName="timeseries_metric",
-                        Dimensions=self.dimensions,
+                        Dimensions=self.expected_dimensions,
                         Value=1,
                         Unit=MetricUnit.NONE.name,
                         StorageResolution=1,
@@ -73,7 +74,7 @@ class TestCloudwatch():
                     ),
                     has_entries(
                         MetricName="step",
-                        Dimensions=self.dimensions,
+                        Dimensions=self.expected_dimensions,
                         Value=0,
                         Unit=MetricUnit.NONE.name,
                         StorageResolution=1,

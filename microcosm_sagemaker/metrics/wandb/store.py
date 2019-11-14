@@ -1,4 +1,4 @@
-from os import environ
+from os import environ, getenv
 
 from microcosm_logging.decorators import logger
 
@@ -21,13 +21,16 @@ class WeightsAndBiases:
         self.testing = graph.metadata.testing
         self.project_name = graph.metadata.name.replace("_", "-")
 
+    def _login(self):
+        # TODO: Remove this line if devops come up with a solution
+        # https://globality.atlassian.net/browse/DEVOPS-635
+        if not getenv("WANDB_API_KEY"):
+            environ["WANDB_API_KEY"] = self.graph.config.wandb.api_key
+
     def init(self):
         # Only initialize wandb if it is not a testing
         if not self.testing:
-            # TODO: Remove this line if devops come up with a solution
-            # https://globality.atlassian.net/browse/DEVOPS-635
-            if self.graph.config.wandb.api_key:
-                environ["WANDB_API_KEY"] = self.graph.config.wandb.api_key
+            self._login()
             wandb.init(
                 project=self.project_name,
                 config={

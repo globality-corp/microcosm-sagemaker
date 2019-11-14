@@ -5,14 +5,10 @@ import boto3
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 from microcosm_logging.decorators import logger
 
+from microcosm_sagemaker.constants import CLOUDWATCH_MAX_DIMENSIONS
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
 from microcosm_sagemaker.hyperparameters import get_hyperparameters
 from microcosm_sagemaker.metrics.sagemaker.models import LogMode, MetricUnit
-
-
-# NOTE: We can only use up to 10 dimensions:
-# https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloudwatch.html
-MAX_DIMENSIONS = 10
 
 
 @training_initializer()
@@ -42,12 +38,13 @@ class SageMakerMetrics:
             for flattened_hyperparam, value in get_hyperparameters(self.graph)
         ]
 
-        if len(dimensions) > MAX_DIMENSIONS:
+        if len(dimensions) > CLOUDWATCH_MAX_DIMENSIONS:
             self.logger.warning(
                 f"The number of hyperparameters ({len(dimensions)}) is more than the maximum dimensions "
-                f"allowed by `cloudwatch` ({MAX_DIMENSIONS}).  Truncating to first {MAX_DIMENSIONS} dimensions."
+                f"allowed by `cloudwatch` ({CLOUDWATCH_MAX_DIMENSIONS}). "
+                f"Truncating to first {CLOUDWATCH_MAX_DIMENSIONS} dimensions."
             )
-            dimensions = dimensions[:MAX_DIMENSIONS]
+            dimensions = dimensions[:CLOUDWATCH_MAX_DIMENSIONS]
 
         return dimensions
 
