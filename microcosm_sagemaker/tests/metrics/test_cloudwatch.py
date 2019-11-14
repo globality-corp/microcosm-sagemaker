@@ -23,7 +23,7 @@ class TestCloudwatch():
         self.graph.use("training_initializers", "cloudwatch", "bundle_with_metric")
         self.graph.lock()
 
-        self.dimensions = [
+        self.expected_dimensions = [
             {
                 "Name": "bundle_with_metric__hyperparam",
                 "Value": str(2),
