@@ -25,6 +25,7 @@ setup(
         "click>=7.0",
         "microcosm>=2.12.0",
         "microcosm-flask[metrics]>=2.0.0",
+        "python-dateutil<2.8.1",  # TODO: remove when botocore dependency failure is resolved.
     ],
     setup_requires=[
         "nose>=1.3.6",
@@ -54,12 +55,14 @@ setup(
             ),
             "random = microcosm_sagemaker.random:Random",
             "sagemaker = microcosm_sagemaker.factories:configure_sagemaker",
-            "sagemaker_metrics = microcosm_sagemaker.metrics.store:SageMakerMetrics",
             (
                 "single_threaded_bundle_orchestrator = "
                 "microcosm_sagemaker.bundle_orchestrator:SingleThreadedBundleOrchestrator"
             ),
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
+            "experiment_metrics = microcosm_sagemaker.metrics.experiment_metrics:ExperimentMetrics",
+            "wandb = microcosm_sagemaker.metrics.wandb.store:WeightsAndBiases",
+            "cloudwatch = microcosm_sagemaker.metrics.sagemaker.store:SageMakerMetrics",
         ],
     },
     extras_require={
@@ -79,7 +82,9 @@ setup(
             "coverage>=4.0.3",
             "parameterized>=0.7.0",
             "torch>=1.1.0",
+            "wandb>=0.8.14",
         ],
         "profiling": "pyinstrument>=3.0",
+        "wandb": "wandb>=0.8.14",
     },
 )

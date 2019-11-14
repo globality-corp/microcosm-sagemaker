@@ -20,3 +20,8 @@ class SagemakerPath:
     MODEL = SAGEMAKER_PREFIX / "model"
     OUTPUT = SAGEMAKER_PREFIX / "output"
     HYPERPARAMETERS = SAGEMAKER_PREFIX / "input/config/hyperparameters.json"
+
+
+# NOTE: We can only use up to 10 dimensions:
+# https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloudwatch.html
+CLOUDWATCH_MAX_DIMENSIONS = 10
