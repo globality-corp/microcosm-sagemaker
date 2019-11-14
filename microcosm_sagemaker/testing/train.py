@@ -50,6 +50,7 @@ class TrainCliTestCase(CliTestCase):
                     str(self.input_data_path),
                     "--output-artifact",
                     output_artifact_path,
+                    "--testing",
                 ],
             )
 
@@ -62,6 +63,7 @@ class TrainCliTestCase(CliTestCase):
                     ),
                     load_from_dict(self.extra_evaluate_config),
                 ),
+                testing=True,
             )
 
             self.check_bundle(self.graph.active_bundle)

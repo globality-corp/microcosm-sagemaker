@@ -20,6 +20,21 @@ def training_initializer():
     return decorator
 
 
+def metrics_observer():
+    """
+    Register a microcosm component as an experiment metric tracker,
+    for it to get any metrics being logged.
+
+    """
+    def decorator(func: Callable[[ObjectGraph], Any]):
+        def factory(graph):
+            component = func(graph)
+            graph.experiment_metrics.register(component)
+            return component
+        return factory
+    return decorator
+
+
 def _method_with_logging(original_method):
     def new_method(self, *args, **kwargs):
         self.logger.info(f"Started method `{original_method.__name__}`.")
