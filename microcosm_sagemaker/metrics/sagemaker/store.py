@@ -26,6 +26,7 @@ class SageMakerMetrics:
 
     def init(self):
         self.logger.info("`cloudwatch` was registered as a metric observer.")
+        self.enabled = True
 
     def _get_dimensions(self):
         # Metric dimensions allow us to analyze metric performance against the
@@ -81,14 +82,19 @@ class SageMakerMetrics:
                 Namespace="/aws/sagemaker/" + self.model_name,
                 MetricData=metric_data,
             )
-        except (ClientError, NoCredentialsError, NoRegionError):
+        except (ClientError, NoCredentialsError, NoRegionError) as e:
             self.logger.warning("CloudWatch publishing disabled", extra=dict(metric_data=metric_data))  # type: ignore
+            self.logger.warning(e)
+            # Disable cloudwatch logging if it fails to push metrics due to one of the above errors
+            self.enabled = False
             response = None
 
         return response
 
     def log_static(self, **kwargs):
-        self._log_metric(LogMode.STATIC, **kwargs)
+        if self.enabled:
+            self._log_metric(LogMode.STATIC, **kwargs)
 
     def log_timeseries(self, **kwargs):
-        self._log_metric(LogMode.TIMESERIES, **kwargs)
+        if self.enabled:
+            self._log_metric(LogMode.TIMESERIES, **kwargs)
