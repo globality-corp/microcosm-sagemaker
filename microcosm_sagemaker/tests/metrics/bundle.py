@@ -8,7 +8,7 @@ from microcosm_sagemaker.hyperparameters import hyperparameter
     param=1,
     hyperparam=hyperparameter(2),
 )
-class BundleWithMetirc():
+class BundleWithMetric():
     def __init__(self, graph):
         self.graph = graph
         self.param = graph.config.bundle_with_metric.param
