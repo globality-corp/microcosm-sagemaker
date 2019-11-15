@@ -59,7 +59,7 @@ class MyClassifier(Bundle):
     ...
 ```
 
-That autimatically adds the hyperparameters to your experiment, which simplifies hyperparameter optimization and tuning.
+That automatically adds the hyperparameters to your experiment, which simplifies hyperparameter optimization and tuning.
 
 * To report a static metric:
 
