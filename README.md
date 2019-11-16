@@ -41,8 +41,6 @@ To enable experiment tracking in an ML repository:
 }
 ```
 
-If you don't have access to `wandb` to create a new API key, contact @pierce to be invited.
-
 * To define hyperparameters for your model:
 
 ```
