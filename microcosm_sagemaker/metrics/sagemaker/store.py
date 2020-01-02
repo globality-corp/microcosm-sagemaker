@@ -19,6 +19,7 @@ class SageMakerMetrics:
         self.graph = graph
         self.testing = graph.metadata.testing
         self.model_name = graph.metadata.name
+        self.enabled = True
 
     @property
     def dimensions(self):
@@ -26,7 +27,6 @@ class SageMakerMetrics:
 
     def init(self):
         self.logger.info("`cloudwatch` was registered as a metric observer.")
-        self.enabled = True
 
     def _get_dimensions(self):
         # Metric dimensions allow us to analyze metric performance against the
