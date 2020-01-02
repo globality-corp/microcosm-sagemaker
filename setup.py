@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 project = "microcosm-sagemaker"
-version = "0.8.0"
+version = "0.8.1"
 
 setup(
     name=project,
@@ -24,7 +24,7 @@ setup(
         "awscli>=1.16.200",
         "click>=7.0",
         "microcosm>=2.12.0",
-        "microcosm-flask[metrics]>=2.0.0",
+        "microcosm-flask[metrics]>=2.8.0",
         "python-dateutil<2.8.1",  # TODO: remove when botocore dependency failure is resolved.
     ],
     setup_requires=[
