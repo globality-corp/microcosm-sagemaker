@@ -28,8 +28,12 @@ from microcosm_sagemaker.profiling import enable_profiling
     "--profile/--no-profile",
     default=False,
 )
+@option(
+    "--threading/--no-threading",
+    default=True,
+)
 @input_artifact_option()
-def main(host, port, debug, profile, input_artifact):
+def main(host, port, debug, profile, input_artifact, threading):
     graph = create_serve_app(
         debug=debug,
         extra_loader=load_from_dict(
@@ -44,6 +48,7 @@ def main(host, port, debug, profile, input_artifact):
         graph=graph,
         host=host,
         port=port,
+        threading=threading,
     )
 
 
@@ -51,8 +56,10 @@ def run_serve(
     graph: ObjectGraph,
     host: str,
     port: int,
+    threading: bool,
 ) -> None:
     graph.flask.run(
         host=host,
         port=port or graph.config.flask.port,
+        threading=threading,
     )
