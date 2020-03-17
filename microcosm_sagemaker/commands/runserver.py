@@ -61,5 +61,5 @@ def run_serve(
     graph.flask.run(
         host=host,
         port=port or graph.config.flask.port,
-        threading=threading,
+        threaded=threading,
     )
