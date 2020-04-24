@@ -63,7 +63,8 @@ class TestSimpleBundlePipeline(PipelineHarness, TestCase):
         response = client.post("/api/v1/invocations", json=dict(simpleArg=1.0))
         assert_that(response.status_code, is_(equal_to(200)))
         assert_that(
-            response.items, has_entries(uri="http://simple.com", score=close_to(3.0)),
+            response.json["items"][0],
+            has_entries(uri="http://simple.com", score=close_to(3.0, 0)),
         )
 
     def remove_filesystem(self, artifact_directory):
