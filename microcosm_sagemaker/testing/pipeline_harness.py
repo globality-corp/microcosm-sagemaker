@@ -1,17 +1,27 @@
 from abc import ABC, abstractmethod
 from inspect import signature
+from typing import (
+    Callable,
+    Iterable,
+    Mapping,
+    Optional,
+)
 
 
 class PipelineHarness(ABC):
-
     """
     Base class to support feature tests, by specifying the steps/pipes
     of a pipeline
+
     """
 
     @property
     @abstractmethod
-    def _steps(self):
+    def _steps(self) -> Iterable[Callable[..., Optional[Mapping]]]:
+        """
+        Define the steps for this testing pipeline.
+
+        """
         pass
 
     def test_steps(self):

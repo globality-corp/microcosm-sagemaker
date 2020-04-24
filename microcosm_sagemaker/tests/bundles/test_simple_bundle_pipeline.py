@@ -5,6 +5,7 @@ from hamcrest import (
     assert_that,
     close_to,
     equal_to,
+    has_entries,
     is_,
 )
 from microcosm.loaders import load_from_dict
@@ -24,24 +25,20 @@ class TestSimpleBundlePipeline(PipelineHarness, TestCase):
         "active_evaluation": "simple_evaluation",
     }
 
-    # TODO: add more test cases
-    expected = [{"uri": "http://simple.com", "score": 3.0}]
-    test_cases = [{"input": {"simpleArg": 1.0}, "expected": expected}]
-
     @property
     def _steps(self):
         return [
             self.create_filesystem,
             self.step_training,
-            self.step_prepare_predict,
-            self.step_predict,
+            self.step_prepare_serve,
+            self.step_serve,
             self.remove_filesystem,
         ]
 
     def create_filesystem(self):
         directory = TemporaryDirectory()
 
-        return {"artifact_directory": directory, "artifact_path": directory.name}
+        return dict(artifact_directory=directory, artifact_path=directory.name)
 
     @mock_app_hooks()
     def step_training(self, artifact_path):
@@ -53,30 +50,21 @@ class TestSimpleBundlePipeline(PipelineHarness, TestCase):
         )
 
     @mock_app_hooks()
-    def step_prepare_predict(self, artifact_path):
+    def step_prepare_serve(self, artifact_path):
         graph = create_serve_app(
-            extra_loader=load_from_dict(root_input_artifact_path=artifact_path,),
+            extra_loader=load_from_dict(root_input_artifact_path=artifact_path),
             debug=True,
         )
-        return {"graph": graph, "client": graph.flask.test_client()}
+        return dict(graph=graph, client=graph.flask.test_client())
 
     @mock_app_hooks()
-    def step_predict(self, client):
+    def step_serve(self, client):
 
-        for test_case in self.test_cases:
-            response = client.post("/api/v1/invocations", json=test_case["input"])
-            response_items = response.json["items"]
-            assert_that(response.status_code, is_(equal_to(200)))
-
-            expected = test_case["expected"]
-            assert_that(
-                len(response_items), is_(equal_to(len(expected))),
-            )
-            for response_item, expected_item in zip(response_items, expected):
-                assert_that(response_item["uri"], is_(equal_to(expected_item["uri"])))
-                assert_that(
-                    response_item["score"], is_(close_to(expected_item["score"], 1e-6))
-                )
+        response = client.post("/api/v1/invocations", json=dict(simpleArg=1.0))
+        assert_that(response.status_code, is_(equal_to(200)))
+        assert_that(
+            response.items, has_entries(uri="http://simple.com", score=close_to(3.0)),
+        )
 
     def remove_filesystem(self, artifact_directory):
         artifact_directory.cleanup()
