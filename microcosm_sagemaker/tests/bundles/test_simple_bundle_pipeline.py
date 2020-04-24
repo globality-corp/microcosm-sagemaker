@@ -29,9 +29,9 @@ class TestSimpleBundlePipeline(PipelineHarness, TestCase):
     def _steps(self):
         return [
             self.create_filesystem,
-            self.step_training,
-            self.step_prepare_serve,
-            self.step_serve,
+            self.step_train,
+            self.step_runserver,
+            self.step_check_prediction,
             self.remove_filesystem,
         ]
 
@@ -41,7 +41,7 @@ class TestSimpleBundlePipeline(PipelineHarness, TestCase):
         return dict(artifact_directory=directory, artifact_path=directory.name)
 
     @mock_app_hooks()
-    def step_training(self, artifact_path):
+    def step_train(self, artifact_path):
         graph = create_train_app(extra_loader=load_from_dict(self.config), testing=True)
         run_train(
             graph=graph,
@@ -50,7 +50,7 @@ class TestSimpleBundlePipeline(PipelineHarness, TestCase):
         )
 
     @mock_app_hooks()
-    def step_prepare_serve(self, artifact_path):
+    def step_runserver(self, artifact_path):
         graph = create_serve_app(
             extra_loader=load_from_dict(root_input_artifact_path=artifact_path),
             debug=True,
@@ -58,7 +58,7 @@ class TestSimpleBundlePipeline(PipelineHarness, TestCase):
         return dict(graph=graph, client=graph.flask.test_client())
 
     @mock_app_hooks()
-    def step_serve(self, client):
+    def step_check_prediction(self, client):
 
         response = client.post("/api/v1/invocations", json=dict(simpleArg=1.0))
         assert_that(response.status_code, is_(equal_to(200)))
