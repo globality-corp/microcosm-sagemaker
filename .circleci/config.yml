@@ -170,6 +170,7 @@ jobs:
             echo >> ~/.pypirc
             echo >> ~/.pypirc
             sed  -i '/version \=/s/\".*\"/'"\"0.${CIRCLE_BUILD_NUM}.dev${CIRCLE_BUILD_NUM}\"/" setup.py
+            version=$(python setup.py --version)
             python setup.py register -r pypi
             python setup.py sdist
             twine upload --repository pypi dist/microcosm-sagemaker-${version}.tar.gz
