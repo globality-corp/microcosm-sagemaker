@@ -23,7 +23,7 @@ if [ "$1" = "test" ]; then
    apt-get install -y --no-install-recommends build-essential
    # Install standard test dependencies; YMMV
    pip --quiet install \
-       .[test] nose PyHamcrest coverage
+       .[test] nose "PyHamcrest<1.10.0" coverage
    exec nosetests ${NAME}
 elif [ "$1" = "lint" ]; then
    # Install standard linting dependencies; YMMV
