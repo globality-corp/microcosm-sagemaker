@@ -49,7 +49,7 @@ class AllenNLPBundle(Bundle):
             # `rename` because the former works across filesystems, and
             # SageMaker uses a different filesystem for its temporary
             # directories and the output artifact directory
-            shutil.move(child, allen_nlp_path / child.name)
+            shutil.move(str(child), str(allen_nlp_path / child.name))
 
         self.temporary_allennlp_dir.cleanup()
 
