@@ -29,17 +29,9 @@ pip install -e '.[wandb]'
 
 To enable experiment tracking in an ML repository:
 
-* Choose the experiment tracking stores for your ML model. It is recommended to store metrics in both `wandb` and Amazon `cloudwatch`. To do so, add `wandb` and `cloudwatch` to `graph.use()` in `app_hooks/train/app.py` and `app_hooks/evaluate/app.py`.
+* Choose the experiment tracking stores for your ML model. Currently, we only support `wandb`. To do so, add `wandb` to `graph.use()` in `app_hooks/train/app.py` and `app_hooks/evaluate/app.py`.
 
-* Add the API key for `wandb` to your ML model's `config.json` file:
-
-```
-{
-    "wandb": {
-        "api_key": "XXXXXX"
-    }
-}
-```
+* Add the API key for `wandb` to the environment variables injected by Circle CI into the docker instance, by visiting `https://circleci.com/gh/globality-corp/<MODEL-NAME>/edit#env-vars` and adding `WANDB_API_KEY` as an environment variable.
 
 * To define hyperparameters for your model:
 
