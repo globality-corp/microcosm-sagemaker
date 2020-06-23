@@ -41,3 +41,8 @@ class TestWandb():
     #             row={"timeseries_metric": 1},
     #             step=0,
     #         )
+
+
+my_test = TestWandb()
+my_test.setup()
+my_test.test_init()
