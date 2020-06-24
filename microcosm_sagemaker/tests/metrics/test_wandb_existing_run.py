@@ -6,6 +6,12 @@ import wandb
 
 
 class TestWandbExistingRun():
+    """
+    Ensures that both log_static and log_timerseries methods work
+    when an existing wandb run is loaded.
+
+    """
+
     def setup(self):
         self.graph = create_object_graph(
             name="test-project",

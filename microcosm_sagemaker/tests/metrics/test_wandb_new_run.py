@@ -4,6 +4,12 @@ from microcosm.api import create_object_graph, load_from_dict
 
 
 class TestWandbNewRun():
+    """
+    Ensures that both log_static and log_timerseries methods work
+    when a new wandb run is created.
+
+    """
+
     def setup(self):
         self.graph = create_object_graph(
             name="test-project",

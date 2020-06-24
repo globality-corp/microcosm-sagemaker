@@ -23,6 +23,10 @@ from microcosm_sagemaker.tests.mocks import mock_app_hooks
 
 @dataclass
 class MockedWandb:
+    """
+    Mocks the wandb run object with a path attribute.
+
+    """
     path = "WANDB_RUN_PATH"
 
 
@@ -32,17 +36,20 @@ class TestWandbRunPath(TestCase):
         self.artifact_path = Path(TemporaryDirectory().name)
 
     @mock_app_hooks()
-    def test_train(self):
+    def test_run_path(self):
+        """
+        Trains a bundle and ensures that the wandb run path (which is the wandb identifier for the run)
+        is injected into the config and cached with the model artifacts.
+
+        """
         with patch("wandb.init", return_value=MockedWandb()):
             graph = create_train_app(
                 extra_loader=load_from_dict(dict(
                     active_bundle="bundle_with_metric"
                 )),
                 testing=False,
+                use_wandb=True,
             )
-            graph.unlock()
-            graph.use("wandb")
-            graph.lock()
 
             run_train(
                 graph=graph,
