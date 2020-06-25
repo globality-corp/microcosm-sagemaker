@@ -24,7 +24,7 @@ setup(
         "awscli>=1.16.200",
         "click>=7.0",
         "microcosm>=2.12.0",
-        "microcosm-flask[metrics]>=2.8.0",        
+        "microcosm-flask[metrics]>=2.8.0",
         # See: https://github.com/boto/botocore/pull/1910
         "python-dateutil<3.0.0",
     ],
@@ -67,8 +67,10 @@ setup(
         ],
     },
     extras_require={
+        # The latest version of allennlp (1.0.0) breaks the test_simple_allennlp_bundle test.
+        # TODO: Investigate the issue and remove the `<1.0.0`.
         "allennlp": [
-            "allennlp>=0.8.4",
+            "allennlp>=0.8.4, <1.0.0",
             "torch>=1.1.0",
         ],
         "torch": [
