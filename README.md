@@ -33,23 +33,7 @@ To enable experiment tracking in an ML repository:
 
 * Add the API key for `wandb` to the environment variables injected by Circle CI into the docker instance, by visiting `https://circleci.com/gh/globality-corp/<MODEL-NAME>/edit#env-vars` and adding `WANDB_API_KEY` as an environment variable.
 
-* To define hyperparameters for your model:
-
-```
-from microcosm.api import defaults, binding
-from microcosm_sagemaker.bundle import Bundle
-from microcosm_sagemaker.hyperparameters import hyperparameter
-
-@binding("my_classifier")
-@defaults(
-    param = 10,
-    hyperparam = hyperparameter(20),
-)
-class MyClassifier(Bundle):
-    ...
-```
-
-That automatically adds the hyperparameters to your experiment, which simplifies hyperparameter optimization and tuning.
+* `Microcosm-sagemaker` automatically adds the config for the active bundle and its dependents to the `wandb`'s run config.
 
 * To report a static metric:
 
