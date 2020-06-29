@@ -62,6 +62,8 @@ class TestWandbRunPath(TestCase):
         assert_that(
             cached_configuration,
             has_entries(
-                wandb_run_path=is_(equal_to("WANDB_RUN_PATH"))
+                wandb=has_entries(
+                    run_path=is_(equal_to("WANDB_RUN_PATH"))
+                )
             )
         )

@@ -1,14 +1,18 @@
 from unittest.mock import patch
 
+from hamcrest import (
+    assert_that,
+    equal_to,
+    has_entries,
+    is_,
+)
 from microcosm.api import create_object_graph, load_from_dict
 
-import wandb
 
-
-class TestWandbExistingRun():
+class TestWandbNewRun():
     """
     Ensures that both log_static and log_timerseries methods work
-    when an existing wandb run is loaded.
+    when a new wandb run is created.
 
     """
 
@@ -18,9 +22,6 @@ class TestWandbExistingRun():
             loader=load_from_dict(
                 dict(
                     active_bundle="simple_bundle_with_metric",
-                    wandb=dict(
-                        run_path="WANDB_RUN_PATH"
-                    ),
                 )
             ),
             testing=False,
@@ -29,15 +30,26 @@ class TestWandbExistingRun():
         self.graph.lock()
 
     def test_init(self):
-        with patch.object(wandb.Api, "run") as wandb_api_run:
+        with patch("wandb.init") as wandb_init:
             self.graph.training_initializers.init()
-
-            wandb_api_run.assert_called_with(
-                path="WANDB_RUN_PATH"
+            _, call_kw_args = wandb_init.call_args
+            assert_that(
+                call_kw_args,
+                has_entries(
+                    project=is_(equal_to("test-project")),
+                    config=is_(equal_to(
+                        dict(
+                            simple_bundle_with_metric=dict(
+                                param1=1,
+                                param2=2,
+                            )
+                        )
+                    ))
+                )
             )
 
     def test_log_static_metric(self):
-        with patch.object(wandb.Api, "run"):
+        with patch("wandb.init"):
             self.graph.training_initializers.init()
 
             self.graph.simple_bundle_with_metric.log_static_metric()
@@ -46,7 +58,7 @@ class TestWandbExistingRun():
             )
 
     def test_log_timeseries_metric(self):
-        with patch.object(wandb.Api, "run"):
+        with patch("wandb.init"):
             self.graph.training_initializers.init()
 
             self.graph.simple_bundle_with_metric.log_timeseries_metric()
@@ -54,3 +66,9 @@ class TestWandbExistingRun():
                 row={"timeseries_metric": 1},
                 step=0,
             )
+
+
+if __name__ == "__main__":
+    my_test = TestWandbNewRun()
+    my_test.setup()
+    my_test.test_init()

@@ -20,7 +20,7 @@ class WeightsAndBiases:
         self.project_name = graph.metadata.name.replace("_", "-")
         self.bundle_and_dependencies_config_extractor = self.graph.bundle_and_dependencies_config_extractor
         self.active_bundle = getattr(graph, graph.config.active_bundle)
-        self.run_path = getattr(graph.config, "wandb_run_path", None)
+        self.run_path = getattr(graph.config.wandb, "run_path", None)
 
     def init(self):
         # Only initialize wandb if it is not a testing
@@ -55,7 +55,7 @@ class WeightsAndBiases:
         )
 
         # Injecting the wandb run path into the config
-        self.graph.config.wandb_run_path = wandb_run.path
+        self.graph.config.wandb.run_path = wandb_run.path
 
         self.logger.info(f"A new `weights & biases` run was created: {wandb_run.path}")
 
