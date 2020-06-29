@@ -17,13 +17,13 @@ class TestWandbExistingRun():
             name="test-project",
             loader=load_from_dict(
                 dict(
-                    wandb=dict(api_key="API_KEY"),
+                    active_bundle="simple_bundle_with_metric",
                     wandb_run_path="WANDB_RUN_PATH",
                 )
             ),
             testing=False,
         )
-        self.graph.use("training_initializers", "wandb", "bundle_with_metric")
+        self.graph.use("training_initializers", "wandb", "simple_bundle_with_metric")
         self.graph.lock()
 
     def test_init(self):
@@ -38,7 +38,7 @@ class TestWandbExistingRun():
         with patch.object(wandb.Api, "run"):
             self.graph.training_initializers.init()
 
-            self.graph.bundle_with_metric.log_static_metric()
+            self.graph.simple_bundle_with_metric.log_static_metric()
             self.graph.wandb.wandb_run.summary.update.assert_called_with(
                 {"static_metric": 3}
             )
@@ -47,7 +47,7 @@ class TestWandbExistingRun():
         with patch.object(wandb.Api, "run"):
             self.graph.training_initializers.init()
 
-            self.graph.bundle_with_metric.log_timeseries_metric()
+            self.graph.simple_bundle_with_metric.log_timeseries_metric()
             self.graph.wandb.wandb_run.log.assert_called_with(
                 row={"timeseries_metric": 1},
                 step=0,

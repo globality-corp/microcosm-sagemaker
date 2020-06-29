@@ -51,6 +51,10 @@ setup(
                 "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesTrainer"
             ),
             (
+                "bundle_and_dependencies_config_extractor = "
+                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesConfigExtractor"
+            ),
+            (
                 "load_active_bundle_and_dependencies = "
                 "microcosm_sagemaker.factories:load_active_bundle_and_dependencies"
             ),
@@ -63,7 +67,6 @@ setup(
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
             "experiment_metrics = microcosm_sagemaker.metrics.experiment_metrics:ExperimentMetrics",
             "wandb = microcosm_sagemaker.metrics.wandb.store:WeightsAndBiases",
-            "cloudwatch = microcosm_sagemaker.metrics.sagemaker.store:SageMakerMetrics",
         ],
     },
     extras_require={

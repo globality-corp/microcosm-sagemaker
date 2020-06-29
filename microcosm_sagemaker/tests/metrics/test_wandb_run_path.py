@@ -45,7 +45,7 @@ class TestWandbRunPath(TestCase):
         with patch("wandb.init", return_value=MockedWandb()):
             graph = create_train_app(
                 extra_loader=load_from_dict(dict(
-                    active_bundle="bundle_with_metric"
+                    active_bundle="simple_bundle_with_metric"
                 )),
                 testing=False,
                 use_wandb=True,

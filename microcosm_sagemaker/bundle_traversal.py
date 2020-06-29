@@ -5,6 +5,7 @@ from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.artifact import RootInputArtifact, RootOutputArtifact
 from microcosm_sagemaker.bundle import Bundle
+from microcosm_sagemaker.dependency_traverser import traverse_component_and_dependencies
 from microcosm_sagemaker.input_data import InputData
 
 
@@ -81,6 +82,28 @@ class BundleAndDependenciesTrainer:
             bundle_handler=train,
             dependencies_only=dependencies_only,
         )
+
+
+class BundleAndDependenciesConfigExtractor:
+    def __init__(self, graph):
+        self.config = graph.config
+        self.graph = graph
+
+    def __call__(self, bundle: Bundle):
+        """
+        Returns the config from the main bundle, as well as all of its dependents.
+
+        """
+        config = {}
+
+        for bundle_to_handle in traverse_component_and_dependencies(bundle):
+            bundle_name = _get_component_name(self.graph, bundle_to_handle)
+            bundle_config = {
+                bundle_name: getattr(self.config, bundle_name)
+            }
+            config.update(bundle_config)
+
+        return config
 
 
 def _get_component_name(graph, component):
