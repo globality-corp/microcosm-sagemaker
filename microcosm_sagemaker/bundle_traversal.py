@@ -98,10 +98,10 @@ class BundleAndDependenciesConfigExtractor:
 
         for bundle_to_handle in traverse_component_and_dependencies(bundle):
             bundle_name = _get_component_name(self.graph, bundle_to_handle)
-            bundle_config = {
-                bundle_name: getattr(self.config, bundle_name)
-            }
-            config.update(bundle_config)
+            bundle_config = getattr(self.config, bundle_name, {})
+            config.update(
+                {bundle_name: bundle_config}
+            )
 
         return config
 
