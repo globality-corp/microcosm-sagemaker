@@ -51,7 +51,7 @@ class WeightsAndBiases:
         wandb_run = wandb.init(
             project=self.project_name,
             config=self.bundle_and_dependencies_config_extractor(self.active_bundle),
-            notes=f"Related to previous run: {self.run_path}",
+            notes=notes,
         )
 
         # Injecting the wandb run path into the config
