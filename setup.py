@@ -73,7 +73,7 @@ setup(
         # The latest version of allennlp (1.0.0) breaks the test_simple_allennlp_bundle test.
         # TODO: Investigate the issue and remove the `<1.0.0`.
         "allennlp": [
-            "allennlp>=0.8.4, <1.0.0",
+            "allennlp>=0.8.4, <=0.9.0",
             "torch>=1.1.0",
         ],
         "torch": [
