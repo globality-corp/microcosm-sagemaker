@@ -91,7 +91,7 @@ class BundleAndDependenciesConfigExtractor:
 
     def __call__(self, bundle: Bundle):
         """
-        Returns the config from the main bundle, as well as all of its dependents.
+        Returns the config from the `bundle`, as well as all of its dependents.
 
         """
         config = {}
