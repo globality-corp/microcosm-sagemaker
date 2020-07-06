@@ -1,3 +1,5 @@
+import os
+
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
@@ -23,6 +25,11 @@ class WeightsAndBiases:
         self.run_path = getattr(graph.config.wandb, "run_path", None)
 
     def init(self):
+        # Sometimes, the entity in the wandb run path appears as None.
+        # To make sure this does not happen, we explicityly set the wandb entity.
+        # https://docs.wandb.com/library/environment-variables
+        os.environ["WANDB_ENTITY"] = "globality"
+
         # Only initialize wandb if it is not a testing
         if self.testing:
             return
