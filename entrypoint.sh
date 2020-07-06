@@ -27,8 +27,13 @@ if [ "$1" = "test" ]; then
    exec nosetests ${NAME}
 elif [ "$1" = "lint" ]; then
    # Install standard linting dependencies; YMMV
+   # isort pinned by @Salman on 07-06-2020
+   # Why? isort 5.0.0 is not API compatible with isort 4.0.0.
+   # The incompatibility could break some plugins, including flake8-isort.
+   # https://github.com/timothycrosley/isort/issues/1273
+   # https://globalityinc.slack.com/archives/C1PLF5PMK/p1594034443295100
    pip --quiet install \
-       .[lint] flake8 flake8-print flake8-logging-format flake8-isort
+       .[lint] flake8 flake8-print flake8-logging-format "isort<5.0.0" flake8-isort
    exec flake8 ${NAME}
 elif [ "$1" = "typehinting" ]; then
    # Install standard type-linting dependencies

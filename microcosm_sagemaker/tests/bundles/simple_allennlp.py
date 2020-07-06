@@ -22,8 +22,8 @@ from microcosm_sagemaker.frameworks.allennlp.bundle import AllenNLPBundle
                 embedding_dim=4,
             ),
         ),
-        train_data_path=f"train/dataset.jsonl",
-        validation_data_path=f"develop/dataset.jsonl",
+        train_data_path="train/dataset.jsonl",
+        validation_data_path="develop/dataset.jsonl",
         iterator="basic",
         trainer=dict(
             optimizer="adam",

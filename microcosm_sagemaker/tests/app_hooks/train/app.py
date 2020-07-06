@@ -16,6 +16,7 @@ def create_app(
     debug: bool = False,
     testing: bool = False,
     extra_loader: Loader = empty_loader,
+    use_wandb: bool = False,
 ) -> ObjectGraph:
     """
     Create the object graph for the application.
@@ -42,5 +43,8 @@ def create_app(
         # Sagemaker basics
         "sagemaker",
     )
+
+    if use_wandb:
+        graph.use("wandb")
 
     return graph.lock()
