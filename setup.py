@@ -24,7 +24,7 @@ setup(
         "awscli>=1.16.200",
         "click>=7.0",
         "microcosm>=2.12.0",
-        "microcosm-flask[metrics]>=2.8.0",        
+        "microcosm-flask[metrics]>=2.8.0",
         # See: https://github.com/boto/botocore/pull/1910
         "python-dateutil<3.0.0",
     ],
@@ -51,6 +51,10 @@ setup(
                 "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesTrainer"
             ),
             (
+                "bundle_and_dependencies_config_extractor = "
+                "microcosm_sagemaker.bundle_traversal:BundleAndDependenciesConfigExtractor"
+            ),
+            (
                 "load_active_bundle_and_dependencies = "
                 "microcosm_sagemaker.factories:load_active_bundle_and_dependencies"
             ),
@@ -63,7 +67,6 @@ setup(
             "training_initializers = microcosm_sagemaker.training_initializer_registry:TrainingInitializerRegistry",
             "experiment_metrics = microcosm_sagemaker.metrics.experiment_metrics:ExperimentMetrics",
             "wandb = microcosm_sagemaker.metrics.wandb.store:WeightsAndBiases",
-            "cloudwatch = microcosm_sagemaker.metrics.sagemaker.store:SageMakerMetrics",
         ],
     },
     extras_require={
@@ -79,7 +82,9 @@ setup(
         ],
         "test": [
             "PyHamcrest>=1.9.0",
-            "allennlp>=0.8.4",
+            # The latest version of allennlp (1.0.0) breaks the test_simple_allennlp_bundle test.
+            # TODO: Investigate the issue and remove the `<1.0.0`.
+            "allennlp>=0.8.4, <1.0.0",
             "coverage>=4.0.3",
             "parameterized>=0.7.0",
             "torch>=1.1.0",

@@ -60,9 +60,10 @@ def run_train(
     root_output_artifact: RootOutputArtifact,
 ) -> None:
     root_output_artifact.init()
-    root_output_artifact.save_config(graph.config)
 
     graph.training_initializers.init()
+
+    root_output_artifact.save_config(graph.config)
 
     graph.bundle_and_dependencies_trainer(
         bundle=graph.active_bundle,
