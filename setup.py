@@ -89,12 +89,6 @@ setup(
             "parameterized>=0.7.0",
             "torch>=1.1.0",
             "wandb>=0.8.14",
-            # Pinned by @Salman on 07-06-2020
-            # Why? isort 5.0.0 is not API compatible with isort 4.0.0.
-            # The incompatibility could break some plugins, including flake8-isort.
-            # https://github.com/timothycrosley/isort/issues/1273
-            # https://globalityinc.slack.com/archives/C1PLF5PMK/p1594034443295100
-            "isort<5.0.0",
         ],
         "profiling": "pyinstrument>=3.0",
         "wandb": "wandb>=0.8.14",
