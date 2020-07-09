@@ -3,11 +3,11 @@ import os
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
-from wandb.apis import CommError
 
 
 try:
     import wandb
+    from wandb.apis import CommError
 except ImportError:
     pass
 
