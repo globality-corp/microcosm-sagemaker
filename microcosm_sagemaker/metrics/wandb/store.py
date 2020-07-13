@@ -64,6 +64,11 @@ class WeightsAndBiases:
         # Injecting the wandb run path into the config
         self.graph.config.wandb.run_path = wandb_run.path
 
+        # Adding the link to the Weights & Biases run to the landing page
+        landing_convention_links = self.graph.config.landing_convention.get("links", {})
+        landing_convention_links.update({"Weights & Biases": wandb_run.get_url()})
+        self.graph.config.landing_convention.update({"links": landing_convention_links})
+
         self.logger.info(f"A new `weights & biases` run was created: {wandb_run.path}")
 
         return wandb_run
