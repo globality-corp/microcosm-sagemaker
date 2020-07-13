@@ -29,6 +29,9 @@ class MockedWandb:
     """
     path = "WANDB_RUN_PATH"
 
+    def get_url(self):
+        return "WANDB_URL"
+
 
 class TestWandbRunPath(TestCase):
 
@@ -64,6 +67,11 @@ class TestWandbRunPath(TestCase):
             has_entries(
                 wandb=has_entries(
                     run_path=is_(equal_to("WANDB_RUN_PATH"))
+                ),
+                landing_convention=has_entries(
+                    links=has_entries(
+                        **{"Weights & Biases": "WANDB_URL"}
+                    )
                 )
             )
         )
