@@ -65,7 +65,6 @@ class WeightsAndBiases:
         self.graph.config.wandb.run_path = wandb_run.path
 
         # Adding the link to the Weights & Biases run to the landing page
-        # https://github.com/globality-corp/microcosm-flask/blob/develop/microcosm_flask/conventions/landing.py#L68
         landing_convention_links = self.graph.config.landing_convention.get("links", {})
         landing_convention_links.update({"Weights & Biases": wandb_run.get_url()})
         self.graph.config.landing_convention.update({"links": landing_convention_links})
