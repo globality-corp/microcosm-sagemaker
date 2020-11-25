@@ -88,7 +88,7 @@ setup(
             "coverage>=4.0.3",
             "parameterized>=0.7.0",
             "torch>=1.1.0",
-            "wandb>=0.8.14",
+            "wandb>=0.10",
         ],
         "profiling": "pyinstrument>=3.0",
         "wandb": "wandb>=0.8.14",

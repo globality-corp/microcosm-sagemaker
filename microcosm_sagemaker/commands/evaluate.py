@@ -31,5 +31,7 @@ def run_evaluate(
     graph: ObjectGraph,
     input_data: InputData,
 ) -> None:
-    # Evaluate
+
+    graph.training_initializers.init()
+
     graph.active_evaluation(graph.active_bundle, input_data)
