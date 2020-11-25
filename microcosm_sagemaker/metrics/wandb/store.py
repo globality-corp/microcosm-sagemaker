@@ -83,7 +83,7 @@ class WeightsAndBiases:
 
     def log_timeseries(self, **kwargs):
         step = kwargs.pop("step")
-        self.wandb_run.log(row=kwargs, step=step)
+        self.wandb_run.log(kwargs, step=step)
         return None
 
     def log_static(self, **kwargs):
