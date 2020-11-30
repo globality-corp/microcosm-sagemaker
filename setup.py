@@ -70,10 +70,6 @@ setup(
         ],
     },
     extras_require={
-        "allennlp": [
-            "allennlp>=0.8.4",
-            "torch>=1.1.0",
-        ],
         "torch": [
             "torch>=1.1.0",
         ],
@@ -82,15 +78,12 @@ setup(
         ],
         "test": [
             "PyHamcrest>=1.9.0",
-            # The latest version of allennlp (1.0.0) breaks the test_simple_allennlp_bundle test.
-            # TODO: Investigate the issue and remove the `<1.0.0`.
-            "allennlp>=0.8.4, <1.0.0",
             "coverage>=4.0.3",
             "parameterized>=0.7.0",
             "torch>=1.1.0",
             "wandb>=0.10",
         ],
         "profiling": "pyinstrument>=3.0",
-        "wandb": "wandb>=0.8.14",
+        "wandb": "wandb>=0.10",
     },
 )
