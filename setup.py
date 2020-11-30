@@ -27,6 +27,7 @@ setup(
         "microcosm-flask[metrics]>=2.8.0",
         # See: https://github.com/boto/botocore/pull/1910
         "python-dateutil<3.0.0",
+        "joblib>=0.15",
     ],
     setup_requires=[
         "nose>=1.3.6",
