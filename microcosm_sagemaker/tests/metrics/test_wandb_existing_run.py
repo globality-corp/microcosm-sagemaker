@@ -51,6 +51,6 @@ class TestWandbExistingRun():
 
             self.graph.simple_bundle_with_metric.log_timeseries_metric()
             self.graph.wandb.wandb_run.log.assert_called_with(
-                row={"timeseries_metric": 1},
+                {"timeseries_metric": 1},
                 step=0,
             )
