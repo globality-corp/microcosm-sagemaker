@@ -9,6 +9,9 @@
         "apt-get install -y --no-install-recommends build-essential"
       ]
     },
+    "extra_instructions": [
+      "RUN pip install --upgrade pip"
+    ],
     "name": "microcosm-sagemaker",
     "pypi": {
       "enabled": true,
@@ -16,5 +19,5 @@
     }
   },
   "type": "python-library",
-  "version": "2020.15.20"
+  "version": "2020.44.0"
 }
