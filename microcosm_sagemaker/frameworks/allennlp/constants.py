@@ -1,2 +1,0 @@
-ARTIFACT_NAME = "best.th"
-CUDA_DEVICE = -1
