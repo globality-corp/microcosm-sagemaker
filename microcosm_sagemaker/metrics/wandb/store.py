@@ -1,5 +1,6 @@
 import os
 
+from microcosm.api import binding, defaults
 from microcosm_logging.decorators import logger
 
 from microcosm_sagemaker.decorators import metrics_observer, training_initializer
@@ -15,10 +16,17 @@ except ImportError:
 @training_initializer()
 @metrics_observer()
 @logger
+@binding("weights_and_biases")
+@defaults(
+    enable=None,
+)
 class WeightsAndBiases:
     def __init__(self, graph):
         self.graph = graph
-        self.testing = graph.metadata.testing
+        self.enable = (
+            # If it is not explicitly enabled or disabled, enable if not testing.
+            graph.config.weights_and_biases.enable or not graph.metadata.testing
+        )
         self.project_name = graph.metadata.name.replace("_", "-")
         self.bundle_and_dependencies_config_extractor = self.graph.bundle_and_dependencies_config_extractor
         self.active_bundle = getattr(graph, graph.config.active_bundle)
@@ -30,8 +38,8 @@ class WeightsAndBiases:
         # https://docs.wandb.com/library/environment-variables
         os.environ["WANDB_ENTITY"] = "globality"
 
-        # Only initialize wandb if it is not a testing
-        if self.testing:
+        # Only initialize wandb if it is enabled
+        if not self.enable:
             return
 
         # Pushing into an existing wandb experiment
@@ -75,7 +83,7 @@ class WeightsAndBiases:
 
     def log_timeseries(self, **kwargs):
         step = kwargs.pop("step")
-        self.wandb_run.log(row=kwargs, step=step)
+        self.wandb_run.log(kwargs, step=step)
         return None
 
     def log_static(self, **kwargs):

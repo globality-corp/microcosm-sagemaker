@@ -27,6 +27,7 @@ ENV CORE_PACKAGES locales
 ENV BUILD_PACKAGES build-essential libffi-dev
 ENV OTHER_PACKAGES libssl-dev
 
+RUN pip install --upgrade pip
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ${CORE_PACKAGES} ${BUILD_PACKAGES} && \
@@ -77,7 +78,8 @@ ENV LC_ALL en_US.UTF-8
 # These are enough to install dependencies and have a stable base layer
 # when source code changes.
 
-COPY README.md MANIFEST.in setup.cfg setup.py /src/
+# copy pyproject.toml and HISTORY.rst only if they exist
+COPY README.md MANIFEST.in setup.cfg setup.py pyproject.tom[l] HISTORY.rs[t] /src/
 
 RUN pip install --no-cache-dir --upgrade --extra-index-url ${EXTRA_INDEX_URL} /src/ && \
     apt-get remove --purge -y ${BUILD_PACKAGES} && \

@@ -10,6 +10,7 @@ from microcosm.object_graph import ObjectGraph
 
 from microcosm_sagemaker.app_hooks import create_train_app
 from microcosm_sagemaker.artifact import RootOutputArtifact
+from microcosm_sagemaker.commands.evaluate import run_evaluate
 from microcosm_sagemaker.commands.options import input_data_option, output_artifact_option
 from microcosm_sagemaker.exceptions import raise_sagemaker_exception
 from microcosm_sagemaker.input_data import InputData
@@ -49,7 +50,8 @@ def main(configuration, input_data, output_artifact, auto_evaluate, testing):
         )
 
         if auto_evaluate:
-            run_auto_evaluate(graph, input_data)
+            run_evaluate(graph, input_data)
+
     except Exception as e:
         raise_sagemaker_exception(e)
 
@@ -70,7 +72,3 @@ def run_train(
         input_data=input_data,
         root_output_artifact=root_output_artifact,
     )
-
-
-def run_auto_evaluate(graph: ObjectGraph, input_data: InputData) -> None:
-    graph.active_evaluation(graph.active_bundle, input_data)

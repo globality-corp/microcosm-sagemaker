@@ -10,6 +10,9 @@ def training_initializer():
     method will automatically be called.  This function is designed to be used
     as a decorator on a factory.
 
+    Although the name suggests these initializers are training-related, they have
+    grown beyond that and they are called during both training and evaluation runs.
+
     """
     def decorator(func: Callable[[ObjectGraph], Any]):
         def factory(graph):

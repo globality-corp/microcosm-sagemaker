@@ -10,11 +10,12 @@
 #  See: http://github.com/globality-corp/globality-build
 #
 #
+version: 2.1
 
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: ${AWS_ECR_DOMAIN}/globality-build:2020.15.20
+    - image: ${AWS_ECR_DOMAIN}/globality-build:2020.44.0
       aws_auth:
         aws_access_key_id: ${AWS_ACCESS_KEY_ID}
         aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
@@ -28,7 +29,7 @@ defaults: &defaults
 deploy_defaults: &deploy_defaults
   working_directory: ~/repo
   docker:
-    - image: ${AWS_ECR_DOMAIN}/globality-build:2020.15.20
+    - image: ${AWS_ECR_DOMAIN}/globality-build:2020.44.0
       aws_auth:
         aws_access_key_id: ${AWS_ACCESS_KEY_ID}
         aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
@@ -43,8 +44,6 @@ deploy_defaults: &deploy_defaults
 whitelist: &whitelist
   paths:
     .
-
-version: 2
 
 jobs:
   checkout:
@@ -65,37 +64,27 @@ jobs:
           at: ~/repo
 
       - setup_remote_docker:
+          version: 19.03.12
           docker_layer_caching: true
 
       - run:
-          name: Build Docker
-          # install dependencies for loading ecs task definitions
+          name: Login AWS ECR
           command: |
             eval $(aws ecr get-login --no-include-email)
-            # Build on local machine - set the following env vars.
-            # Some env vars are constants, so you can set them in your .bashrc
+      - run:
+          name: Build Docker - Application Service Code
+          command: |
+            # pwd is here to prevent error when pre_docker_build returns nothing
+            pwd
 
-            # CONSTANT env vars:
-            # export AWS_ECR_DOMAIN="308798440167.dkr.ecr.us-east-1.amazonaws.com"
-            # export EXTRA_INDEX_URL=https://<USERNAME>:<API_TOKEN>@globality.jfrog.io/globality/api/pypi/pypi/simple
-            # export JFROG_AUTH=<USERNAME>:<API_TOKEN>
-            # export CIRCLE_BUILD_NUM=0
 
-            # DYNAMIC env vars:
-            # export CIRCLE_SHA1=$(git log -1 --format=format:%H)
-
-            export DOCKER_IMAGE_SHA_TAG=$AWS_ECR_DOMAIN/python-library:$CIRCLE_SHA1
-            docker build --tag $DOCKER_IMAGE_SHA_TAG \
+            docker build --tag $AWS_ECR_DOMAIN/python-library:$CIRCLE_SHA1 \
               --build-arg BUILD_NUM=$CIRCLE_BUILD_NUM \
               --build-arg SHA1=$CIRCLE_SHA1 \
               --build-arg EXTRA_INDEX_URL=$EXTRA_INDEX_URL \
               --build-arg JFROG_AUTH=$JFROG_AUTH .
 
-            # Push from local machine (requires AWS ECR permissions):
-            # eval $(botoenv -p development)
-
-            eval $(aws ecr get-login --no-include-email)
-            docker push $DOCKER_IMAGE_SHA_TAG
+            docker push $AWS_ECR_DOMAIN/python-library:$CIRCLE_SHA1
 
   test:
     <<: *defaults
@@ -104,15 +93,28 @@ jobs:
       - attach_workspace:
           at: ~/repo
 
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
+          docker_layer_caching: true
       - run:
-          name: Test code
+          name: Login AWS ECR
           command: |
-            docker create -v /src/microcosm_sagemaker/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/microcosm_sagemaker/tests service_tests:/src/microcosm_sagemaker/
             eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
+
+
+      - run:
+          name: Copy service tests to volume
+          command: |
+
+            docker create -v /src/microcosm_sagemaker/tests/ --name service_tests alpine:3.11 /bin/true
+            docker cp $(pwd)/microcosm_sagemaker/tests service_tests:/src/microcosm_sagemaker/
+
+      - run:
+          name: Run Test
+          command: |
             docker run -it  --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} test
+
+
 
 
   lint:
@@ -122,16 +124,26 @@ jobs:
       - attach_workspace:
           at: ~/repo
 
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
+          docker_layer_caching: true
+      - run:
+          name: Login AWS ECR
+          command: |
+            eval $(aws ecr get-login --no-include-email)
+
+      - run:
+          name: Copy service tests to volume
+          command: |
+
+            docker create -v /src/microcosm_sagemaker/tests/ --name service_tests alpine:3.11 /bin/true
+            docker cp $(pwd)/microcosm_sagemaker/tests service_tests:/src/microcosm_sagemaker/
 
       - run:
           name: Run Lint
           command: |
-            docker create -v /src/microcosm_sagemaker/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/microcosm_sagemaker/tests service_tests:/src/microcosm_sagemaker/
-            eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
             docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} lint
+
 
   typehinting:
     <<: *defaults
@@ -140,15 +152,24 @@ jobs:
       - attach_workspace:
           at: ~/repo
 
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
+          docker_layer_caching: true
+      - run:
+          name: Login AWS ECR
+          command: |
+            eval $(aws ecr get-login --no-include-email)
+
+      - run:
+          name: Copy service tests to volume
+          command: |
+
+            docker create -v /src/microcosm_sagemaker/tests/ --name service_tests alpine:3.11 /bin/true
+            docker cp $(pwd)/microcosm_sagemaker/tests service_tests:/src/microcosm_sagemaker/
 
       - run:
           name: Run Typehinting
           command: |
-            docker create -v /src/microcosm_sagemaker/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/microcosm_sagemaker/tests service_tests:/src/microcosm_sagemaker/
-            eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
             docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} typehinting
 
   deploy_jfrog_rc:
@@ -159,29 +180,15 @@ jobs:
       - run:
           name: Deploy
           command: |
-            echo "[distutils]" > ~/.pypirc
-            echo "index-servers =" >> ~/.pypirc
-            echo "    pypi " >> ~/.pypirc
-            echo >> ~/.pypirc
-            echo "[pypi]" >> ~/.pypirc
-            echo "repository:https://upload.pypi.org/legacy/" >> ~/.pypirc
-            echo "username:$PYPI_USERNAME" >> ~/.pypirc
-            echo "password:$PYPI_PASSWORD" >> ~/.pypirc
-            echo >> ~/.pypirc
-            echo >> ~/.pypirc
-            sed  -i '/version \=/s/\".*\"/'"\"0.${CIRCLE_BUILD_NUM}.dev${CIRCLE_BUILD_NUM}\"/" setup.py
-            version=$(python setup.py --version)
-            python setup.py register -r pypi
-            python setup.py sdist
-            twine upload --repository pypi dist/microcosm-sagemaker-${version}.tar.gz
+            echo "Not publishing package!"
 
-  deploy_pypi:
+  publish_library:
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Deploy
+          name: Publish
           command: |
             echo "[distutils]" > ~/.pypirc
             echo "index-servers =" >> ~/.pypirc
@@ -204,16 +211,19 @@ jobs:
 
 
 workflows:
-  version: 2
 
   build-and-release:
     jobs:
       - checkout:
+          context: 
+          - Globality-Common
           filters:
             # run for all branches and tags
             tags:
               only: /.*/
       - build_docker:
+          context: 
+          - Globality-Common
           requires:
             - checkout
           filters:
@@ -221,6 +231,8 @@ workflows:
             tags:
               only: /.*/
       - lint:
+          context: 
+          - Globality-Common
           requires:
             - build_docker
           filters:
@@ -228,6 +240,8 @@ workflows:
             tags:
               only: /.*/
       - test:
+          context: 
+          - Globality-Common
           requires:
             - build_docker
           filters:
@@ -235,18 +249,24 @@ workflows:
             tags:
               only: /.*/
       - deploy_jfrog_rc:
+          context: 
+          - Globality-Common
           requires:
             - test
             - lint
             - typehinting
       - typehinting:
+          context: 
+          - Globality-Common
           requires:
             - build_docker
           filters:
             # run for all branches and tags
             tags:
               only: /.*/
-      - deploy_pypi:
+      - publish_library:
+          context: 
+          - Globality-Common
           requires:
             - test
             - lint
