@@ -38,7 +38,7 @@ class WeightsAndBiases:
         # https://docs.wandb.com/library/environment-variables
         os.environ["WANDB_ENTITY"] = "globality"
 
-        # Only initialize wandb if it is not a testing
+        # Only initialize wandb if it is enabled
         if not self.enable:
             return
 
