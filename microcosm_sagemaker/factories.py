@@ -51,4 +51,5 @@ def configure_sagemaker(graph):
         "bundle_and_dependencies_trainer",
         "random",
         "training_initializers",
+        "experiment_metrics",
     )

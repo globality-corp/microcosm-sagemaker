@@ -3,7 +3,7 @@ import os
 from microcosm.api import binding, defaults
 from microcosm_logging.decorators import logger
 
-from microcosm_sagemaker.decorators import metrics_observer, training_initializer
+from microcosm_sagemaker.decorators import metrics_observer
 
 
 try:
@@ -13,7 +13,6 @@ except ImportError:
     pass
 
 
-@training_initializer()
 @metrics_observer()
 @logger
 @binding("weights_and_biases")
@@ -71,6 +70,9 @@ class WeightsAndBiases:
 
         # Injecting the wandb run path into the config
         self.graph.config.wandb.run_path = wandb_run.path
+        # Setting the run_path for the current instance.
+        # This prevents a new wandb instantiation if the `init` method is called again.
+        self.run_path = self.graph.config.wandb.run_path
 
         # Adding the link to the Weights & Biases run to the landing page
         landing_convention_links = self.graph.config.landing_convention.get("links", {})

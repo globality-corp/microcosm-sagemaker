@@ -32,6 +32,6 @@ def run_evaluate(
     input_data: InputData,
 ) -> None:
 
-    graph.training_initializers.init()
+    graph.experiment_metrics.init()
 
     graph.active_evaluation(graph.active_bundle, input_data)

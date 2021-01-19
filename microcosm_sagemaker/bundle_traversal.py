@@ -48,6 +48,7 @@ def fit_and_save_bundle(
     nested_output_artifact = root_output_artifact / bundle_name
     nested_output_artifact.init()
 
+    graph.training_initializers.init()
     bundle.fit(input_data)
     bundle.save(nested_output_artifact)
 

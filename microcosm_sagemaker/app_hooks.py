@@ -1,6 +1,5 @@
-from pkg_resources import iter_entry_points
-
 from microcosm.object_graph import ObjectGraph
+from pkg_resources import iter_entry_points
 
 from microcosm_sagemaker.constants import (
     APP_HOOKS_GROUP,

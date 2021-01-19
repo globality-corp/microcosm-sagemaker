@@ -71,7 +71,7 @@ class BundleFitTestCase(BundleTestCase, BundlePredictionChecker):
             dependencies_only=True,
         )
 
-        self.graph.training_initializers.init()
+        self.graph.experiment_metrics.init()
 
     def test_fit(self) -> None:
         self.graph.active_bundle.fit(self._input_data)
@@ -196,7 +196,7 @@ class BundleFitSaveLoadTestCase(BundleTestCase, BundlePredictionChecker):
             dependencies_only=True,
         )
 
-        self.train_graph.training_initializers.init()
+        self.train_graph.experiment_metrics.init()
 
     def setup_evaluate_graph(self):
         self.evaluate_graph = create_evaluate_app(
