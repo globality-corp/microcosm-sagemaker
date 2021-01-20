@@ -48,7 +48,10 @@ def fit_and_save_bundle(
     nested_output_artifact = root_output_artifact / bundle_name
     nested_output_artifact.init()
 
+    # We call the training_initializers.init() before any bundle.fit()
+    # That makes each bundle's training reproducible, regardless of its order in the training queue.
     graph.training_initializers.init()
+
     bundle.fit(input_data)
     bundle.save(nested_output_artifact)
 

@@ -72,7 +72,7 @@ class WeightsAndBiases:
         self.graph.config.wandb.run_path = wandb_run.path
         # Setting the run_path for the current instance.
         # This prevents a new wandb instantiation if the `init` method is called again.
-        self.run_path = self.graph.config.wandb.run_path
+        self.run_path = wandb_run.path
 
         # Adding the link to the Weights & Biases run to the landing page
         landing_convention_links = self.graph.config.landing_convention.get("links", {})
