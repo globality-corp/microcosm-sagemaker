@@ -63,7 +63,7 @@ def run_train(
 ) -> None:
     root_output_artifact.init()
 
-    graph.training_initializers.init()
+    graph.experiment_metrics.init()
 
     root_output_artifact.save_config(graph.config)
 
