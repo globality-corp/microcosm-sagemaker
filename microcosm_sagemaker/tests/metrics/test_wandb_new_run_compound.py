@@ -31,7 +31,7 @@ class TestWandbNewRun():
 
     def test_init(self):
         with patch("wandb.init") as wandb_init:
-            self.graph.training_initializers.init()
+            self.graph.experiment_metrics.init()
             _, call_kw_args = wandb_init.call_args
             assert_that(
                 call_kw_args,
@@ -54,7 +54,7 @@ class TestWandbNewRun():
 
     def test_log_static_metric(self):
         with patch("wandb.init"):
-            self.graph.training_initializers.init()
+            self.graph.experiment_metrics.init()
 
             self.graph.simple_bundle_with_metric.log_static_metric()
             self.graph.wandb.wandb_run.summary.update.assert_called_with(
@@ -63,7 +63,7 @@ class TestWandbNewRun():
 
     def test_log_timeseries_metric(self):
         with patch("wandb.init"):
-            self.graph.training_initializers.init()
+            self.graph.experiment_metrics.init()
 
             self.graph.simple_bundle_with_metric.log_timeseries_metric()
             self.graph.wandb.wandb_run.log.assert_called_with(

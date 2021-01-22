@@ -18,6 +18,14 @@ class ExperimentMetrics:
         if not self.testing:
             self.metric_observers.append(observer)
 
+    def init(self):
+        """
+        Calls the init method on all of the registered metric observers.
+
+        """
+        for metric_observer in self.metric_observers:
+            metric_observer.init()
+
     def log_timeseries(self, **kwargs):
         if not self.testing:
             for metric_observer in self.metric_observers:
