@@ -30,6 +30,7 @@ class WeightsAndBiases:
         self.bundle_and_dependencies_config_extractor = self.graph.bundle_and_dependencies_config_extractor
         self.active_bundle = getattr(graph, graph.config.active_bundle)
         self.run_path = getattr(graph.config.wandb, "run_path", None)
+        self.wandb_run = None
 
     def init(self):
         # Sometimes, the entity in the wandb run path appears as None.
@@ -39,6 +40,10 @@ class WeightsAndBiases:
 
         # Only initialize wandb if it is enabled
         if not self.enable:
+            return
+
+        # Only initialize/load wandb if it is not already created/loaded
+        if self.wandb_run is not None:
             return
 
         # Pushing into an existing wandb experiment
