@@ -89,7 +89,7 @@ class WeightsAndBiases:
         return wandb_run
 
     def log_timeseries(self, **kwargs):
-        step = kwargs.pop("step")
+        step = kwargs.pop("step", None)
         self.wandb_run.log(kwargs, step=step)
         return None
 
